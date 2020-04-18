@@ -14,9 +14,14 @@ class ApiAudiophoneUser extends Model //implements AuthenticatableContract, Auth
     //use Authenticatable, Authorizable;
     use SoftDeletes;
 
-    //const CREATED_AT = null;
-
-    //const UPDATED_AT = null;
+    /**
+    * The attributes should be mutatedto dates
+    *
+    *@var array
+    */
+    protected $dates = [
+        'deleted_at'
+    ];
 
     protected $table = 'apiaudiophoneusers';
 
@@ -28,9 +33,16 @@ class ApiAudiophoneUser extends Model //implements AuthenticatableContract, Auth
      * @var array
      */
     protected $fillable = [
+
+        'apiaudiophoneusers_id'
         'apiaudiophoneusers_fullname',
         'apiaudiophoneusers_email',
-        'apiaudiophoneusers_password'
+        'apiaudiophoneusers_password',
+        'apiaudiophoneusers_role',
+        'apiaudiophoneusers_status',
+        'created_at',
+        'updated_at',
+        'deleted_at'
     ];
 
     /**
