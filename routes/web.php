@@ -17,7 +17,22 @@ $router->get('/', function () use ($router) {
 
 */
 
-$router->get('/', function(){
-	return 'hola';
-});
+//$router->post('/apiaudiophoneuser/store', 'Apiaudiophonecontrollers\ApiAudiophoneUserController@storeApiAudiophoneUser');
+
+$router->post('/apiaudiophoneuser/store', [
+
+	'as' => 'user.store',
+	'uses' => 'Apiaudiophonecontrollers\ApiAudiophoneUserController@storeApiAudiophoneUser'
+]);
+
+/*$router->post('/apiaudiophoneuser/store', function (Illuminate\Http\Request $request)
+{
+    if ($request->isJson()) {
+        $data = $request->json()->all();
+    } else {
+        $data = $request->all();
+    }
+
+    dd($data);
+});*/
 

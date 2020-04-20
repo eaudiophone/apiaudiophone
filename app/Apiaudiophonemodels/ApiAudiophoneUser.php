@@ -34,15 +34,9 @@ class ApiAudiophoneUser extends Model //implements AuthenticatableContract, Auth
      */
     protected $fillable = [
 
-        'apiaudiophoneusers_id'
         'apiaudiophoneusers_fullname',
         'apiaudiophoneusers_email',
-        'apiaudiophoneusers_password',
-        'apiaudiophoneusers_role',
-        'apiaudiophoneusers_status',
-        'created_at',
-        'updated_at',
-        'deleted_at'
+        'apiaudiophoneusers_password'
     ];
 
     /**
@@ -51,6 +45,18 @@ class ApiAudiophoneUser extends Model //implements AuthenticatableContract, Auth
      * @var array
      */
     protected $hidden = [
-        'apiaudiophoneusers_password'
+        //'apiaudiophoneusers_password'
     ];
+
+    /*Relationships
+
+    public function apiaudiophonemeeting(){
+
+        return $this->hasMany(ApiAudiophoneMeeting::class);
+    }
+
+    public function apiaudiophonebudget(){
+
+        return $this->hasMany(ApiAudiophoneBudget::class);
+    }*/
 }
