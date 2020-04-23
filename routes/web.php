@@ -1,5 +1,6 @@
 <?php
 
+use App\Apiaudiophonemodels\ApiAudiophoneUser;
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -15,9 +16,22 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
+CREAR UN GRUPO DE RUTAS PARA CADA PERFIL DE USUARIO
+APLICAR REGEX A PARAMETROS
+
+*prueba obtención de usuario
+$router->get('/apiaudiophoneuser/show/{apiaudiophoneusers_id}', function($apiaudiophoneusers_id){
+
+	return ApiAudiophoneUser::findOrFail($apiaudiophoneusers_id);
+});
+
 */
 
-//$router->post('/apiaudiophoneuser/store', 'Apiaudiophonecontrollers\ApiAudiophoneUserController@storeApiAudiophoneUser');
+$router->get('/apiaudiophoneuser/show', [
+
+	'as' => 'user.show',
+	'uses' => 'Apiaudiophonecontrollers\ApiAudiophoneUserController@showApiAudiophoneUser'
+]);
 
 $router->post('/apiaudiophoneuser/store', [
 
@@ -25,14 +39,19 @@ $router->post('/apiaudiophoneuser/store', [
 	'uses' => 'Apiaudiophonecontrollers\ApiAudiophoneUserController@storeApiAudiophoneUser'
 ]);
 
-/*$router->post('/apiaudiophoneuser/store', function (Illuminate\Http\Request $request)
-{
-    if ($request->isJson()) {
-        $data = $request->json()->all();
-    } else {
-        $data = $request->all();
-    }
+$router->put('/apiaudiophoneuser/update/{apiaudiophoneusers_id:[0-9]+}', [
 
-    dd($data);
-});*/
+	'as' => 'user.update',
+	'uses' => 'Apiaudiophonecontrollers\ApiAudiophoneUserController@updateApiAudiophoneUser'
+]);
+
+$router->delete('/apiaudiophoneuser/destroy/{apiaudiophoneusers_id:[0-9]+}', [
+
+	'as' => 'user.destroy',
+	'uses' => 'Apiaudiophonecontrollers\ApiAudiophoneUserController@destroyApiAudiophoneUser'
+]);
+
+
+
+
 

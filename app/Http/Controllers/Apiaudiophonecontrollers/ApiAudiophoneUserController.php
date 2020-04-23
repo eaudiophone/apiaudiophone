@@ -10,7 +10,31 @@ use Carbon\Carbon;
 
 class ApiAudiophoneUserController extends Controller
 {
+
+	/**
+     * 5 y 11 para el programay opcion 14
+     *  show ApiAudiophoneUser instance.
+     *
+     * @param \Illuminate\Http\Request $request
+     *@return \Illuminate\Http\Response
+     */
+    public function showApiAudiophoneUser()
+    {
+
+    	$apiaudiophoneusershow = ApiAudiophoneUser::orderBY('apiaudiophoneusers_id', 'DESC')
+    	->where('apiaudiophoneusers_status', '1')
+    	->get();
+
+    	return response()->json([
+
+    		'ok' => true,
+    		'status' => 200,
+    		'apiaudiophoneusershow' => $apiaudiophoneusershow
+    	]);
+    }
+
     /**
+      5 y 11 para el programay opcion 14
      * new store ApiAudiophoneUser instance.
      *
      * @param \Illuminate\Http\Request $request
@@ -19,32 +43,76 @@ class ApiAudiophoneUserController extends Controller
     public function storeApiAudiophoneUser(Request $request)
     {
 
-    	dd($request->all());
+    	//dd($request->all());
 
-    	//$apiaudiophoneuserdata = $request->all();
+    	$apiaudiophoneuserdata = $request->all();
 
-    	//$fecha = Carbon::now('America/Caracas')->format('Y-m-d H:i:s');
+    	$apiaudiophoneusernew = new ApiAudiophoneUser;
 
-    	//$apiaudiophoneusernew = ApiAudiophoneUser::create(['apiaudiophoneusernew' => $apiaudiophoneuserdata]);
+    	$apiaudiophoneusernew->apiaudiophoneusers_fullname = $apiaudiophoneuserdata['apiaudiophoneusers_fullname'];
+        $apiaudiophoneusernew->apiaudiophoneusers_email = $apiaudiophoneuserdata['apiaudiophoneusers_email'];
+        $apiaudiophoneusernew->apiaudiophoneusers_password = app('hash')->make($apiaudiophoneuserdata['apiaudiophoneusers_password']);
 
-    	//$apiaudiophoneusernew = new ApiAudiophoneUser;
+       $apiaudiophoneusernew->save();
 
-    	//$apiaudiophoneusernew->apiaudiophoneusers_fullname = $apiaudiophoneuserdata['apiaudiophoneusers_fullname'];
-      //  $apiaudiophoneusernew->apiaudiophoneusers_email = $apiaudiophoneuserdata['apiaudiophoneusers_email'];
-       // $apiaudiophoneusernew->apiaudiophoneusers_password = $apiaudiophoneuserdata['apiaudiophoneusers_password'];
-        //$apiaudiophoneuser->apiaudiophoneusers_role = 'USER_ROLE';
-        //$audiophoneuser->created_at = $fecha;
-
-        //app('hash')->make('123')
-
-       // $apiaudiophoneusernew->save();
-
-
-    	/*return response()->json([
+    	return response()->json([
 
     		'ok' => true,
     		'status' => 201,
     		'apiaudiophoneusernew' => $apiaudiophoneusernew
-    	]);*/
+    	]);
+    }
+
+    /**
+     * update ApiAudiophoneUser instance.
+     *
+     * @param \Illuminate\Http\Request $request
+     *@return \Illuminate\Http\Response
+     */
+    public function updateApiAudiophoneUser(Request $request, $apiaudiophoneusers_id)
+    {
+
+    	//dd($request->all());
+
+    	$apiaudiophoneuserdata = $request->all();
+
+    	$apiaudiophoneuserupdate = ApiAudiophoneUser::findOrFail($apiaudiophoneusers_id);
+
+    	$apiaudiophoneuserupdate->apiaudiophoneusers_fullname = $apiaudiophoneuserdata['apiaudiophoneusers_fullname'];
+        $apiaudiophoneuserupdate->apiaudiophoneusers_email = $apiaudiophoneuserdata['apiaudiophoneusers_email'];
+        $apiaudiophoneuserupdate->apiaudiophoneusers_password = app('hash')->make($apiaudiophoneuserdata['apiaudiophoneusers_password']);
+        $apiaudiophoneuserupdate->apiaudiophoneusers_role = $apiaudiophoneuserdata['apiaudiophoneusers_role'];
+        $apiaudiophoneuserupdate->apiaudiophoneusers_status = $apiaudiophoneuserdata['apiaudiophoneusers_status'];
+
+       $apiaudiophoneuserupdate->save();
+
+    	return response()->json([
+
+    		'ok' => true,
+    		'status' => 201,
+    		'apiaudiophoneuserupdate' => $apiaudiophoneuserupdate
+    	]);
+    }
+
+	/**
+     * update ApiAudiophoneUser instance.
+     *
+     * @param \Illuminate\Http\Request $request
+     *@return \Illuminate\Http\Response
+     */
+    public function destroyApiAudiophoneUser(Request $request, $apiaudiophoneusers_id)
+    {
+
+       	$apiaudiophoneuserupdate = ApiAudiophoneUser::findOrFail($apiaudiophoneusers_id);
+
+       	$apiaudiophoneuserupdate->delete();
+
+    	return response()->json([
+
+    		'ok' => true,
+    		'status' => 200,
+    		'apiaudiophoneuserdelete' => 'Usuario Eliminado Satisfactoriamente'
+    	]);
     }
 }
+

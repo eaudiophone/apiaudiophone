@@ -45,7 +45,7 @@ class ApiAudiophoneUser extends Model //implements AuthenticatableContract, Auth
      * @var array
      */
     protected $hidden = [
-        //'apiaudiophoneusers_password'
+        'apiaudiophoneusers_password'
     ];
 
     /*Relationships
