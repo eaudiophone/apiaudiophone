@@ -12,7 +12,6 @@ class ApiAudiophoneUserController extends Controller
 {
 
 	/**
-     * 5 y 11 para el programay opcion 14
      *  show ApiAudiophoneUser instance.
      *
      * @param \Illuminate\Http\Request $request
@@ -34,7 +33,6 @@ class ApiAudiophoneUserController extends Controller
     }
 
     /**
-      5 y 11 para el programay opcion 14
      * new store ApiAudiophoneUser instance.
      *
      * @param \Illuminate\Http\Request $request
