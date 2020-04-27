@@ -23,10 +23,11 @@ APLICAR REGEX A PARAMETROS
 $router->get('api/apiaudiophoneuser/show/{apiaudiophoneusers_id}', function($apiaudiophoneusers_id){
 
 	return ApiAudiophoneUser::findOrFail($apiaudiophoneusers_id);
+	[/{paginationstart:[0-9]+}][/{paginationend:[0-9]+}]
 });
 
 */
-
+	//parametros opcionales para el show
 $router->get('api/apiaudiophoneuser/show', [
 
 	'as' => 'user.show',
