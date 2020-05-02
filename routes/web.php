@@ -28,7 +28,7 @@ $router->get('api/apiaudiophoneuser/show/{apiaudiophoneusers_id}', function($api
 
 */
 	//parametros opcionales para el show
-$router->get('api/apiaudiophoneuser/show', [
+$router->post('api/apiaudiophoneuser/show', [
 
 	'as' => 'user.show',
 	'uses' => 'Apiaudiophonecontrollers\ApiAudiophoneUserController@showApiAudiophoneUser'
