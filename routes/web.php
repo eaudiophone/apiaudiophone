@@ -46,6 +46,10 @@ $router->put('api/apiaudiophoneuser/update/{apiaudiophoneusers_id:[0-9]+}', [
 	'uses' => 'Apiaudiophonecontrollers\ApiAudiophoneUserController@updateApiAudiophoneUser'
 ]);
 
+// ::::: Ruta para inactivar usuarios
+
+
+
 $router->delete('api/apiaudiophoneuser/destroy/{apiaudiophoneusers_id:[0-9]+}', [
 
 	'as' => 'user.destroy',

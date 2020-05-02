@@ -24,7 +24,8 @@ class ApiAudiophoneUserController extends Controller
     	$this->validate($request, [
 
     		'start' => 'numeric',
-    		'end' => 'numeric'
+    		'end' => 'numeric',
+            'stringsearch' => 'string'
     	]);
 
     	// :::::: Total de elementos del Request ::::::
@@ -33,25 +34,68 @@ class ApiAudiophoneUserController extends Controller
     	// :::::: Obtenemos total de usuarios registrados ::::::
     	$bduserstotal = ApiAudiophoneUser::count();
 
+        // :::::: Cuando se realiza una consulta por string search
+        if(($parameterstotal > 0 && $parameterstotal < 2) && ($bduserstotal > 0) && (array_key_exists('stringsearch', $request->all())) == true){
+
+            //obtenemos string de consulta
+            $stringsearch = $request->input('stringsearch');
+
+            if(empty($stringsearch)){
+
+                $apiaudiophoneuserdata = ApiAudiophoneUser::select('apiaudiophoneusers_id','apiaudiophoneusers_fullname', 'apiaudiophoneusers_email', 'apiaudiophoneusers_role', 'created_at')
+                ->whereBetween('apiaudiophoneusers_id', [1, 5])
+                ->orderBy('apiaudiophoneusers_id', 'desc')
+                ->get();
+
+               return response()->json([
+
+                'ok' => true,
+                'status' => 200,
+                'bduserstotal' => $bduserstotal,
+                'apiaudiophoneuserdata' => $apiaudiophoneuserdata
+                ]);
+            }else{
+
+                //Contamos la cantidad de usuarios que se generan en la consulta por like para paginación en front
+                $apiaudiophoneusercount = DB::table('apiaudiophoneusers')
+                ->where('apiaudiophoneusers_fullname', 'like', '%'.$stringsearch.'%')
+                ->orWhere('apiaudiophoneusers_email', 'like', '%'.$stringsearch.'%')
+                ->count();
+
+                //Consultamos en la base de datos cuando hacemos busqueda por string y capturamos la data
+                $apiaudiophoneuserdata = ApiAudiophoneUser::select('apiaudiophoneusers_id','apiaudiophoneusers_fullname', 'apiaudiophoneusers_email', 'apiaudiophoneusers_role', 'created_at')
+                ->where('apiaudiophoneusers_fullname', 'like', '%'.$stringsearch.'%')
+                ->orWhere('apiaudiophoneusers_email', 'like', '%'.$stringsearch.'%')
+                ->get();
+
+               return response()->json([
+
+                'ok' => true,
+                'status' => 200,
+                'bduserstotal' => $bduserstotal,
+                'apiaudiophoneusercount' => $apiaudiophoneusercount,
+                'apiaudiophoneuserdata' => $apiaudiophoneuserdata
+                ]);
+            }
     	// :::::: Cuando hay dos parametros en el request y existan usuarios en la base de datos
-    	if(($parameterstotal > 0 && $parameterstotal < 3) && $bduserstotal > 0){
+    	}elseif(($parameterstotal > 0 && $parameterstotal < 3) && $bduserstotal > 0){
 
     		//Obtenemos inicio y fin de la consulta
     		$start = $request->input('start');
     		$end = $request->input('end');
 
     		//Si los parametros vienen en cero o nulos hacemos consulta de los primeros 5
-    		if(($start == 0 || $start == null) && ($end == 0 || $end == null)){
+    		if((empty($start)) && (empty($end))){
 
 	    		//Consultamos en la base de datos cuando el request no manda parametros (primera consulta)
-	    		$apiaudiophoneuserdata = ApiAudiophoneUser::select('apiaudiophoneusers_fullname', 'apiaudiophoneusers_email', 'apiaudiophoneusers_role', 'created_at')
+	    		$apiaudiophoneuserdata = ApiAudiophoneUser::select('apiaudiophoneusers_id','apiaudiophoneusers_fullname', 'apiaudiophoneusers_email', 'apiaudiophoneusers_role', 'created_at')
 	    		->whereBetween('apiaudiophoneusers_id', [1, 5])
 	    		->orderBy('apiaudiophoneusers_id', 'desc')
 	    		->get();
     		}else{
 
 	    		//Consultamos usuarios en la base de datos para mandarlos a la vista
-	    		$apiaudiophoneuserdata = ApiAudiophoneUser::select('apiaudiophoneusers_fullname', 'apiaudiophoneusers_email', 'apiaudiophoneusers_role', 'created_at')
+	    		$apiaudiophoneuserdata = ApiAudiophoneUser::select('apiaudiophoneusers_id', 'apiaudiophoneusers_fullname', 'apiaudiophoneusers_email', 'apiaudiophoneusers_role', 'created_at')
 	    		->whereBetween('apiaudiophoneusers_id', [$start, $end])
 	    		->orderBy('apiaudiophoneusers_id', 'desc')
 	    		->get();
@@ -70,7 +114,7 @@ class ApiAudiophoneUserController extends Controller
     	}elseif($parameterstotal == 0 && $bduserstotal > 0){
 
     		//Consultamos en la base de datos cuando el request no manda parametros (primera consulta)
-    		$apiaudiophoneuserdata = ApiAudiophoneUser::select('apiaudiophoneusers_fullname', 'apiaudiophoneusers_email', 'apiaudiophoneusers_role', 'created_at')
+    		$apiaudiophoneuserdata = ApiAudiophoneUser::select('apiaudiophoneusers_id', 'apiaudiophoneusers_fullname', 'apiaudiophoneusers_email', 'apiaudiophoneusers_role', 'created_at')
     		->whereBetween('apiaudiophoneusers_id', [1, 5])
     		->orderBy('apiaudiophoneusers_id', 'desc')
     		->get();
@@ -91,9 +135,9 @@ class ApiAudiophoneUserController extends Controller
     		return response()->json([
 
     			'ok' => true,
-    			'status' => 200,
+    			'status' => 404,
     			'bduserstotal' => $bduserstotal,
-    			'apiaudiophoneusermessage' => 'No existen usuarios registrados'
+    			'apiaudiophoneusermessage' => 'No existen usuarios registrados en la base de datos'
     		]);
 
     		//Cuando no hay parametros ni usuarios en la base de datos
@@ -103,9 +147,9 @@ class ApiAudiophoneUserController extends Controller
     		return response()->json([
 
     			'ok' => true,
-    			'status' => 200,
+    			'status' => 400,
     			'bduserstotal' => $bduserstotal,
-    			'apiaudiophoneusermessage' => 'No existen usuarios registrados'
+    			'apiaudiophoneusermessage' => 'Ha realizado una peticion incorrecta'
     		]);
     	}
     }
