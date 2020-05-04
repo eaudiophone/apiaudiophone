@@ -35,7 +35,7 @@ class ApiAudiophoneUserController extends Controller
     	$bduserstotal = ApiAudiophoneUser::count();
 
         // :::::: Cuando se realiza una consulta por string search
-        if(($parameterstotal > 0 && $parameterstotal < 2) && ($bduserstotal > 0) && (array_key_exists('stringsearch', $request->all())) == true){
+        if(($parameterstotal > 0 && $parameterstotal < 2) && ($bduserstotal > 0) && ($request->stringsearch)){
 
             //obtenemos string de consulta
             $stringsearch = $request->input('stringsearch');
@@ -163,7 +163,12 @@ class ApiAudiophoneUserController extends Controller
     public function storeApiAudiophoneUser(Request $request)
     {
 
-    	//dd($request->all());
+        $this->validate($request, [
+
+            'apiaudiophoneusers_fullname' => 'required|string|max:60',
+            'apiaudiophoneusers_email' => 'required|email|unique:apiaudiophoneusers,apiaudiophoneusers_email',
+            'apiaudiophoneusers_password' => 'required|string'
+        ]);
 
     	$apiaudiophoneuserdata = $request->all();
 
@@ -192,24 +197,38 @@ class ApiAudiophoneUserController extends Controller
     public function updateApiAudiophoneUser(Request $request, $apiaudiophoneusers_id)
     {
 
-    	//dd($request->all());
+        $this->validate($request, [
+
+            'apiaudiophoneusers_fullname' => 'required|string|max:60',
+            'apiaudiophoneusers_email' => 'required|email|unique:apiaudiophoneusers,apiaudiophoneusers_email,'.$request->apiaudiophoneusers_id.',apiaudiophoneusers_id',
+            'apiaudiophoneusers_password' => 'string'
+        ]);
 
     	$apiaudiophoneuserdata = $request->all();
 
     	$apiaudiophoneuserupdate = ApiAudiophoneUser::findOrFail($apiaudiophoneusers_id);
 
-    	$apiaudiophoneuserupdate->apiaudiophoneusers_fullname = $apiaudiophoneuserdata['apiaudiophoneusers_fullname'];
-        $apiaudiophoneuserupdate->apiaudiophoneusers_email = $apiaudiophoneuserdata['apiaudiophoneusers_email'];
-        $apiaudiophoneuserupdate->apiaudiophoneusers_password = app('hash')->make($apiaudiophoneuserdata['apiaudiophoneusers_password']);
-        $apiaudiophoneuserupdate->apiaudiophoneusers_role = $apiaudiophoneuserdata['apiaudiophoneusers_role'];
-        $apiaudiophoneuserupdate->apiaudiophoneusers_status = $apiaudiophoneuserdata['apiaudiophoneusers_status'];
+        if($request->apiaudiophoneusers_password){
 
-       $apiaudiophoneuserupdate->save();
+            $apiaudiophoneuserupdate->apiaudiophoneusers_fullname = $apiaudiophoneuserdata['apiaudiophoneusers_fullname'];
+            $apiaudiophoneuserupdate->apiaudiophoneusers_email = $apiaudiophoneuserdata['apiaudiophoneusers_email'];
+            $apiaudiophoneuserupdate->apiaudiophoneusers_password = app('hash')->make($apiaudiophoneuserdata['apiaudiophoneusers_password']);
+        }else{
+
+            //Nos aseguramos que el password sea eliminado del arreglo antes de actualizar
+            unset($apiaudiophoneuserdata['apiaudiophoneusers_password']);
+
+            $apiaudiophoneuserupdate->apiaudiophoneusers_fullname = $apiaudiophoneuserdata['apiaudiophoneusers_fullname'];
+            $apiaudiophoneuserupdate->apiaudiophoneusers_email = $apiaudiophoneuserdata['apiaudiophoneusers_email'];
+            $apiaudiophoneuserupdate->apiaudiophoneusers_role = $apiaudiophoneuserdata['apiaudiophoneusers_role'];
+        }
+
+       $apiaudiophoneuserupdate->update($apiaudiophoneuserdata);
 
     	return response()->json([
 
     		'ok' => true,
-    		'status' => 201,
+    		'status' => 200,
     		'apiaudiophoneuserupdate' => $apiaudiophoneuserupdate
     	]);
     }
