@@ -210,6 +210,7 @@ class ApiAudiophoneUserController extends Controller
 
         if($request->apiaudiophoneusers_password){
 
+
             $apiaudiophoneuserupdate->apiaudiophoneusers_fullname = $apiaudiophoneuserdata['apiaudiophoneusers_fullname'];
             $apiaudiophoneuserupdate->apiaudiophoneusers_email = $apiaudiophoneuserdata['apiaudiophoneusers_email'];
             $apiaudiophoneuserupdate->apiaudiophoneusers_password = app('hash')->make($apiaudiophoneuserdata['apiaudiophoneusers_password']);
@@ -220,7 +221,6 @@ class ApiAudiophoneUserController extends Controller
 
             $apiaudiophoneuserupdate->apiaudiophoneusers_fullname = $apiaudiophoneuserdata['apiaudiophoneusers_fullname'];
             $apiaudiophoneuserupdate->apiaudiophoneusers_email = $apiaudiophoneuserdata['apiaudiophoneusers_email'];
-            $apiaudiophoneuserupdate->apiaudiophoneusers_password = $apiaudiophoneuserdata['apiaudiophoneusers_password'];
         }
 
        $apiaudiophoneuserupdate->update($apiaudiophoneuserdata);
