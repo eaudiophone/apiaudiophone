@@ -244,8 +244,6 @@ class ApiAudiophoneUserController extends Controller
 
         $this->validate($request, [
 
-            'apiaudiophoneusers_fullname' => 'required|string|max:60',
-            'apiaudiophoneusers_email' => 'required|email|unique:apiaudiophoneusers,apiaudiophoneusers_email,'.$request->apiaudiophoneusers_id.',apiaudiophoneusers_id',
             'apiaudiophoneusers_status' => 'required|boolean'
         ]);
 
@@ -256,8 +254,6 @@ class ApiAudiophoneUserController extends Controller
 
         if($request->apiaudiophoneusers_status == false){
 
-            $apiaudiophoneuserinactive->apiaudiophoneusers_fullname = $apiaudiophoneuserdata['apiaudiophoneusers_fullname'];
-            $apiaudiophoneuserinactive->apiaudiophoneusers_email = $apiaudiophoneuserdata['apiaudiophoneusers_email'];
             $apiaudiophoneuserinactive->apiaudiophoneusers_status = $apiaudiophoneuserdata['apiaudiophoneusers_status'];
 
             $apiaudiophoneuserinactive->update($apiaudiophoneuserdata);
@@ -292,8 +288,6 @@ class ApiAudiophoneUserController extends Controller
 
         $this->validate($request, [
 
-            'apiaudiophoneusers_fullname' => 'required|string|max:60',
-            'apiaudiophoneusers_email' => 'required|email|unique:apiaudiophoneusers,apiaudiophoneusers_email,'.$request->apiaudiophoneusers_id.',apiaudiophoneusers_id',
             'apiaudiophoneusers_status' => 'required|boolean'
         ]);
 
@@ -303,8 +297,6 @@ class ApiAudiophoneUserController extends Controller
 
         if($request->apiaudiophoneusers_status == true){
 
-            $apiaudiophoneuseractivate->apiaudiophoneusers_fullname = $apiaudiophoneuserdata['apiaudiophoneusers_fullname'];
-            $apiaudiophoneuseractivate->apiaudiophoneusers_email = $apiaudiophoneuserdata['apiaudiophoneusers_email'];
             $apiaudiophoneuseractivate->apiaudiophoneusers_status = $apiaudiophoneuserdata['apiaudiophoneusers_status'];
 
             $apiaudiophoneuseractivate->update($apiaudiophoneuserdata);
