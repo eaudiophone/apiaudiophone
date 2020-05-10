@@ -233,6 +233,101 @@ class ApiAudiophoneUserController extends Controller
     	]);
     }
 
+    /**
+     * update ApiAudiophoneUser instance.
+     *
+     * @param \Illuminate\Http\Request $request
+     *@return \Illuminate\Http\Response
+     */
+    public function inactiveApiAudiophoneUser(Request $request, $apiaudiophoneusers_id)
+    {
+
+        $this->validate($request, [
+
+            'apiaudiophoneusers_fullname' => 'required|string|max:60',
+            'apiaudiophoneusers_email' => 'required|email|unique:apiaudiophoneusers,apiaudiophoneusers_email,'.$request->apiaudiophoneusers_id.',apiaudiophoneusers_id',
+            'apiaudiophoneusers_status' => 'required|boolean'
+        ]);
+
+        $apiaudiophoneuserdata = $request->all();
+
+        $apiaudiophoneuserinactive = ApiAudiophoneUser::findOrFail($apiaudiophoneusers_id);
+
+
+        if($request->apiaudiophoneusers_status == false){
+
+            $apiaudiophoneuserinactive->apiaudiophoneusers_fullname = $apiaudiophoneuserdata['apiaudiophoneusers_fullname'];
+            $apiaudiophoneuserinactive->apiaudiophoneusers_email = $apiaudiophoneuserdata['apiaudiophoneusers_email'];
+            $apiaudiophoneuserinactive->apiaudiophoneusers_status = $apiaudiophoneuserdata['apiaudiophoneusers_status'];
+
+            $apiaudiophoneuserinactive->update($apiaudiophoneuserdata);
+
+            return response()->json([
+
+                'ok' => true,
+                'status' => 200,
+                'apiaudiophoneusermessage' => 'Usuario Inactivado Exitosamente',
+                'apiaudiophoneuserinactive' => $apiaudiophoneuserinactive
+            ]);
+        }else{
+
+            return response()->json([
+
+                'ok' => true,
+                'status' => 200,
+                'apiaudiophoneusermessage' => 'No se ha Inactivado el Usuario',
+                'apiaudiophoneuserinactive' => $apiaudiophoneuserinactive
+            ]);
+        }
+    }
+
+    /**
+     * update ApiAudiophoneUser instance.
+     *
+     * @param \Illuminate\Http\Request $request
+     *@return \Illuminate\Http\Response
+     */
+    public function activateApiAudiophoneUser(Request $request, $apiaudiophoneusers_id)
+    {
+
+        $this->validate($request, [
+
+            'apiaudiophoneusers_fullname' => 'required|string|max:60',
+            'apiaudiophoneusers_email' => 'required|email|unique:apiaudiophoneusers,apiaudiophoneusers_email,'.$request->apiaudiophoneusers_id.',apiaudiophoneusers_id',
+            'apiaudiophoneusers_status' => 'required|boolean'
+        ]);
+
+        $apiaudiophoneuserdata = $request->all();
+
+        $apiaudiophoneuseractivate = ApiAudiophoneUser::findOrFail($apiaudiophoneusers_id);
+
+        if($request->apiaudiophoneusers_status == true){
+
+            $apiaudiophoneuseractivate->apiaudiophoneusers_fullname = $apiaudiophoneuserdata['apiaudiophoneusers_fullname'];
+            $apiaudiophoneuseractivate->apiaudiophoneusers_email = $apiaudiophoneuserdata['apiaudiophoneusers_email'];
+            $apiaudiophoneuseractivate->apiaudiophoneusers_status = $apiaudiophoneuserdata['apiaudiophoneusers_status'];
+
+            $apiaudiophoneuseractivate->update($apiaudiophoneuserdata);
+
+            return response()->json([
+
+                'ok' => true,
+                'status' => 200,
+                'apiaudiophoneusermessage' => 'Usuario Reactivado Exitosamente',
+                'apiaudiophoneuseractivate' => $apiaudiophoneuseractivate
+            ]);
+        }else{
+
+            return response()->json([
+
+                'ok' => true,
+                'status' => 200,
+                'apiaudiophoneusermessage' => 'No se ha Reactivado el Usuario',
+                'apiaudiophoneuseractivate' => $apiaudiophoneuseractivate
+            ]);
+        }
+    }
+
 	/**
      * update ApiAudiophoneUser instance.
      *
@@ -241,6 +336,12 @@ class ApiAudiophoneUserController extends Controller
      */
     public function destroyApiAudiophoneUser(Request $request, $apiaudiophoneusers_id)
     {
+
+        $this->validate($request, [
+
+            'apiaudiophoneusers_fullname' => 'required|string|max:60',
+            'apiaudiophoneusers_email' => 'required|email|unique:apiaudiophoneusers,apiaudiophoneusers_email'
+        ]);
 
        	$apiaudiophoneuserupdate = ApiAudiophoneUser::findOrFail($apiaudiophoneusers_id);
 

@@ -38,7 +38,7 @@ class ApiAudioPhoneUserTest extends TestCase
     {
 
         /*
-         * para que se logre la aserción el responde del controlador debe devolver lo que espera la prueba
+         * para que se logre la aserción el response del controlador debe devolver lo que espera la prueba
          * en este caso es una prueba puntual, para pruebas dinamicas, usar postman
         */
         $this->json('post', route('user.store'), [
