@@ -42,7 +42,7 @@ class ApiAudiophoneUserController extends Controller
 
             if(empty($stringsearch)){
 
-                $apiaudiophoneuserdata = ApiAudiophoneUser::select('apiaudiophoneusers_id','apiaudiophoneusers_fullname', 'apiaudiophoneusers_email', 'apiaudiophoneusers_role', 'created_at')
+                $apiaudiophoneuserdata = ApiAudiophoneUser::select('apiaudiophoneusers_id','apiaudiophoneusers_fullname', 'apiaudiophoneusers_email', 'apiaudiophoneusers_role', 'apiaudiophoneusers_status', 'created_at')
                 ->whereBetween('apiaudiophoneusers_id', [1, 5])
                 ->orderBy('apiaudiophoneusers_id', 'desc')
                 ->get();
@@ -63,7 +63,7 @@ class ApiAudiophoneUserController extends Controller
                 ->count();
 
                 //Consultamos en la base de datos cuando hacemos busqueda por string y capturamos la data
-                $apiaudiophoneuserdata = ApiAudiophoneUser::select('apiaudiophoneusers_id','apiaudiophoneusers_fullname', 'apiaudiophoneusers_email', 'apiaudiophoneusers_role', 'created_at')
+                $apiaudiophoneuserdata = ApiAudiophoneUser::select('apiaudiophoneusers_id','apiaudiophoneusers_fullname', 'apiaudiophoneusers_email', 'apiaudiophoneusers_role', 'apiaudiophoneusers_status', 'created_at')
                 ->where('apiaudiophoneusers_fullname', 'like', '%'.$stringsearch.'%')
                 ->orWhere('apiaudiophoneusers_email', 'like', '%'.$stringsearch.'%')
                 ->get();
@@ -88,14 +88,14 @@ class ApiAudiophoneUserController extends Controller
     		if((empty($start)) && (empty($end))){
 
 	    		//Consultamos en la base de datos cuando el request no manda parametros (primera consulta)
-	    		$apiaudiophoneuserdata = ApiAudiophoneUser::select('apiaudiophoneusers_id','apiaudiophoneusers_fullname', 'apiaudiophoneusers_email', 'apiaudiophoneusers_role', 'created_at')
+	    		$apiaudiophoneuserdata = ApiAudiophoneUser::select('apiaudiophoneusers_id','apiaudiophoneusers_fullname', 'apiaudiophoneusers_email', 'apiaudiophoneusers_role', 'apiaudiophoneusers_status', 'created_at')
 	    		->whereBetween('apiaudiophoneusers_id', [1, 5])
 	    		->orderBy('apiaudiophoneusers_id', 'desc')
 	    		->get();
     		}else{
 
 	    		//Consultamos usuarios en la base de datos para mandarlos a la vista
-	    		$apiaudiophoneuserdata = ApiAudiophoneUser::select('apiaudiophoneusers_id', 'apiaudiophoneusers_fullname', 'apiaudiophoneusers_email', 'apiaudiophoneusers_role', 'created_at')
+	    		$apiaudiophoneuserdata = ApiAudiophoneUser::select('apiaudiophoneusers_id', 'apiaudiophoneusers_fullname', 'apiaudiophoneusers_email', 'apiaudiophoneusers_role', 'apiaudiophoneusers_status', 'created_at')
 	    		->whereBetween('apiaudiophoneusers_id', [$start, $end])
 	    		->orderBy('apiaudiophoneusers_id', 'desc')
 	    		->get();
@@ -114,7 +114,7 @@ class ApiAudiophoneUserController extends Controller
     	}elseif($parameterstotal == 0 && $bduserstotal > 0){
 
     		//Consultamos en la base de datos cuando el request no manda parametros (primera consulta)
-    		$apiaudiophoneuserdata = ApiAudiophoneUser::select('apiaudiophoneusers_id', 'apiaudiophoneusers_fullname', 'apiaudiophoneusers_email', 'apiaudiophoneusers_role', 'created_at')
+    		$apiaudiophoneuserdata = ApiAudiophoneUser::select('apiaudiophoneusers_id', 'apiaudiophoneusers_fullname', 'apiaudiophoneusers_email', 'apiaudiophoneusers_role', 'apiaudiophoneusers_status', 'created_at')
     		->whereBetween('apiaudiophoneusers_id', [1, 5])
     		->orderBy('apiaudiophoneusers_id', 'desc')
     		->get();
@@ -220,7 +220,7 @@ class ApiAudiophoneUserController extends Controller
 
             $apiaudiophoneuserupdate->apiaudiophoneusers_fullname = $apiaudiophoneuserdata['apiaudiophoneusers_fullname'];
             $apiaudiophoneuserupdate->apiaudiophoneusers_email = $apiaudiophoneuserdata['apiaudiophoneusers_email'];
-            $apiaudiophoneuserupdate->apiaudiophoneusers_role = $apiaudiophoneuserdata['apiaudiophoneusers_role'];
+            $apiaudiophoneuserupdate->apiaudiophoneusers_password = $apiaudiophoneuserdata['apiaudiophoneusers_password'];
         }
 
        $apiaudiophoneuserupdate->update($apiaudiophoneuserdata);
