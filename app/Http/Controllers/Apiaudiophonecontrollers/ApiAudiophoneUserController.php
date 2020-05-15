@@ -87,6 +87,7 @@ class ApiAudiophoneUserController extends Controller
     		//Si los parametros vienen en cero o nulos hacemos consulta de los primeros 5
     		if((empty($start)) && (empty($end))){
 
+
 	    		//Consultamos en la base de datos cuando el request no manda parametros (primera consulta)
 	    		$apiaudiophoneuserdata = ApiAudiophoneUser::select('apiaudiophoneusers_id','apiaudiophoneusers_fullname', 'apiaudiophoneusers_email', 'apiaudiophoneusers_role', 'apiaudiophoneusers_status', 'created_at')
 	    		->whereBetween('apiaudiophoneusers_id', [1, 5])
@@ -147,7 +148,7 @@ class ApiAudiophoneUserController extends Controller
     		return response()->json([
 
     			'ok' => true,
-    			'status' => 400,
+    			'status' => 422,
     			'bduserstotal' => $bduserstotal,
     			'apiaudiophoneusermessage' => 'Ha realizado una peticion incorrecta'
     		]);
@@ -184,6 +185,7 @@ class ApiAudiophoneUserController extends Controller
 
     		'ok' => true,
     		'status' => 201,
+            'apiaudiophoneusermessage' => 'Usuario Creado Exitosamente',
     		'apiaudiophoneusernew' => $apiaudiophoneusernew
     	]);
     }
@@ -199,25 +201,40 @@ class ApiAudiophoneUserController extends Controller
 
         $this->validate($request, [
 
-            'apiaudiophoneusers_fullname' => 'required|string|max:60',
-            'apiaudiophoneusers_email' => 'required|email|unique:apiaudiophoneusers,apiaudiophoneusers_email,'.$request->apiaudiophoneusers_id.',apiaudiophoneusers_id',
-            'apiaudiophoneusers_password' => 'string'
+            'apiaudiophoneusers_fullname' => 'string|max:60',
+            'apiaudiophoneusers_email' => 'email|unique:apiaudiophoneusers,apiaudiophoneusers_email,'.$request->apiaudiophoneusers_id.',apiaudiophoneusers_id',
+            'apiaudiophoneusers_password' => 'string',
+            'apiaudiophoneusers_role' =>'string'
         ]);
 
+        //obtenemos los parametros del request, ninguno de ellos es requerido(por ahora)
     	$apiaudiophoneuserdata = $request->all();
+
+        // :::::: Total de elementos del Request ::::::
+        $parameterstotal = count($request->all());
 
     	$apiaudiophoneuserupdate = ApiAudiophoneUser::findOrFail($apiaudiophoneusers_id);
 
-        if($request->apiaudiophoneusers_password){
+        //cuando el usuario administrador cambia el role a un usuario.
+        if($parameterstotal == 1 && ($request->apiaudiophoneusers_role)){
 
+            $apiaudiophoneuserupdate->apiaudiophoneusers_role = $apiaudiophoneuserdata['apiaudiophoneusers_role'];
+
+            //cuando un usuario acutaliza su contraseña
+        }elseif($parameterstotal  == 3 && ($request->apiaudiophoneusers_password)){
+
+            //nos aseguramos de eliminar el rol para evitar actualizarlo en esta sección
+            unset($apiaudiophoneuserdata['apiaudiophoneusers_role']);
 
             $apiaudiophoneuserupdate->apiaudiophoneusers_fullname = $apiaudiophoneuserdata['apiaudiophoneusers_fullname'];
             $apiaudiophoneuserupdate->apiaudiophoneusers_email = $apiaudiophoneuserdata['apiaudiophoneusers_email'];
             $apiaudiophoneuserupdate->apiaudiophoneusers_password = app('hash')->make($apiaudiophoneuserdata['apiaudiophoneusers_password']);
+
+            //cuando un usuario actualiza el nombre o el email
         }else{
 
-            //Nos aseguramos que el password sea eliminado del arreglo antes de actualizar
-            unset($apiaudiophoneuserdata['apiaudiophoneusers_password']);
+            //nos aseguramos de eliminar el rol y el password de esta validación
+            unset($apiaudiophoneuserdata['apiaudiophoneusers_role'], $apiaudiophoneuserdata['apiaudiophoneusers_password']);
 
             $apiaudiophoneuserupdate->apiaudiophoneusers_fullname = $apiaudiophoneuserdata['apiaudiophoneusers_fullname'];
             $apiaudiophoneuserupdate->apiaudiophoneusers_email = $apiaudiophoneuserdata['apiaudiophoneusers_email'];
@@ -229,6 +246,7 @@ class ApiAudiophoneUserController extends Controller
 
     		'ok' => true,
     		'status' => 200,
+            'apiaudiophoneusermessage' => 'Usuario Actualizado Exitosamente',
     		'apiaudiophoneuserupdate' => $apiaudiophoneuserupdate
     	]);
     }
@@ -326,14 +344,8 @@ class ApiAudiophoneUserController extends Controller
      * @param \Illuminate\Http\Request $request
      *@return \Illuminate\Http\Response
      */
-    public function destroyApiAudiophoneUser(Request $request, $apiaudiophoneusers_id)
+    public function destroyApiAudiophoneUser($apiaudiophoneusers_id)
     {
-
-        $this->validate($request, [
-
-            'apiaudiophoneusers_fullname' => 'required|string|max:60',
-            'apiaudiophoneusers_email' => 'required|email|unique:apiaudiophoneusers,apiaudiophoneusers_email'
-        ]);
 
        	$apiaudiophoneuserupdate = ApiAudiophoneUser::findOrFail($apiaudiophoneusers_id);
 

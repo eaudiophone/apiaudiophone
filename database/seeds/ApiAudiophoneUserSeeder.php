@@ -13,7 +13,7 @@ class ApiAudiophoneUserSeeder extends Seeder
     public function run()
     {
 
-        factory(ApiAudiophoneUser::class, 4)->create();
+        factory(ApiAudiophoneUser::class, 9)->create();
 
     	ApiAudiophoneUser::create([
     		'apiaudiophoneusers_fullname' => 'Alfonso Martinez',

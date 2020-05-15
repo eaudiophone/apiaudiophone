@@ -19,6 +19,13 @@ date_default_timezone_set(env('APP_TIMEZONE', 'UTC'));
 |
 */
 
+/*
+    :::::  ACTIVACION DE CLASE PARA INHABILITAR VERSIONES ANTERIOES A LA 7.3.2 EN LA APP  :::::
+*/
+$app = new \Dusterio\LumenPassport\Lumen7Application(
+    dirname(__DIR__)
+);
+
 $app = new Laravel\Lumen\Application(
     dirname(__DIR__)
 );
@@ -68,6 +75,12 @@ $app->configure('app');
 $app->configure('cors');
 
 /*
+    ::::: LARAVEL LUMEN PASSPORT :::::
+*/
+
+$app->configure('auth');
+
+/*
 |--------------------------------------------------------------------------
 | Register Middleware
 |--------------------------------------------------------------------------
@@ -87,9 +100,13 @@ $app->configure('cors');
     Fruitcake\Cors\HandleCors::class,
 ]);
 
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
+ $app->routeMiddleware([
+
+    /*
+        ::::: CALL TO MIDDLEWARE AUTH :::::
+    */
+    'auth' => App\Http\Middleware\Authenticate::class,
+  ]);
 
 /*
 |--------------------------------------------------------------------------
@@ -103,12 +120,38 @@ $app->configure('cors');
 */
 
 // $app->register(App\Providers\AppServiceProvider::class);
-// $app->register(App\Providers\AuthServiceProvider::class);
-// $app->register(App\Providers\EventServiceProvider::class);
+
 /*
-	::::: CORS :::::
+    ::::: AUTHSERVICE PROVIDER :::::
+*/
+$app->register(App\Providers\AuthServiceProvider::class);
+
+/*
+    ::::: EVENT PROVIDER :::::
+*/
+
+// $app->register(App\Providers\EventServiceProvider::class);
+
+/*
+	::::: CORS PROVIDER :::::
 */
 $app->register(Fruitcake\Cors\CorsServiceProvider::class);
+
+/*
+    ::::: PROVIDERS DUSTERIO LUMEN PASSPORT :::::
+*/
+$app->register(Laravel\Passport\PassportServiceProvider::class);
+$app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
+
+/*
+    ::::: REGISTRADOR DE RUTAS LUMEN PASSPORT PROVIDER :::::
+*/
+\Dusterio\LumenPassport\LumenPassport::routes($app, ['prefix' => 'v1/oauth']);
+
+/*
+    ::::: PROVIDERS FLIPBOX LUMEN  :::::
+*/
+$app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
