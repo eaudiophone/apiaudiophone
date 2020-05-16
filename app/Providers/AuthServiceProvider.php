@@ -3,8 +3,12 @@
 namespace App\Providers;
 
 use App\User;
+use Carbon\Carbon;
+use Laravel\Passport\Passport;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Dusterio\LumenPassport\LumenPassport;
+
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -35,5 +39,11 @@ class AuthServiceProvider extends ServiceProvider
                 return User::where('api_token', $request->input('api_token'))->first();
             }
         });
+
+        //::::::::  Inclusion de Rutas en Lumen, expiracion de token y refresh del mismo::::::::::::::: //
+
+        LumenPassport::routes($this->app);
+        LumenPassport::tokensExpireIn(Carbon::now('America/Caracas')->addMinutes(10));
+        Passport::refreshTokensExpireIn(Carbon::now('America/Caracas')->addDays(30));
     }
 }

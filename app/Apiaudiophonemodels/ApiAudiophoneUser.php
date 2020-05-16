@@ -2,17 +2,18 @@
 
 namespace App\Apiaudiophonemodels;
 
-//use Illuminate\Auth\Authenticatable;
-//use Laravel\Passport\HasApiTokens;
-//use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
-//use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Auth\Authenticatable;
+use Laravel\Passport\HasApiTokens;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 //use Laravel\Lumen\Auth\Authorizable;
+use Illuminate\Support\Facades\Hash;
 
-class ApiAudiophoneUser extends Model //implements AuthenticatableContract, AuthorizableContract
+class ApiAudiophoneUser extends Model implements AuthenticatableContract, AuthorizableContract
 {
-    use SoftDeletes;//HasApiTokens, Authenticatable, Authorizable, SoftDeletes;
+    use HasApiTokens, Authenticatable, Authorizable, SoftDeletes;
 
     /**
     * The attributes should be mutatedto dates
@@ -59,4 +60,30 @@ class ApiAudiophoneUser extends Model //implements AuthenticatableContract, Auth
 
         return $this->hasMany(ApiAudiophoneBudget::class);
     }*/
+
+    /**
+     * Funcion para validar  que el username corresponda al campo apioaudiophoneusers_email
+     * para el request del token.
+     *
+     * @param  string  $username
+     * @return App\Apiaudiophonemodels
+     */
+    public function findForPassport($username)
+    {
+
+        return $this->where('apiaudiophoneusers_email', $username)->first();
+    }
+
+     /**
+     * Funcion para validar que el hash del password que le pasamos por el request sea el mismo
+     * que está almacenado en la base de datos.
+     *
+     * @param  string  $password
+     * @return bool
+     */
+    public function validateForPassportPasswordGrant($password)
+    {
+
+        return Hash::check($password, $this->apiaudiophoneusers_password);
+    }
 }

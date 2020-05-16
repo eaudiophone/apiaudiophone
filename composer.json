@@ -9,7 +9,8 @@
         "dusterio/lumen-passport": "^0.2.19",
         "flipbox/lumen-generator": "^6.0",
         "fruitcake/laravel-cors": "^1.0",
-        "laravel/lumen-framework": "^7.0"
+        "laravel/lumen-framework": "^7.0",
+        "nesbot/carbon": "^2.34"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.9.1",
