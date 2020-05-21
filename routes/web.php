@@ -1,6 +1,6 @@
 <?php
 
-use App\Apiaudiophonemodels\ApiAudiophoneUser;
+//use App\Apiaudiophonemodels\ApiAudiophoneUser;
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -26,8 +26,14 @@ $router->get('api/apiaudiophoneuser/show/{apiaudiophoneusers_id}', function($api
 	[/{paginationstart:[0-9]+}][/{paginationend:[0-9]+}]
 });
 
-*/
-	//parametros opcionales para el show
+
+
+$router->group(['middleware' => 'auth'], function () use ($router){
+		::::: INCLUIR DENTRO LAS RUTAS PARA USUARIOS AUTORIZADOS O AUTENTICADOS
+});*/
+
+//parametros opcionales para el show
+
 $router->post('api/apiaudiophoneuser/show', [
 
 	'as' => 'user.show',
@@ -63,6 +69,12 @@ $router->delete('api/apiaudiophoneuser/destroy/{apiaudiophoneusers_id:[0-9]+}', 
 	'as' => 'user.destroy',
 	'uses' => 'Apiaudiophonecontrollers\ApiAudiophoneUserController@destroyApiAudiophoneUser'
 ]);
+
+/*Ruta personalizada de la app para la obtencion de Tokens
+$router->post('api/oauth/token', [
+
+	'uses' => '\Dusterio\LumenPassport\Http\Controllers\AccessTokenController@issueToken'
+]);*/
 
 
 

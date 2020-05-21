@@ -41,7 +41,6 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         //::::::::  Inclusion de Rutas en Lumen, expiracion de token y refresh del mismo::::::::::::::: //
-
         LumenPassport::routes($this->app);
         LumenPassport::tokensExpireIn(Carbon::now('America/Caracas')->addMinutes(10));
         Passport::refreshTokensExpireIn(Carbon::now('America/Caracas')->addDays(30));

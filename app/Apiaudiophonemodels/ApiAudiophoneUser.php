@@ -8,7 +8,7 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-//use Laravel\Lumen\Auth\Authorizable;
+use Laravel\Lumen\Auth\Authorizable;
 use Illuminate\Support\Facades\Hash;
 
 class ApiAudiophoneUser extends Model implements AuthenticatableContract, AuthorizableContract

@@ -106,6 +106,7 @@ $app->configure('auth');
         ::::: CALL TO MIDDLEWARE AUTH :::::
     */
     'auth' => App\Http\Middleware\Authenticate::class,
+    'client.credentials' => Laravel\Passport\Http\Middleware\CheckClientCredentials::class,
   ]);
 
 /*
@@ -142,11 +143,6 @@ $app->register(Fruitcake\Cors\CorsServiceProvider::class);
 */
 $app->register(Laravel\Passport\PassportServiceProvider::class);
 $app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
-
-/*
-    ::::: REGISTRADOR DE RUTAS LUMEN PASSPORT PROVIDER :::::
-*/
-\Dusterio\LumenPassport\LumenPassport::routes($app, ['prefix' => 'v1/oauth']);
 
 /*
     ::::: PROVIDERS FLIPBOX LUMEN  :::::
