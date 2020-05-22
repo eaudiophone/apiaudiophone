@@ -30,15 +30,32 @@ $router->get('api/apiaudiophoneuser/show/{apiaudiophoneusers_id}', function($api
 
 $router->group(['middleware' => 'auth'], function () use ($router){
 		::::: INCLUIR DENTRO LAS RUTAS PARA USUARIOS AUTORIZADOS O AUTENTICADOS
+});
+ejemplo de utilizar middlewares en grupo de rutas
+$router->group(['middleware' => ['auth', 'client.credentials']], function () use ($router){
+
+	$router->post('api/apiaudiophoneuser/show', [
+
+		'as' => 'user.show',
+		'uses' => 'Apiaudiophonecontrollers\ApiAudiophoneUserController@showApiAudiophoneUser'
+	]);
 });*/
 
 //parametros opcionales para el show
-
 $router->post('api/apiaudiophoneuser/show', [
 
+	//'middleware' => 'client.credentials', //para probar la obtencion de recursos vía client crredentials y funciona
+	'middleware' => 'auth:api',
 	'as' => 'user.show',
 	'uses' => 'Apiaudiophonecontrollers\ApiAudiophoneUserController@showApiAudiophoneUser'
 ]);
+
+
+/*$router->post('api/apiaudiophoneuser/show', [
+
+	'as' => 'user.show',
+	'uses' => 'Apiaudiophonecontrollers\ApiAudiophoneUserController@showApiAudiophoneUser'
+]);*/
 
 $router->post('api/apiaudiophoneuser/store', [
 

@@ -106,6 +106,10 @@ $app->configure('auth');
         ::::: CALL TO MIDDLEWARE AUTH :::::
     */
     'auth' => App\Http\Middleware\Authenticate::class,
+
+    /*
+        ::::: CALL TO MIDDLEWARE CLIENT CREDENTIALS DE PASSPORT :::::
+    */
     'client.credentials' => Laravel\Passport\Http\Middleware\CheckClientCredentials::class,
   ]);
 
