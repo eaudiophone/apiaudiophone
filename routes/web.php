@@ -41,11 +41,20 @@ $router->group(['middleware' => ['auth', 'client.credentials']], function () use
 	]);
 });*/
 
+//Ruta personalizada de la app para la obtencion de Tokens
+$router->post('api/oauth/token', [
+
+	'middleware' => [ 'cors', 'auth:api'],
+	'as' => 'api.token',
+	'uses' => '\Dusterio\LumenPassport\Http\Controllers\AccessTokenController@issueToken'
+]);
+
+
 //parametros opcionales para el show
 $router->post('api/apiaudiophoneuser/show', [
 
 	//'middleware' => 'client.credentials', //para probar la obtencion de recursos vía client crredentials y funciona
-	'middleware' => 'auth:api',
+	'middleware' => [ 'cors', 'auth:api'],
 	'as' => 'user.show',
 	'uses' => 'Apiaudiophonecontrollers\ApiAudiophoneUserController@showApiAudiophoneUser'
 ]);
@@ -87,11 +96,6 @@ $router->delete('api/apiaudiophoneuser/destroy/{apiaudiophoneusers_id:[0-9]+}', 
 	'uses' => 'Apiaudiophonecontrollers\ApiAudiophoneUserController@destroyApiAudiophoneUser'
 ]);
 
-/*Ruta personalizada de la app para la obtencion de Tokens
-$router->post('api/oauth/token', [
-
-	'uses' => '\Dusterio\LumenPassport\Http\Controllers\AccessTokenController@issueToken'
-]);*/
 
 
 

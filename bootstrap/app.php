@@ -111,6 +111,12 @@ $app->configure('auth');
         ::::: CALL TO MIDDLEWARE CLIENT CREDENTIALS DE PASSPORT :::::
     */
     'client.credentials' => Laravel\Passport\Http\Middleware\CheckClientCredentials::class,
+
+    /*
+        ::::: CALL TO MIDDLEWARE CORS MIDDLEWARE PARA LOS HEADERS :::::
+    */
+    'cors' => App\Http\Middleware\ApiaudiophoneMiddlewares\CorsMiddleware::class,
+
   ]);
 
 /*
