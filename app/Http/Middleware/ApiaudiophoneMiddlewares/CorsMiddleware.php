@@ -21,6 +21,8 @@ class CorsMiddleware
         //métodos http provenientes del origin server
         ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS')
         //headers permitidos en la peticion CORS
-        ->header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type:application/json; charset=utf-8, X-Token-Auth, Authorization');
+        ->header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, X-Token-Auth, Authorization, Accept')
+        //header para especificar que lo que recibe y debe decodificar es un json
+        ->header('content-type: application/json; charset=utf-8');
     }
 }

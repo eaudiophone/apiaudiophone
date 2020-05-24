@@ -59,13 +59,6 @@ $router->post('api/apiaudiophoneuser/show', [
 	'uses' => 'Apiaudiophonecontrollers\ApiAudiophoneUserController@showApiAudiophoneUser'
 ]);
 
-
-/*$router->post('api/apiaudiophoneuser/show', [
-
-	'as' => 'user.show',
-	'uses' => 'Apiaudiophonecontrollers\ApiAudiophoneUserController@showApiAudiophoneUser'
-]);*/
-
 $router->post('api/apiaudiophoneuser/store', [
 
 	'as' => 'user.store',
@@ -96,6 +89,11 @@ $router->delete('api/apiaudiophoneuser/destroy/{apiaudiophoneusers_id:[0-9]+}', 
 	'uses' => 'Apiaudiophonecontrollers\ApiAudiophoneUserController@destroyApiAudiophoneUser'
 ]);
 
+/*$router->post('api/apiaudiophoneuser/show', [
+
+	'as' => 'user.show',
+	'uses' => 'Apiaudiophonecontrollers\ApiAudiophoneUserController@showApiAudiophoneUser'
+]);*/
 
 
 
