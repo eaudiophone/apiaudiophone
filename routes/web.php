@@ -33,18 +33,12 @@ $router->group(['middleware' => 'auth'], function () use ($router){
 });
 ejemplo de utilizar middlewares en grupo de rutas
 $router->group(['middleware' => ['auth', 'client.credentials']], function () use ($router){
-
-	$router->post('api/apiaudiophoneuser/show', [
-
-		'as' => 'user.show',
-		'uses' => 'Apiaudiophonecontrollers\ApiAudiophoneUserController@showApiAudiophoneUser'
-	]);
-});*/
+*/
 
 //Ruta personalizada de la app para la obtencion de Tokens
 $router->post('api/oauth/token', [
 
-	'middleware' => [ 'cors', 'auth:api'],
+	'middleware' => [ 'cors'],
 	'as' => 'api.token',
 	'uses' => '\Dusterio\LumenPassport\Http\Controllers\AccessTokenController@issueToken'
 ]);
@@ -53,7 +47,6 @@ $router->post('api/oauth/token', [
 //parametros opcionales para el show
 $router->post('api/apiaudiophoneuser/show', [
 
-	//'middleware' => 'client.credentials', //para probar la obtencion de recursos vía client crredentials y funciona
 	'middleware' => [ 'cors', 'auth:api'],
 	'as' => 'user.show',
 	'uses' => 'Apiaudiophonecontrollers\ApiAudiophoneUserController@showApiAudiophoneUser'
