@@ -54,7 +54,10 @@ class LoginAudiophoneUserController extends AccessTokenController
                     'ok' => true,
                     'status' => 200,
                     'message' => 'Bienvenido a Apiaudiophone',
-                    'apiaudiophoneuser' => $apiaudiophoneuser->apiaudiophoneusers_fullname,
+                    'apiaudiophoneusers_fullname' => $apiaudiophoneuser->apiaudiophoneusers_fullname,
+                    'apiaudiophoneusers_role' => $apiaudiophoneuser->apiaudiophoneusers_role,
+                    'apiaudiophoneusers_email' => $apiaudiophoneuser->apiaudiophoneusers_email,
+                    'apiaudiophoneusers_id' => $apiaudiophoneuser->apiaudiophoneusers_id,
                     'apiToken' => $tokenResponse
                 ]);
             }elseif($apiaudiophoneuser && Hash::check($password, $apiaudiophoneuser->apiaudiophoneusers_password) && $apiaudiophoneuser->apiaudiophoneusers_status == false && $grant_type == 'password'){
