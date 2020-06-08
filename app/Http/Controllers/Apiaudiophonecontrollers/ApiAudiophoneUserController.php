@@ -4,6 +4,13 @@ namespace App\Http\Controllers\Apiaudiophonecontrollers;
 
 use App\Apiaudiophonemodels\ApiAudiophoneUser;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+// ======= CLASES PARA PROBAR LA GENERACIÓN DE UNA URL ======= //
+//use Illuminate\Support\Facades\Http;
+//use Illuminate\Http\Client\Response;
+// ==============================================//
+use Dusterio\LumenPassport\Http\Controllers\AccessTokenController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -20,7 +27,7 @@ class ApiAudiophoneUserController extends Controller
      */
     public function showApiAudiophoneUser(Request $request)
     {
-    	// :::::: Validacion del request ::::::
+    	// :::::: Validacion de parametros del request ::::::
     	$this->validate($request, [
 
     		'start' => 'numeric',
@@ -252,7 +259,7 @@ class ApiAudiophoneUserController extends Controller
     }
 
     /**
-     * update ApiAudiophoneUser instance.
+     * inactive ApiAudiophoneUser instance.
      *
      * @param \Illuminate\Http\Request $request
      *@return \Illuminate\Http\Response
@@ -296,7 +303,7 @@ class ApiAudiophoneUserController extends Controller
     }
 
     /**
-     * update ApiAudiophoneUser instance.
+     * activate ApiAudiophoneUser instance.
      *
      * @param \Illuminate\Http\Request $request
      *@return \Illuminate\Http\Response
@@ -339,7 +346,7 @@ class ApiAudiophoneUserController extends Controller
     }
 
 	/**
-     * update ApiAudiophoneUser instance.
+     * destroy ApiAudiophoneUser instance.
      *
      * @param \Illuminate\Http\Request $request
      *@return \Illuminate\Http\Response
