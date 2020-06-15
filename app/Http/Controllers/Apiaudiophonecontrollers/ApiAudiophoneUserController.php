@@ -230,6 +230,8 @@ class ApiAudiophoneUserController extends Controller
             //cuando un usuario acutaliza su contraseña
         }elseif($parameterstotal  == 3 && ($request->apiaudiophoneusers_password)){
 
+
+
             //nos aseguramos de eliminar el rol para evitar actualizarlo en esta sección
             unset($apiaudiophoneuserdata['apiaudiophoneusers_role']);
 
@@ -247,7 +249,8 @@ class ApiAudiophoneUserController extends Controller
             $apiaudiophoneuserupdate->apiaudiophoneusers_email = $apiaudiophoneuserdata['apiaudiophoneusers_email'];
         }
 
-       $apiaudiophoneuserupdate->update($apiaudiophoneuserdata);
+        // no se necesita pasarle parametros ya que se modifican los atributos el objeto
+        $apiaudiophoneuserupdate->update();
 
     	return response()->json([
 
