@@ -18,7 +18,7 @@ class ApiAudiophoneUserSeeder extends Seeder
     	ApiAudiophoneUser::create([
     		'apiaudiophoneusers_fullname' => 'Alfonso Martinez',
         	'apiaudiophoneusers_email' => 'a@a.com',
-        	'apiaudiophoneusers_password' => app('hash')->make('123')
+        	'apiaudiophoneusers_password' => app('hash')->make('12345678')
     	]);
     }
 }

@@ -1,6 +1,5 @@
 <?php
 
-//use App\Apiaudiophonemodels\ApiAudiophoneUser;
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -10,48 +9,25 @@
 | It is a breeze. Simply tell Lumen the URIs it should respond to
 | and give it the Closure to call when that URI is requested.
 |
-
-
-$router->get('/', function () use ($router) {
-    return $router->app->version();
-});
-
-CREAR UN GRUPO DE RUTAS PARA CADA PERFIL DE USUARIO
-APLICAR REGEX A PARAMETROS
-
-*prueba obtención de usuario
-$router->get('api/apiaudiophoneuser/show/{apiaudiophoneusers_id}', function($apiaudiophoneusers_id){
-
-	return ApiAudiophoneUser::findOrFail($apiaudiophoneusers_id);
-	[/{paginationstart:[0-9]+}][/{paginationend:[0-9]+}]
-});
-
-
-
-$router->group(['middleware' => 'auth'], function () use ($router){
-		::::: INCLUIR DENTRO LAS RUTAS PARA USUARIOS AUTORIZADOS O AUTENTICADOS
-});
-ejemplo de utilizar middlewares en grupo de rutas
-$router->group(['middleware' => ['auth', 'client.credentials']], function () use ($router){
 */
 
 $router->post('api/login', [
 
-	'middleware' => [ 'cors'],
+	'middleware' => ['cors'],
 	'as' => 'login.apiaudiophoneuser',
 	'uses' => 'Apiaudiophonecontrollers\LoginAudiophoneUserController@loginApiaudiophoneUser'
 ]);
 
 $router->post('api/login/refresh', [
 
-	'middleware' => [ 'cors', 'client.credentials', 'auth:api'],
+	'middleware' => ['cors', 'client.credentials', 'auth:api'],
 	'as' => 'login.apiaudiophoneuser',
 	'uses' => 'Apiaudiophonecontrollers\LoginAudiophoneUserController@refreshTokenApiaudiophoneUser'
 ]);
 
 $router->post('api/logout', [
 
-	'middleware' => [ 'cors', 'client.credentials', 'auth:api'],
+	'middleware' => ['cors', 'client.credentials', 'auth:api'],
 	'as' => 'logout.apiaudiophoneuser',
 	'uses' => 'Apiaudiophonecontrollers\LoginAudiophoneUserController@logoutApiaudiophoneUser'
 ]);
@@ -59,53 +35,53 @@ $router->post('api/logout', [
 //parametros opcionales para el show
 $router->post('api/apiaudiophoneuser/show', [
 
-	'middleware' => [ 'cors', 'client.credentials', 'auth:api'],
+	'middleware' => ['cors', 'client.credentials', 'auth:api'],
 	'as' => 'user.show',
 	'uses' => 'Apiaudiophonecontrollers\ApiAudiophoneUserController@showApiAudiophoneUser'
 ]);
 
 $router->post('api/apiaudiophoneuser/store', [
 
-	'middleware' => [ 'cors'],
+	'middleware' => ['cors'],
 	'as' => 'user.store',
 	'uses' => 'Apiaudiophonecontrollers\ApiAudiophoneUserController@storeApiAudiophoneUser'
 ]);
 
 $router->put('api/apiaudiophoneuser/update/{apiaudiophoneusers_id:[0-9]+}', [
 
-	'middleware' => [ 'cors', 'client.credentials', 'auth:api'],
+	'middleware' => ['cors', 'client.credentials', 'auth:api'],
 	'as' => 'user.update',
 	'uses' => 'Apiaudiophonecontrollers\ApiAudiophoneUserController@updateApiAudiophoneUser'
 ]);
 
 $router->put('api/apiaudiophoneuser/inactivate/{apiaudiophoneusers_id:[0-9]+}', [
 
-	'middleware' => [ 'cors', 'client.credentials', 'auth:api'],
+	'middleware' => ['cors', 'client.credentials', 'auth:api'],
 	'as' => 'user.inactivate',
 	'uses' => 'Apiaudiophonecontrollers\ApiAudiophoneUserController@inactiveApiAudiophoneUser'
 ]);
 
 $router->put('api/apiaudiophoneuser/activate/{apiaudiophoneusers_id:[0-9]+}', [
 
-	'middleware' => [ 'cors', 'client.credentials', 'auth:api'],
+	'middleware' => ['cors', 'client.credentials', 'auth:api'],
 	'as' => 'user.activate',
 	'uses' => 'Apiaudiophonecontrollers\ApiAudiophoneUserController@activateApiAudiophoneUser'
 ]);
 
 $router->delete('api/apiaudiophoneuser/destroy/{apiaudiophoneusers_id:[0-9]+}', [
 
-	'middleware' => [ 'cors', 'client.credentials', 'auth:api'],
+	'middleware' => ['cors', 'client.credentials', 'auth:api'],
 	'as' => 'user.destroy',
 	'uses' => 'Apiaudiophonecontrollers\ApiAudiophoneUserController@destroyApiAudiophoneUser'
 ]);
 
-//Ruta personalizada de la app para la obtencion de Tokens
+/*Ruta personalizada de la app para la obtencion de Tokens
 $router->post('api/oauth/token', [
 
 	'middleware' => [ 'cors'],
 	'as' => 'api.token',
 	'uses' => '\Dusterio\LumenPassport\Http\Controllers\AccessTokenController@issueToken'
-]);
+]);*/
 
 
 

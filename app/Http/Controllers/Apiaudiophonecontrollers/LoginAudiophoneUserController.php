@@ -74,7 +74,7 @@ class LoginAudiophoneUserController extends AccessTokenController
                 return response()->json([
 
                     'ok' => true,
-                    'status' => 404,
+                    'status' => 401,
                     'message' => 'Credenciales Inválidas'
                 ]);
             }

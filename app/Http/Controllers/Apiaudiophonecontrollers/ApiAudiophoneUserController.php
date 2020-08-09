@@ -231,7 +231,6 @@ class ApiAudiophoneUserController extends Controller
         }elseif($parameterstotal  == 3 && ($request->apiaudiophoneusers_password)){
 
 
-
             //nos aseguramos de eliminar el rol para evitar actualizarlo en esta sección
             unset($apiaudiophoneuserdata['apiaudiophoneusers_role']);
 
@@ -284,7 +283,7 @@ class ApiAudiophoneUserController extends Controller
 
             $apiaudiophoneuserinactive->apiaudiophoneusers_status = $apiaudiophoneuserdata['apiaudiophoneusers_status'];
 
-            $apiaudiophoneuserinactive->update($apiaudiophoneuserdata);
+            $apiaudiophoneuserinactive->update();
 
             return response()->json([
 
@@ -327,7 +326,7 @@ class ApiAudiophoneUserController extends Controller
 
             $apiaudiophoneuseractivate->apiaudiophoneusers_status = $apiaudiophoneuserdata['apiaudiophoneusers_status'];
 
-            $apiaudiophoneuseractivate->update($apiaudiophoneuserdata);
+            $apiaudiophoneuseractivate->update();
 
             return response()->json([
 
