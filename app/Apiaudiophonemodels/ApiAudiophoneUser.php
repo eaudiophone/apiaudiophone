@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Lumen\Auth\Authorizable;
 use Illuminate\Support\Facades\Hash;
+use App\Apiaudiophonemodels\ApiAudiophoneTerm;
 
 class ApiAudiophoneUser extends Model implements AuthenticatableContract, AuthorizableContract
 {
@@ -18,7 +19,7 @@ class ApiAudiophoneUser extends Model implements AuthenticatableContract, Author
     /**
     * The attributes should be mutatedto dates
     *
-    *@var array
+    * @var array
     */
     protected $dates = [
         'deleted_at'
@@ -60,6 +61,19 @@ class ApiAudiophoneUser extends Model implements AuthenticatableContract, Author
 
         return $this->hasMany(ApiAudiophoneBudget::class);
     }*/
+
+    /**
+     *
+     * Relacion: un usuairo puede condicionar un termino de un servicio (primera fase)
+     * luego la relacion será: un usuario condiciona varios terminos de varios servicios.
+     * 
+     */
+
+    public function term()
+    {
+
+        return $this->hasOne(ApiAudiophoneTerm::class, 'id_apiaudiophoneusers');
+    }
 
     /**
      * Funcion para validar  que el username corresponda al campo apioaudiophoneusers_email

@@ -11,6 +11,12 @@
 |
 */
 
+/*
+	
+	RUTAS DEL MODELO USUARIOS - LOGIN
+
+*/
+
 $router->post('api/login', [
 
 	'middleware' => ['cors'],
@@ -75,13 +81,13 @@ $router->delete('api/apiaudiophoneuser/destroy/{apiaudiophoneusers_id:[0-9]+}', 
 	'uses' => 'Apiaudiophonecontrollers\ApiAudiophoneUserController@destroyApiAudiophoneUser'
 ]);
 
-/*Ruta personalizada de la app para la obtencion de Tokens
-$router->post('api/oauth/token', [
 
-	'middleware' => [ 'cors'],
-	'as' => 'api.token',
-	'uses' => '\Dusterio\LumenPassport\Http\Controllers\AccessTokenController@issueToken'
-]);*/
+
+/*
+	
+	RUTAS DEL MODELO DE TERMINO Y CONDICIONES
+
+*/
 
 
 

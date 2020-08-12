@@ -44,7 +44,7 @@ class ApiAudioPhoneUserTest extends TestCase
         $this->json('post', route('user.store'), [
             'apiaudiophoneusers_fullname' => 'Alfonso Martinez',
             'apiaudiophoneusers_email' => 'a@a.com',
-            'apiaudiophoneusers_password' => '123456'
+            'apiaudiophoneusers_password' => '12345678'
         ])->seeJson([
             'ok' => true
         ]);

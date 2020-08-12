@@ -12,6 +12,10 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
 
-        $this->call(ApiAudiophoneUserSeeder::class);
+        $this->call([
+
+        	ApiAudiophoneUserSeeder::class,
+        	ApiAudiophoneTermSeeder::class
+        ]);
     }
 }
