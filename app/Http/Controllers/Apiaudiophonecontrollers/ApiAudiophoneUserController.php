@@ -155,7 +155,7 @@ class ApiAudiophoneUserController extends Controller
     		return response()->json([
 
     			'ok' => true,
-    			'status' => 422,
+    			'status' => 400,
     			'bduserstotal' => $bduserstotal,
     			'apiaudiophoneusermessage' => 'Ha realizado una peticion incorrecta'
     		]);
@@ -254,7 +254,7 @@ class ApiAudiophoneUserController extends Controller
     	return response()->json([
 
     		'ok' => true,
-    		'status' => 200,
+    		'status' => 201,
             'apiaudiophoneusermessage' => 'Usuario Actualizado Exitosamente',
     		'apiaudiophoneuserupdate' => $apiaudiophoneuserupdate
     	]);
@@ -288,7 +288,7 @@ class ApiAudiophoneUserController extends Controller
             return response()->json([
 
                 'ok' => true,
-                'status' => 200,
+                'status' => 201,
                 'apiaudiophoneusermessage' => 'Usuario Inactivado Exitosamente',
                 'apiaudiophoneuserinactive' => $apiaudiophoneuserinactive
             ]);
@@ -297,7 +297,7 @@ class ApiAudiophoneUserController extends Controller
             return response()->json([
 
                 'ok' => true,
-                'status' => 200,
+                'status' => 422,
                 'apiaudiophoneusermessage' => 'No se ha Inactivado el Usuario',
                 'apiaudiophoneuserinactive' => $apiaudiophoneuserinactive
             ]);
@@ -331,7 +331,7 @@ class ApiAudiophoneUserController extends Controller
             return response()->json([
 
                 'ok' => true,
-                'status' => 200,
+                'status' => 201,
                 'apiaudiophoneusermessage' => 'Usuario Reactivado Exitosamente',
                 'apiaudiophoneuseractivate' => $apiaudiophoneuseractivate
             ]);
@@ -340,7 +340,7 @@ class ApiAudiophoneUserController extends Controller
             return response()->json([
 
                 'ok' => true,
-                'status' => 200,
+                'status' => 422,
                 'apiaudiophoneusermessage' => 'No se ha Reactivado el Usuario',
                 'apiaudiophoneuseractivate' => $apiaudiophoneuseractivate
             ]);

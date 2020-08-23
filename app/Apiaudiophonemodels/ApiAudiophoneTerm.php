@@ -3,7 +3,7 @@
 namespace App\Apiaudiophonemodels;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Apiaudiophonemodels\ApiAudiophoneUser
+use App\Apiaudiophonemodels\ApiAudiophoneUser;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ApiAudiophoneTerm extends Model
@@ -11,7 +11,7 @@ class ApiAudiophoneTerm extends Model
     
     use SoftDeletes;
 
-     /**
+   /**
     * The attributes should be mutatedto dates
     *
     * @var array

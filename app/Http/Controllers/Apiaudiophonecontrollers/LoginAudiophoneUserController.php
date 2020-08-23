@@ -65,7 +65,7 @@ class LoginAudiophoneUserController extends AccessTokenController
                 return response()->json([
 
                     'ok' => true,
-                    'status' => 403,
+                    'status' => 401,
                     'apiaudiophoneuser' => $apiaudiophoneuser->apiaudiophoneusers_fullname,
                     'message' => 'Usuario Inactivo'
                 ]);
@@ -74,7 +74,7 @@ class LoginAudiophoneUserController extends AccessTokenController
                 return response()->json([
 
                     'ok' => true,
-                    'status' => 401,
+                    'status' => 422,
                     'message' => 'Credenciales Inválidas'
                 ]);
             }
@@ -83,7 +83,7 @@ class LoginAudiophoneUserController extends AccessTokenController
             return response()->json([
 
                 'ok' => true,
-                'status' => 405,
+                'status' => 400,
                 'message' => 'Error en los parámetros del request'
             ]);
         }

@@ -16,7 +16,7 @@ class ApiAudiophoneTermSeeder extends Seeder
         ApiAudiophoneTerm::create([
 
         	//creamos tres registros falsos usando el factory
-        	factory(ApiAudiophoneTerm::class, 3)->create();
+        	factory(ApiAudiophoneTerm::class, 3)->create()
         ]);
     }
 }

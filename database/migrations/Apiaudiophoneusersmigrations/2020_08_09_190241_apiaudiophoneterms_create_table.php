@@ -37,6 +37,9 @@ class ApiaudiophonetermsCreateTable extends Migration
             //Relationships
             $table->foreign('id_apiaudiophoneusers')->references('apiaudiophoneusers_id')->on('apiaudiophoneusers');
         });
+
+        //desactivamos momentaneamente para pruebas iniciales.
+        Schema::disableForeignKeyConstraints();
     }
 
     /**

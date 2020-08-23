@@ -117,6 +117,12 @@ $app->configure('auth');
     */
     'cors' => App\Http\Middleware\ApiaudiophoneMiddlewares\CorsMiddleware::class,
 
+    /*
+        ::::: CALL TO MIDDLEWARE CLIENT CREDENTIALS PERSONALIZADO AUDIOPHONE :::::
+    */
+    'client.credentials.audiophone' => App\Http\Middleware\ApiaudiophoneMiddlewares\CheckClientCredentialsAudiophone::class,
+
+
   ]);
 
 /*
