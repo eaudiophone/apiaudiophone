@@ -28,7 +28,7 @@ class ApiaudiophonetermsCreateTable extends Migration
             $table->integer('apiaudiophoneterms_quantityeventsweekly')->required();
             $table->integer('apiaudiophoneterms_quantityeventsmonthly')->required();
             $table->string('apiaudiophoneterms_rankevents', 65)->required();
-            $table->string('apiaudiophoneterms_daysevents', 65)->default(null);
+            $table->string('apiaudiophoneterms_daysevents', 65)->nullable(true);
             $table->time('apiaudiophoneterms_begintime', 4)->required();
             $table->time('apiaudiophoneterms_finaltime', 4)->required();
             $table->timestamps();

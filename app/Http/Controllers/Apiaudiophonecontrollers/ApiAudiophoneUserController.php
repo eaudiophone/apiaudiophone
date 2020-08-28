@@ -356,9 +356,9 @@ class ApiAudiophoneUserController extends Controller
     public function destroyApiAudiophoneUser($apiaudiophoneusers_id)
     {
 
-       	$apiaudiophoneuserupdate = ApiAudiophoneUser::findOrFail($apiaudiophoneusers_id);
+       	$apiaudiophoneuserdestroy = ApiAudiophoneUser::findOrFail($apiaudiophoneusers_id);
 
-       	$apiaudiophoneuserupdate->delete();
+       	$apiaudiophoneuserdestroy->delete();
 
     	return response()->json([
 
