@@ -7,6 +7,7 @@ use App\Apiaudiophonemodels\ApiAudiophoneUser;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator; //realizar validacion con esta clase
 use Carbon\Carbon;
 
 class ApiAudioPhoneTermController extends Controller
@@ -89,6 +90,8 @@ class ApiAudioPhoneTermController extends Controller
         	'apiaudiophoneterms_begintime' => 'required|date_format:H:i',
         	'apiaudiophoneterms_finaltime' => 'required|date_format:H:i'
     	]);
+
+    	//:::: TAREA PARA MAÑANA HACER UNA VALIDACION MANUAL SOBRE LOS ELEMENTOS INTERNOS DE UN ARREGLO ::::://
 
     	
     	$apiaudiophonetermdata = $request->all();

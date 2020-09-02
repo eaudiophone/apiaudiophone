@@ -13,6 +13,7 @@ class ApiaudiophoneusersCreateTable extends Migration
      */
     public function up()
     {
+        
         Schema::create('apiaudiophoneusers', function (Blueprint $table) {
 
             //PrimarykeyColumn
@@ -21,6 +22,7 @@ class ApiaudiophoneusersCreateTable extends Migration
             /*ForeignKeysColumns
             $table->unsignedBigInteger('id_apiaudiophonemeetings');
             $table->unsignedBigInteger('id_apiaudiophonebudgets');
+            $table->unsignedBigInteger('id_apiaudiophoneterms');
             */
 
             //Columns

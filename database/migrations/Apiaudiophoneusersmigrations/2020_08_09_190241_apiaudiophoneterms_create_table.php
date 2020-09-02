@@ -13,7 +13,6 @@ class ApiaudiophonetermsCreateTable extends Migration
      */
     public function up()
     {
-        
 
         Schema::create('apiaudiophoneterms', function (Blueprint $table) {
 
@@ -22,7 +21,7 @@ class ApiaudiophonetermsCreateTable extends Migration
 
             //ForeignKeyColumns
             $table->unsignedBigInteger('id_apiaudiophoneusers');
-            //$table->foreignID('id_apiaudiophoneservices');
+            //$table->unsignedBigInteger('id_apiaudiophoneservices');
 
             //Columns
             $table->integer('apiaudiophoneterms_quantityeventsweekly')->required();
@@ -36,6 +35,7 @@ class ApiaudiophonetermsCreateTable extends Migration
 
             //Relationships
             $table->foreign('id_apiaudiophoneusers')->references('apiaudiophoneusers_id')->on('apiaudiophoneusers');
+            //$table->foreign('id_apiaudiophoneservices')->references('apiaudiophoneservices_id')->on('apiaudiophoneservices');
         });
 
         //desactivamos momentaneamente para pruebas iniciales.
