@@ -15,7 +15,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
 
         	ApiAudiophoneUserSeeder::class,
-        	ApiAudiophoneTermSeeder::class
+        	ApiAudiophoneTermSeeder::class,
+            ApiaudiophoneServiceSeeder::class
         ]);
     }
 }

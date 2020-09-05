@@ -42,22 +42,20 @@ class ApiAudiophoneTerm extends Model
     ];
 
 
-    public function apiaudiophoneuser()
+   /*public function apiaudiophoneuser()
     {
 
         //::::: INDICAMOS QUE UNA CONDICION O TERMINO DE SERVICIO ES CONFIGURADO POR UN UDUARIO ::::://
 
     	return $this->belongsTo(ApiAudiophoneUser::class, 'id_apiaudiophoneusers', 'apiaudiophoneusers_id');
-    }
+    }*/
 
+
+    //::::: INDICAMOS QUE UN TERMINO PERTENECE A UN SERVICIO ::::://
 
     public function apiaudiophoneservice()
     {
 
-        //::::: INDICAMOS QUE UN SERVICIO ES CONFIGURADO A TRAVES DE UN TERMINO ::::://
-
-        return $this->hasOne(ApiAudiophoneService::class, 'id_apiaudiophoneterms', 'apiaudiophoneterms_id');
+        return $this->belongsTo(ApiAudiophoneService::class, 'id_apiaudiophoneservices', 'apiaudiophoneservices_id');
     }
-
-
 }

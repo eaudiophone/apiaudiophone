@@ -2,11 +2,14 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\Model;
+use App\Apiaudiophonemodels\ApiAudiophoneService;
 use Faker\Generator as Faker;
+use Illuminate\Support\Str;
 
-$factory->define(Model::class, function (Faker $faker) {
+$factory->define(ApiAudiophoneService::class, function (Faker $faker) {
     return [
-        //
+        
+		'apiaudiophoneservices_name' => 'alquiler',
+		'apiaudiophoneservices_description' => 'alquiler profesional de equuipos de sonido'
     ];
 });

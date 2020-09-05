@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Apiaudiophonecontrollers;
 
 use App\Apiaudiophonemodels\ApiAudiophoneTerm;
 use App\Apiaudiophonemodels\ApiAudiophoneUser;
+use App\Apiaudiophonemodels\ApiAudiophoneService;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator; //realizar validacion con esta clase
 use Carbon\Carbon;
 
 class ApiAudioPhoneTermController extends Controller
@@ -20,13 +20,21 @@ class ApiAudioPhoneTermController extends Controller
 	 * @param $id_apiaudiophoneusers
 	 * @param \Illuminate\Http\Response 
     */
-    public function showApiAudiophoneTerm($id_apiaudiophoneusers = null)
+    public function showApiAudiophoneTerm(Request $request, $id_apiaudiophoneusers = null)
     {
+
+    	//::::: Validación del Request ::::://
+    	
+    	$this->validate($request, [
+
+        	'id_apiaudiophoneservices' => 'required|numeric'
+    	]);
+
+    	$servicio_data = $request->all();
 
 		//::::: BUSCAMOS USUARIO EN LA BD ::::://
 
 		$audiophoneuserterm = ApiAudiophoneUser::findOrFail($id_apiaudiophoneusers);
-
 
 		//::::: VALIDAMOS QUE EL USUARIO ESTÉ ACTIVO PARA HACER LA CONSULTA ::::://
 
@@ -48,14 +56,25 @@ class ApiAudioPhoneTermController extends Controller
 
 				$apiaudiophonetermshowdata = ApiAudiophoneTerm::all()->last();
 
-				//whereRaw('updated_at = (select MAX(updated_at) from apiaudiophoneterms)')->get();	    		
+				//::::: OBTENEMOS EL ID DEL SERVICIO DEL REQUEST::::://
+				
+				$servicio_nro = $servicio_data['id_apiaudiophoneservices'];
+
+				//::::: BUSCAMOS EL REGISTRO DEL TERM CON EL ID DEL SERVICIO  ::::://	
+
+    			$term_data = ApiAudiophoneTerm::where('id_apiaudiophoneservices', $servicio_nro)->first();
+	
+    			//::::: ACCESAMOS AL NOMBRE DEL SERVICIO POR MEDIO DE RELACIONES ELOQUENT DE ESTA FORMA ::::://
+
+    			$nombre_servicio = $term_data->apiaudiophoneservice->apiaudiophoneservices_name;    		
 
 				return response()->json([
 
 					'ok' => true, 
 					'status' => 200,
-					'apiaudiophoneterm_mesaage' => 'ultima configuración del evento', 
-					'apiaudiophonetermshowdata' => $apiaudiophonetermshowdata
+					'apiaudiophoneterm_mesaage' => 'ultima configuración del evento',
+					'apiaudiophoneservices_name' => $nombre_servicio, 
+					'apiaudiophonetermshowdata' => $apiaudiophonetermshowdata					
 				]);
 
 				break;
@@ -81,24 +100,31 @@ class ApiAudioPhoneTermController extends Controller
     {
 
     	//::::: Validación del Request ::::://
+    	
     	$this->validate($request, [
 
+    		'id_apiaudiophoneservices' => 'required|numeric',
         	'apiaudiophoneterms_quantityeventsweekly' => 'required|numeric',
         	'apiaudiophoneterms_quantityeventsmonthly' => 'required|numeric',
         	'apiaudiophoneterms_rankevents' => 'required|string|max:65',
         	'apiaudiophoneterms_daysevents' => 'array',
+        	'apiaudiophoneterms_daysevents.*' => 'alpha',
         	'apiaudiophoneterms_begintime' => 'required|date_format:H:i',
         	'apiaudiophoneterms_finaltime' => 'required|date_format:H:i'
     	]);
-
-    	//:::: TAREA PARA MAÑANA HACER UNA VALIDACION MANUAL SOBRE LOS ELEMENTOS INTERNOS DE UN ARREGLO ::::://
-
     	
     	$apiaudiophonetermdata = $request->all();
 
+    
+    	//:::: BUSCAMOS EL NOMBRE DEL SERVICIO PARA DEVOLVERLO AL FRONT :::://
+				 
+		$service_name = ApiAudiophoneService::findOrFail($request->input('id_apiaudiophoneservices'));
+
+    	
     	//::::: CONTAMOS LOS DIAS QUE TIENE EL ARREGLO DE DÍAS :::::://
 
     	$cantidad_dias = count($request->input('apiaudiophoneterms_daysevents'));
+    	
     	
     	//::::: OBTENEMOS EL ID DEL USUARIO QUE ACTUALIZARÁ EL TERM ::::::://
 
@@ -106,6 +132,7 @@ class ApiAudioPhoneTermController extends Controller
 
     	$user_status = $audiophoneuserterm->apiaudiophoneusers_status;
 
+    
     	//::::: VALIDAMOS QUE EL USUARIO EXISTA EN LA BD ::::://
 
     	if($user_status == true)
@@ -114,6 +141,7 @@ class ApiAudioPhoneTermController extends Controller
 			$apiaudiophonetermnew = new ApiAudiophoneTerm;
 
 			$apiaudiophonetermnew->id_apiaudiophoneusers = $id_apiaudiophoneusers;
+			$apiaudiophonetermnew->id_apiaudiophoneservices = $apiaudiophonetermdata['id_apiaudiophoneservices'];
 			$apiaudiophonetermnew->apiaudiophoneterms_quantityeventsweekly = $apiaudiophonetermdata['apiaudiophoneterms_quantityeventsweekly'];
 			$apiaudiophonetermnew->apiaudiophoneterms_quantityeventsmonthly = $apiaudiophonetermdata['apiaudiophoneterms_quantityeventsmonthly'];
 			$apiaudiophonetermnew->apiaudiophoneterms_rankevents = $apiaudiophonetermdata['apiaudiophoneterms_rankevents'];
@@ -170,7 +198,8 @@ class ApiAudioPhoneTermController extends Controller
 
 				'ok' => true, 
 				'status' => 201,
-				'apiaudiophoneterm_mesaage' => 'Dias de Servicio Cargados Exitosamente', 
+				'apiaudiophoneterm_mesaage' => 'Dias de Servicio Cargados Exitosamente',
+				'apiaudiophoneservices_name' => $service_name->apiaudiophoneservices_name, 
 				'apiaudiophonetermnew' => $apiaudiophonetermnew
 			]);
 		}else{
@@ -197,32 +226,46 @@ class ApiAudioPhoneTermController extends Controller
     {
 
     	//::::: Validación del Request ::::://
+    	
     	$this->validate($request, [
 
+    		'id_apiaudiophoneservices' => 'required|numeric',
     		'apiaudiophoneterms_id' => 'required|numeric',
         	'apiaudiophoneterms_quantityeventsweekly' => 'required|numeric',
         	'apiaudiophoneterms_quantityeventsmonthly' => 'required|numeric',
         	'apiaudiophoneterms_rankevents' => 'required|string|max:65',
         	'apiaudiophoneterms_daysevents' => 'array',
+        	'apiaudiophoneterms_daysevents.*' => 'alpha',
         	'apiaudiophoneterms_begintime' => 'required|date_format:H:i',
         	'apiaudiophoneterms_finaltime' => 'required|date_format:H:i'
     	]);
 
 
+    	
     	//::::: OBTENEMOS EL ID DEL TERM QUE SE ACTUALIZARA ::::://
 
     	$apiaudiophonetermdata = $request->all();
 
     	$id_term_request = $apiaudiophonetermdata['apiaudiophoneterms_id'];
 
+    	
+    	//::::: BUSCAMOS EL REGISTRO DEL TERM CON EL ID DEL SERVICIO DEL REQUEST::::://	
 
-    	//::::: OBTENEMOS EL ID DEL TERM ::::::://
+    	$term_data = ApiAudiophoneTerm::where('id_apiaudiophoneservices', $request->input('id_apiaudiophoneservices'))->first();
+	
+    	
+    	//::::: ACCESAMOS AL NOMBRE DEL SERVICIO POR MEDIO DE RELACIONES ELOQUENT DE ESTA FORMA ::::://
+
+    	$nombre_servicio = $term_data->apiaudiophoneservice->apiaudiophoneservices_name;
+
+    	
+    	//::::: OBTENEMOS EL ID DEL TERM DEL MODELO::::::://
 
     	$audiophonetermregister = ApiAudiophoneTerm::findOrFail($id_term_request);
 
     	$id_term_table = $audiophonetermregister->apiaudiophoneterms_id;
 
-
+    	
     	//::::: OBTENEMOS EL ID DEL USUARIO QUE ACTUALIZARÁ EL TERM ::::::://
 
     	$audiophoneuserterm = ApiAudiophoneUser::findOrFail($id_apiaudiophoneusers);
@@ -235,12 +278,13 @@ class ApiAudioPhoneTermController extends Controller
     	$cantidad_dias = count($request->input('apiaudiophoneterms_daysevents'));
     	
 
-    	//::::: VALIDAMOS QUE EL USUARIO ESTÉ ACTIVO Y QUE EL TERMINO A ACTUALIZAR SEA EL CORRECTO PARA PROCEDER A ACTUALIZAR ::::://
-
+    	//::::: VALIDAMOS QUE EL USUARIO ESTÉ ACTIVO Y QUE EL TERMINO A ACTUALIZAR SEA EL CORRECTO PARA PROCEDER ::::://
+	
     	if(($user_status == true) && ($id_term_request == $id_term_table))
     	{
 
     		$audiophonetermregister->id_apiaudiophoneusers = $id_apiaudiophoneusers;
+    		$audiophonetermregister->id_apiaudiophoneservices = $apiaudiophonetermdata['id_apiaudiophoneservices'];
     		$audiophonetermregister->apiaudiophoneterms_quantityeventsweekly = $apiaudiophonetermdata['apiaudiophoneterms_quantityeventsweekly'];
     		$audiophonetermregister->apiaudiophoneterms_quantityeventsmonthly = $apiaudiophonetermdata['apiaudiophoneterms_quantityeventsmonthly'];
     		$audiophonetermregister->apiaudiophoneterms_rankevents = $apiaudiophonetermdata['apiaudiophoneterms_rankevents'];
@@ -296,6 +340,7 @@ class ApiAudioPhoneTermController extends Controller
 	    		'ok' => true,
 	    		'status' => 201,
 	            'apiaudiophoneusermessage' => 'Condiciones del Evento Actualizadas Exitosamente',
+	            'apiaudiophoneservices_name' => $nombre_servicio,
 	    		'apiaudiophonetermupdate' => $audiophonetermregister
 	    	]);
 		}else{

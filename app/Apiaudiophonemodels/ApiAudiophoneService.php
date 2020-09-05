@@ -39,11 +39,11 @@ class ApiAudiophoneService extends Model
     ];
 
 
-    //::::: UN SERVICIO PETENECE A UN TERM ::::://
+    //::::: UN SERVICIO TIENE VARIOS TERMINOS ::::://
 
     public function apiaudiophoneterm()
     {
 
-    	return $this->belongsTo(ApiAudiophoneTerm::class, 'id_apiaudiophoneterms', 'apiaudiophoneterms_id');
+    	return $this->hasMany(ApiAudiophoneTerm::class, 'id_apiaudiophoneterms', 'apiaudiophoneterms_id');
     }
 }
