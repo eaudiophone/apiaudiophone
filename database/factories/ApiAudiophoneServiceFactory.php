@@ -10,6 +10,6 @@ $factory->define(ApiAudiophoneService::class, function (Faker $faker) {
     return [
         
 		'apiaudiophoneservices_name' => 'alquiler',
-		'apiaudiophoneservices_description' => 'alquiler profesional de equuipos de sonido'
+		'apiaudiophoneservices_description' => 'alquiler profesional de equipos de sonido'
     ];
 });

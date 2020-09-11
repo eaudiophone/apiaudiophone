@@ -15,5 +15,11 @@ class ApiAudiophoneServiceSeeder extends Seeder
     {
         
         factory(ApiAudiophoneService::class)->create();
+
+        ApiAudiophoneService::create([
+
+    		'apiaudiophoneservices_name' => 'grabacion',
+			'apiaudiophoneservices_description' => 'grabacion de piezas musicales'
+    	]);
     }
 }
