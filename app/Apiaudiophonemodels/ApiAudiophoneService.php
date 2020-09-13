@@ -44,6 +44,6 @@ class ApiAudiophoneService extends Model
     public function apiaudiophoneterm()
     {
 
-    	return $this->hasMany(ApiAudiophoneTerm::class, 'id_apiaudiophoneterms', 'apiaudiophoneterms_id');
+    	return $this->hasMany(ApiAudiophoneTerm::class, 'id_apiaudiophoneservices', 'apiaudiophoneservices_id');
     }
 }
