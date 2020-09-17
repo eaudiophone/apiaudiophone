@@ -54,11 +54,13 @@ class ApiAudioPhoneTermController extends Controller
 	    		break;
 	    	case true:
 
-				$apiaudiophonetermshowdata = ApiAudiophoneTerm::all()->last();
-
-				//::::: OBTENEMOS EL ID DEL SERVICIO DEL REQUEST::::://
+	    		//::::: OBTENEMOS EL ID DEL SERVICIO DEL REQUEST::::://
 				
 				$servicio_nro = $servicio_data['id_apiaudiophoneservices'];
+
+				//::::: OBTENEMOS EL ULTIMO REGISTRO DEL SERVICIO CONFIGURADO ::::://
+
+				$apiaudiophonetermshowdata = ApiAudiophoneTerm::where('id_apiaudiophoneservices', $servicio_nro)->get()->last();
 
 				//::::: BUSCAMOS EL REGISTRO DEL TERM CON EL ID DEL SERVICIO  ::::://	
 
@@ -240,7 +242,6 @@ class ApiAudioPhoneTermController extends Controller
         	'apiaudiophoneterms_finaltime' => 'required|date_format:H:i'
     	]);
 
-
     	
     	//::::: OBTENEMOS EL ID DEL TERM QUE SE ACTUALIZARA ::::://
 
@@ -266,7 +267,7 @@ class ApiAudioPhoneTermController extends Controller
     	$id_term_table = $audiophonetermregister->apiaudiophoneterms_id;
 
     	
-    	//::::: OBTENEMOS EL ID DEL USUARIO QUE ACTUALIZARÁ EL TERM ::::::://
+    	//::::: OBTENEMOS EL STATUS DEL USUARIO QUE ACTUALIZARÁ EL TERM ::::::://
 
     	$audiophoneuserterm = ApiAudiophoneUser::findOrFail($id_apiaudiophoneusers);
 
@@ -434,6 +435,7 @@ class ApiAudioPhoneTermController extends Controller
     }
 
 
-    //:::::::: PENDIENTE MANEJAR UNA TABLA DE LOGS DE ACCIONES DE USUARIOS PARA AUDITORIA DE SEGURIDAD :::::::::::/
+    //:::::::: PENDIENTE MANEJAR UNA TABLA DE LOGS DE ACCIONES DE USUARIOS PARA AUDITORIA DE SEGURIDAD ::::::::::://
     //:::::::: ENDPOINT UPDATE NO FUNCIONAL HAASTA UNA SIGUIENTE FASE PERO ESTA LISTO :::::::::::: //
+    //:::::::: EL CONTTROLADOR UPDATE FUE CREADO CON LA LOGICA DE SOLO TENER DOS TERMS E IR ACTUALIZANDO PERIODICAMENTE LOS MISMOS (endpoint sin ruta):::::::://
 }
