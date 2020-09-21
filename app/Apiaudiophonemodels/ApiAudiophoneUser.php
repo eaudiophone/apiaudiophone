@@ -76,6 +76,18 @@ class ApiAudiophoneUser extends Model implements AuthenticatableContract, Author
     }
 
     /**
+     * Relacion oauth_acces_token vs. apiaudiophonesusers uno a uno
+     *
+     * @param  string  $username
+     * @return Laravel\Passport\Token
+     */
+    public function oauth_acces_token()
+    {
+
+        return $this->hasOne('Laravel\Passport\Token', 'user_id', 'apiaudiophoneusers_id');
+    }
+
+    /**
      * Funcion para validar  que el username corresponda al campo apioaudiophoneusers_email
      * para el request del token.
      *

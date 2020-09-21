@@ -89,7 +89,6 @@ $router->delete('api/apiaudiophoneuser/destroy/{apiaudiophoneusers_id:[0-9]+}', 
 
 */
 
-
 $router->post('api/apiaudiophoneterm/show/{id_apiaudiophoneusers:[0-9]+}', [
 
 	'middleware' => ['cors', 'client.credentials', 'auth:api'],
@@ -107,7 +106,14 @@ $router->post('api/apiaudiophoneterm/store/{id_apiaudiophoneusers:[0-9]+}', [
 
 
 
-/*$router->put('api/apiaudiophoneterm/update/{id_apiaudiophoneusers:[0-9]+}', [
+/*$router->post('api/apiaudiophoneuser/token/show/{id_apiaudiophoneusers:[0-9]+}', [
+
+	'middleware' => ['cors', 'client.credentials', 'auth:api'],
+	'as' => 'token.user.show',
+	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhoneTermController@showExpireTimeToken'
+]);
+
+$router->put('api/apiaudiophoneterm/update/{id_apiaudiophoneusers:[0-9]+}', [
 
 	'middleware' => ['cors', 'client.credentials', 'auth:api'],
 	'as' => 'term.update',

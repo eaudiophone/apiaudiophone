@@ -4,6 +4,7 @@ namespace App\Apiaudiophonemodels;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Apiaudiophonemodels\ApiAudiophoneUser;
+use App\Apiaudiophonemodels\ApiAudiophoneService;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ApiAudiophoneTerm extends Model

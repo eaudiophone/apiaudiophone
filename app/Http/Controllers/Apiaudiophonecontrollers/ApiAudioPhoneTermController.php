@@ -7,6 +7,7 @@ use App\Apiaudiophonemodels\ApiAudiophoneUser;
 use App\Apiaudiophonemodels\ApiAudiophoneService;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -29,6 +30,27 @@ class ApiAudioPhoneTermController extends Controller
 
         	'id_apiaudiophoneservices' => 'required|numeric'
     	]);
+
+
+    	//$datos_del_usuario = Auth::user();
+
+    	//dd($datos_del_usuario->oauth_acces_token->expires_at);
+
+	    /*$datos_del_usuario_serializados = serialize($datos_del_usuario);
+
+
+	    $datos_del_usuario_no_serializados = (array) unserialize($datos_del_usuario_serializados);
+
+
+	    $arrayKey = array_keys($datos_del_usuario_no_serializados);
+
+	    dd($arrayKey);
+
+	    $prueba = $datos_del_usuario_no_serializados->original;
+
+	    dd($prueba);*/
+
+	    //dd($datos_del_usuario_no_serializados);
 
     	$servicio_data = $request->all();
 
@@ -62,7 +84,11 @@ class ApiAudioPhoneTermController extends Controller
 
 				$apiaudiophonetermshowdata = ApiAudiophoneTerm::where('id_apiaudiophoneservices', $servicio_nro)->get()->last();
 
-				//::::: BUSCAMOS EL REGISTRO DEL TERM CON EL ID DEL SERVICIO  ::::://	
+				//::::: TRANSFORMAMOS LOS DIAS DEL EVENTO EN UN ARREGLO ::::://
+
+				$days_events_array = $this->string_to_array($apiaudiophonetermshowdata->apiaudiophoneterms_daysevents);
+
+				 //::::: BUSCAMOS EL PRIMER REGISTRO DE TERMS QUE COINCIDA CON EL ID DEL SERVICIO DEL REQUEST, SOLO PARA OBTENER EL NOMBRE DEL SERVICIO EN LA INSTRUC 71 ::::://		
 
     			$term_data = ApiAudiophoneTerm::where('id_apiaudiophoneservices', $servicio_nro)->first();
 	
@@ -75,8 +101,10 @@ class ApiAudioPhoneTermController extends Controller
 					'ok' => true, 
 					'status' => 200,
 					'apiaudiophoneterm_mesaage' => 'ultima configuración del evento',
-					'apiaudiophoneservices_name' => $nombre_servicio, 
-					'apiaudiophonetermshowdata' => $apiaudiophonetermshowdata					
+					'apiaudiophoneservices_name' => $nombre_servicio,
+					'days_events_array' => $days_events_array, 
+					'apiaudiophonetermshowdata' => $apiaudiophonetermshowdata
+										
 				]);
 
 				break;
@@ -192,7 +220,10 @@ class ApiAudioPhoneTermController extends Controller
 				$apiaudiophonetermnew->apiaudiophoneterms_daysevents = null;
 			}
 
-			//dd($apiaudiophonetermnew->apiaudiophoneterms_daysevents);
+
+			//::::: TRANSFORMAMOS LOS DIAS DEL EVENTO EN UN ARREGLO ::::://
+
+			$days_events_array = $this->string_to_array($apiaudiophonetermnew->apiaudiophoneterms_daysevents);
 
 			$apiaudiophonetermnew->save();
 
@@ -201,7 +232,8 @@ class ApiAudioPhoneTermController extends Controller
 				'ok' => true, 
 				'status' => 201,
 				'apiaudiophoneterm_mesaage' => 'Dias de Servicio Cargados Exitosamente',
-				'apiaudiophoneservices_name' => $service_name->apiaudiophoneservices_name, 
+				'apiaudiophoneservices_name' => $service_name->apiaudiophoneservices_name,
+				'days_events_array' => $days_events_array,
 				'apiaudiophonetermnew' => $apiaudiophonetermnew
 			]);
 		}else{
@@ -250,7 +282,7 @@ class ApiAudioPhoneTermController extends Controller
     	$id_term_request = $apiaudiophonetermdata['apiaudiophoneterms_id'];
 
     	
-    	//::::: BUSCAMOS EL REGISTRO DEL TERM CON EL ID DEL SERVICIO DEL REQUEST::::://	
+    	//::::: BUSCAMOS EL PRIMER REGISTRO DE TERMS QUE COINCIDA CON EL ID DEL SERVICIO DEL REQUEST, SOLO PARA OBTENER EL NOMBRE DEL SERVICIO EN LA INSTRUC 260 ::::://	
 
     	$term_data = ApiAudiophoneTerm::where('id_apiaudiophoneservices', $request->input('id_apiaudiophoneservices'))->first();
 	
@@ -260,7 +292,7 @@ class ApiAudioPhoneTermController extends Controller
     	$nombre_servicio = $term_data->apiaudiophoneservice->apiaudiophoneservices_name;
 
     	
-    	//::::: OBTENEMOS EL ID DEL TERM DEL MODELO::::::://
+    	//::::: OBTENEMOS EL ID DEL TERM DEL MODELO A ACTUALIZAR ::::::://
 
     	$audiophonetermregister = ApiAudiophoneTerm::findOrFail($id_term_request);
 
@@ -334,6 +366,10 @@ class ApiAudioPhoneTermController extends Controller
 				$audiophonetermregister->apiaudiophoneterms_daysevents = null;
 			}
 
+			//::::: TRANSFORMAMOS LOS DIAS DEL EVENTO EN UN ARREGLO ::::://
+
+			$days_events_array = $this->string_to_array($audiophonetermregister->apiaudiophoneterms_daysevents);
+
 			$audiophonetermregister->update();
 
 	    	return response()->json([
@@ -342,6 +378,7 @@ class ApiAudioPhoneTermController extends Controller
 	    		'status' => 201,
 	            'apiaudiophoneusermessage' => 'Condiciones del Evento Actualizadas Exitosamente',
 	            'apiaudiophoneservices_name' => $nombre_servicio,
+	            'days_events_array' => $days_events_array,
 	    		'apiaudiophonetermupdate' => $audiophonetermregister
 	    	]);
 		}else{
@@ -419,14 +456,15 @@ class ApiAudioPhoneTermController extends Controller
     }
 
 
+    /* 
+     * utilizamos list para albergar el valor de la hora en la variable hour 
+     * y los minutos en la variable minutes y después sumamos los segundos habiendo hecho
+     * la conversion para obtener los egundos totales.
+     * esta funcion no será usada de momento por lo que se deja en caso de necesitarla
+    */
     public function huors_to_seconds($event_hour)
     {
-
-       /* utilizamos list para albergar el valor de la hora en la variable hour 
-    	* y los minutos en la variable minutes y después sumamos los segundos habiendo hecho
-    	* la conversion para obtener los egundos totales.
-    	* esta funcion no será usada de momento por lo que se deja en caso de necesitarla
-    	*/
+       
     	list($hour, $minutes) = explode(':', $event_hour);
 
     	$total_seconds = ($hour * 3600) + ($minutes * 60);
@@ -434,8 +472,17 @@ class ApiAudioPhoneTermController extends Controller
     	return $total_seconds;
     }
 
+    /*  
+     * Funcion que transforma los días de eventos en un arreglo
+    */
+
+    public function string_to_array($string_days_events){
+
+    	return explode(',', $string_days_events);
+
+    }
+
 
     //:::::::: PENDIENTE MANEJAR UNA TABLA DE LOGS DE ACCIONES DE USUARIOS PARA AUDITORIA DE SEGURIDAD ::::::::::://
-    //:::::::: ENDPOINT UPDATE NO FUNCIONAL HAASTA UNA SIGUIENTE FASE PERO ESTA LISTO :::::::::::: //
-    //:::::::: EL CONTTROLADOR UPDATE FUE CREADO CON LA LOGICA DE SOLO TENER DOS TERMS E IR ACTUALIZANDO PERIODICAMENTE LOS MISMOS (endpoint sin ruta):::::::://
+    //:::::::: ENDPOINT UPDATE NO FUNCIONAL HASTA UNA SIGUIENTE FASE PERO ESTA LISTO :::::::::::: //
 }
