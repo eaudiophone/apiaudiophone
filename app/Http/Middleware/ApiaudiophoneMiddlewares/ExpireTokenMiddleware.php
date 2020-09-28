@@ -3,7 +3,7 @@
 namespace App\Http\Middleware\ApiaudiophoneMiddlewares;
 
 use App\Apiaudiophonemodels\ApiAudiophoneUser;
-use Laravel\Passport\PersonalAccessTokenResult;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Closure;
 
@@ -18,12 +18,30 @@ class ExpireTokenMiddleware
      */
     public function handle($request, Closure $next)
     {
-        // Pre-Middleware Action
 
-        $response = $next($request);
+        $userData = Auth::user();
 
-        // Post-Middleware Action
+        dd($userData);
 
-        return $response;
+        $hora_actual = Carbon::now()->format('H:i:s');
+
+        $expires_at = $userData->oauth_acces_token->max('expires_at'); 
+
+        $array_hora_expiracion = explode(' ', $expires_at); 
+
+        $hora_expiracion = $array_hora_expiracion[1];
+
+
+        if($hora_actual > $hora_expiracion){            
+
+            return response()->json([
+
+                'error' => false,
+                'status' => 401,
+                'message' => 'token expired'
+            ], 401);            
+        }
+
+        return $next($request);
     }
 }

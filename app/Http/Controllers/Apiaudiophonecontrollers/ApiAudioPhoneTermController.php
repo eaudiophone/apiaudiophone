@@ -31,27 +31,6 @@ class ApiAudioPhoneTermController extends Controller
         	'id_apiaudiophoneservices' => 'required|numeric'
     	]);
 
-
-    	//$datos_del_usuario = Auth::user();
-
-    	//dd($datos_del_usuario->oauth_acces_token->expires_at);
-
-	    /*$datos_del_usuario_serializados = serialize($datos_del_usuario);
-
-
-	    $datos_del_usuario_no_serializados = (array) unserialize($datos_del_usuario_serializados);
-
-
-	    $arrayKey = array_keys($datos_del_usuario_no_serializados);
-
-	    dd($arrayKey);
-
-	    $prueba = $datos_del_usuario_no_serializados->original;
-
-	    dd($prueba);*/
-
-	    //dd($datos_del_usuario_no_serializados);
-
     	$servicio_data = $request->all();
 
 		//::::: BUSCAMOS USUARIO EN LA BD ::::://
@@ -71,7 +50,7 @@ class ApiAudioPhoneTermController extends Controller
 		            'apiaudiophoneusermessage' => 'Usuario No Autorizado, Inactivo',
 		    		'apiaudiophoneuser_status' => $audiophoneuserterm->apiaudiophoneusers_status, 
 		    		'apiaudiophoneusers_fullname' => $audiophoneuserterm->apiaudiophoneusers_fullname
-	    		]);
+	    		], 401);
 	    		
 	    		break;
 	    	case true:
@@ -88,7 +67,7 @@ class ApiAudioPhoneTermController extends Controller
 
 				$days_events_array = $this->string_to_array($apiaudiophonetermshowdata->apiaudiophoneterms_daysevents);
 
-				 //::::: BUSCAMOS EL PRIMER REGISTRO DE TERMS QUE COINCIDA CON EL ID DEL SERVICIO DEL REQUEST, SOLO PARA OBTENER EL NOMBRE DEL SERVICIO EN LA INSTRUC 71 ::::://		
+				 //::::: BUSCAMOS EL PRIMER REGISTRO DE TERMS QUE COINCIDA CON EL ID DEL SERVICIO DEL REQUEST, SOLO PARA OBTENER EL NOMBRE DEL SERVICIO EN LA INSTRUC 76 ::::://		
 
     			$term_data = ApiAudiophoneTerm::where('id_apiaudiophoneservices', $servicio_nro)->first();
 	
@@ -105,7 +84,7 @@ class ApiAudioPhoneTermController extends Controller
 					'days_events_array' => $days_events_array, 
 					'apiaudiophonetermshowdata' => $apiaudiophonetermshowdata
 										
-				]);
+				], 200);
 
 				break;
 			default:
@@ -115,7 +94,7 @@ class ApiAudioPhoneTermController extends Controller
 				'ok' => true, 
 				'status' => 400,
 				'apiaudiophoneterm_mesaage' => 'Se requiere el ID del usuario en el URI'
-			]);
+			], 400);
 		}
     }
 
@@ -235,7 +214,7 @@ class ApiAudioPhoneTermController extends Controller
 				'apiaudiophoneservices_name' => $service_name->apiaudiophoneservices_name,
 				'days_events_array' => $days_events_array,
 				'apiaudiophonetermnew' => $apiaudiophonetermnew
-			]);
+			], 201);
 		}else{
 
 			return response()->json([
@@ -245,7 +224,7 @@ class ApiAudioPhoneTermController extends Controller
 	            'apiaudiophoneusermessage' => 'Usuario No Autorizado, Inactivo',
 	    		'apiaudiophoneuser_status' => $audiophoneuserterm->apiaudiophoneusers_status, 
 	    		'apiaudiophoneusers_fullname' => $audiophoneuserterm->apiaudiophoneusers_fullname
-    		]);			
+    		], 401);			
 		}
    	}	
 
@@ -282,7 +261,7 @@ class ApiAudioPhoneTermController extends Controller
     	$id_term_request = $apiaudiophonetermdata['apiaudiophoneterms_id'];
 
     	
-    	//::::: BUSCAMOS EL PRIMER REGISTRO DE TERMS QUE COINCIDA CON EL ID DEL SERVICIO DEL REQUEST, SOLO PARA OBTENER EL NOMBRE DEL SERVICIO EN LA INSTRUC 260 ::::://	
+    	//::::: BUSCAMOS EL PRIMER REGISTRO DE TERMS QUE COINCIDA CON EL ID DEL SERVICIO DEL REQUEST, SOLO PARA OBTENER EL NOMBRE DEL SERVICIO EN LA INSTRUC 271 ::::://	
 
     	$term_data = ApiAudiophoneTerm::where('id_apiaudiophoneservices', $request->input('id_apiaudiophoneservices'))->first();
 	
@@ -380,7 +359,7 @@ class ApiAudioPhoneTermController extends Controller
 	            'apiaudiophoneservices_name' => $nombre_servicio,
 	            'days_events_array' => $days_events_array,
 	    		'apiaudiophonetermupdate' => $audiophonetermregister
-	    	]);
+	    	], 201);
 		}else{
 
 
@@ -391,7 +370,7 @@ class ApiAudioPhoneTermController extends Controller
 				'apiaudiophoneterm_mesaage' => 'Usuario no Autorizado, Inactivo', 
 				'apiaudiophoneuser_status' => $audiophoneuserterm->apiaudiophoneusers_status, 
 		    	'apiaudiophoneusers_fullname' => $audiophoneuserterm->apiaudiophoneusers_fullname
-			]);
+			], 401);
 		}		
     }
 
@@ -441,7 +420,7 @@ class ApiAudioPhoneTermController extends Controller
 		    		'status' => 200,
 		    		'apiaudiophonetermdelete' => 'Término Eliminado Satisfactoriamente, se activa ultima configuración del evento',
 		    		'termconfiguration_last' => $termconfiguration_last
-	    		]);
+	    		], 200);
     		break;
 
     		default:
@@ -451,25 +430,8 @@ class ApiAudioPhoneTermController extends Controller
 				'ok' => true, 
 				'status' => 400,
 				'apiaudiophoneterm_mesaage' => 'Se requiere el ID del usuario en el URI'
-			]);
+			], 400);
     	}    	
-    }
-
-
-    /* 
-     * utilizamos list para albergar el valor de la hora en la variable hour 
-     * y los minutos en la variable minutes y después sumamos los segundos habiendo hecho
-     * la conversion para obtener los egundos totales.
-     * esta funcion no será usada de momento por lo que se deja en caso de necesitarla
-    */
-    public function huors_to_seconds($event_hour)
-    {
-       
-    	list($hour, $minutes) = explode(':', $event_hour);
-
-    	$total_seconds = ($hour * 3600) + ($minutes * 60);
-
-    	return $total_seconds;
     }
 
     /*  

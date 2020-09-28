@@ -91,7 +91,7 @@ $router->delete('api/apiaudiophoneuser/destroy/{apiaudiophoneusers_id:[0-9]+}', 
 
 $router->post('api/apiaudiophoneterm/show/{id_apiaudiophoneusers:[0-9]+}', [
 
-	'middleware' => ['cors', 'client.credentials', 'auth:api'],
+	'middleware' => ['cors', 'client.credentials', 'auth:api'/*,'expire.token'*/],
 	'as' => 'term.show',
 	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhoneTermController@showApiAudiophoneTerm'
 ]);

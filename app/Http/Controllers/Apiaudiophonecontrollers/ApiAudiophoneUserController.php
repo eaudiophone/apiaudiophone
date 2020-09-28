@@ -6,10 +6,6 @@ use App\Apiaudiophonemodels\ApiAudiophoneUser;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-// ======= CLASES PARA PROBAR LA GENERACIÓN DE UNA URL ======= //
-//use Illuminate\Support\Facades\Http;
-//use Illuminate\Http\Client\Response;
-// ==============================================//
 use Dusterio\LumenPassport\Http\Controllers\AccessTokenController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -60,7 +56,7 @@ class ApiAudiophoneUserController extends Controller
                 'status' => 200,
                 'bduserstotal' => $bduserstotal,
                 'apiaudiophoneuserdata' => $apiaudiophoneuserdata
-                ]);
+                ], 200);
             }else{
 
                 //Contamos la cantidad de usuarios que se generan en la consulta por like para paginación en front
@@ -82,7 +78,7 @@ class ApiAudiophoneUserController extends Controller
                 'bduserstotal' => $bduserstotal,
                 'apiaudiophoneusercount' => $apiaudiophoneusercount,
                 'apiaudiophoneuserdata' => $apiaudiophoneuserdata
-                ]);
+                ], 200);
             }
     	// :::::: Cuando hay dos parametros en el request y existan usuarios en la base de datos
     	}elseif(($parameterstotal > 0 && $parameterstotal < 3) && $bduserstotal > 0){
@@ -116,7 +112,7 @@ class ApiAudiophoneUserController extends Controller
     			'status' => 200,
     			'bduserstotal' => $bduserstotal,
     			'apiaudiophoneuserdata' => $apiaudiophoneuserdata
-    		]);
+    		], 200);
 
     		// :::: Cuando no hay parametros de consulta y existen usuarios en la BD :::::
     	}elseif($parameterstotal == 0 && $bduserstotal > 0){
@@ -134,7 +130,7 @@ class ApiAudiophoneUserController extends Controller
     			'status' => 200,
     			'bduserstotal' => $bduserstotal,
     			'apiaudiophoneuserdata' => $apiaudiophoneuserdata
-    		]);
+    		], 200);
 
     		//Cuando hay parametros de consulta pero no hay usuarios en la base de datos
     	}elseif(($parameterstotal > 0 && $parameterstotal < 3) && $bduserstotal == 0){
@@ -146,7 +142,7 @@ class ApiAudiophoneUserController extends Controller
     			'status' => 404,
     			'bduserstotal' => $bduserstotal,
     			'apiaudiophoneusermessage' => 'No existen usuarios registrados en la base de datos'
-    		]);
+    		], 404);
 
     		//Cuando no hay parametros ni usuarios en la base de datos
     	}else{
@@ -158,7 +154,7 @@ class ApiAudiophoneUserController extends Controller
     			'status' => 400,
     			'bduserstotal' => $bduserstotal,
     			'apiaudiophoneusermessage' => 'Ha realizado una peticion incorrecta'
-    		]);
+    		], 400);
     	}
     }
 
@@ -194,7 +190,7 @@ class ApiAudiophoneUserController extends Controller
     		'status' => 201,
             'apiaudiophoneusermessage' => 'Usuario Creado Exitosamente',
     		'apiaudiophoneusernew' => $apiaudiophoneusernew
-    	]);
+    	], 201);
     }
 
     /**
@@ -257,7 +253,7 @@ class ApiAudiophoneUserController extends Controller
     		'status' => 201,
             'apiaudiophoneusermessage' => 'Usuario Actualizado Exitosamente',
     		'apiaudiophoneuserupdate' => $apiaudiophoneuserupdate
-    	]);
+    	], 201);
     }
 
     /**
@@ -291,7 +287,7 @@ class ApiAudiophoneUserController extends Controller
                 'status' => 201,
                 'apiaudiophoneusermessage' => 'Usuario Inactivado Exitosamente',
                 'apiaudiophoneuserinactive' => $apiaudiophoneuserinactive
-            ]);
+            ], 201);
         }else{
 
             return response()->json([
@@ -300,7 +296,7 @@ class ApiAudiophoneUserController extends Controller
                 'status' => 422,
                 'apiaudiophoneusermessage' => 'No se ha Inactivado el Usuario',
                 'apiaudiophoneuserinactive' => $apiaudiophoneuserinactive
-            ]);
+            ], 422);
         }
     }
 
@@ -334,7 +330,7 @@ class ApiAudiophoneUserController extends Controller
                 'status' => 201,
                 'apiaudiophoneusermessage' => 'Usuario Reactivado Exitosamente',
                 'apiaudiophoneuseractivate' => $apiaudiophoneuseractivate
-            ]);
+            ], 201);
         }else{
 
             return response()->json([
@@ -343,7 +339,7 @@ class ApiAudiophoneUserController extends Controller
                 'status' => 422,
                 'apiaudiophoneusermessage' => 'No se ha Reactivado el Usuario',
                 'apiaudiophoneuseractivate' => $apiaudiophoneuseractivate
-            ]);
+            ], 422);
         }
     }
 
@@ -365,7 +361,7 @@ class ApiAudiophoneUserController extends Controller
     		'ok' => true,
     		'status' => 200,
     		'apiaudiophoneuserdelete' => 'Usuario Eliminado Satisfactoriamente'
-    	]);
+    	], 200);
     }
 }
 

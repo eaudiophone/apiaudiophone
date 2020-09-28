@@ -116,6 +116,11 @@ $app->configure('auth');
         ::::: CALL TO MIDDLEWARE CORS MIDDLEWARE PARA LOS HEADERS :::::
     */
     'cors' => App\Http\Middleware\ApiaudiophoneMiddlewares\CorsMiddleware::class,
+
+    /*
+        ::::: CALL TO MIDDLEWARE EXPIRETOKENMIDDLEWARE PERSONALIZED :::::
+    */ 
+    'expire.token' => App\Http\Middleware\ApiaudiophoneMiddlewares\ExpireTokenMiddleware::class,
 ]);
 
 /*
