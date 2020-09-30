@@ -50,13 +50,8 @@ class ApiAudiophoneUserController extends Controller
                 ->orderBy('apiaudiophoneusers_id', 'desc')
                 ->get();
 
-               return response()->json([
-
-                'ok' => true,
-                'status' => 200,
-                'bduserstotal' => $bduserstotal,
-                'apiaudiophoneuserdata' => $apiaudiophoneuserdata
-                ], 200);
+               
+                return $this->successResponseApiaudiophoneUser(true, 200, $bduserstotal, $apiaudiophoneuserdata);
             }else{
 
                 //Contamos la cantidad de usuarios que se generan en la consulta por like para paginación en front
@@ -71,14 +66,8 @@ class ApiAudiophoneUserController extends Controller
                 ->orWhere('apiaudiophoneusers_email', 'like', '%'.$stringsearch.'%')
                 ->get();
 
-               return response()->json([
 
-                'ok' => true,
-                'status' => 200,
-                'bduserstotal' => $bduserstotal,
-                'apiaudiophoneusercount' => $apiaudiophoneusercount,
-                'apiaudiophoneuserdata' => $apiaudiophoneuserdata
-                ], 200);
+                return $this->successResponseApiaudiophoneUserCount(true, 200, $bduserstotal, $apiaudiophoneusercount, $apiaudiophoneuserdata);               
             }
     	// :::::: Cuando hay dos parametros en el request y existan usuarios en la base de datos
     	}elseif(($parameterstotal > 0 && $parameterstotal < 3) && $bduserstotal > 0){
@@ -106,13 +95,8 @@ class ApiAudiophoneUserController extends Controller
 	    	}
 
     		//Retornamos Json con la consulta realizada, total paginacion 3(version de prueba)
-    		return response()->json([
-
-    			'ok' => true,
-    			'status' => 200,
-    			'bduserstotal' => $bduserstotal,
-    			'apiaudiophoneuserdata' => $apiaudiophoneuserdata
-    		], 200);
+    		
+            return $this->successResponseApiaudiophoneUser(true, 200, $bduserstotal, $apiaudiophoneuserdata);
 
     		// :::: Cuando no hay parametros de consulta y existen usuarios en la BD :::::
     	}elseif($parameterstotal == 0 && $bduserstotal > 0){
@@ -124,37 +108,22 @@ class ApiAudiophoneUserController extends Controller
     		->get();
 
     		//Retornamos Json con la consulta realizada, total paginacion 5
-    		return response()->json([
-
-    			'ok' => true,
-    			'status' => 200,
-    			'bduserstotal' => $bduserstotal,
-    			'apiaudiophoneuserdata' => $apiaudiophoneuserdata
-    		], 200);
+    		
+            return $this->successResponseApiaudiophoneUser(true, 200, $bduserstotal, $apiaudiophoneuserdata);
 
     		//Cuando hay parametros de consulta pero no hay usuarios en la base de datos
     	}elseif(($parameterstotal > 0 && $parameterstotal < 3) && $bduserstotal == 0){
 
     		//Retornamos Json con mensaje de error
-    		return response()->json([
-
-    			'ok' => true,
-    			'status' => 404,
-    			'bduserstotal' => $bduserstotal,
-    			'apiaudiophoneusermessage' => 'No existen usuarios registrados en la base de datos'
-    		], 404);
+    	    
+            return $this->errorResponseApiaudiophoneUser(true, 404, $bduserstotal, 'No existen usuarios registrados en la base de datos');
 
     		//Cuando no hay parametros ni usuarios en la base de datos
     	}else{
 
     		//Retornamos Json con mensaje de error
-    		return response()->json([
-
-    			'ok' => true,
-    			'status' => 400,
-    			'bduserstotal' => $bduserstotal,
-    			'apiaudiophoneusermessage' => 'Ha realizado una peticion incorrecta'
-    		], 400);
+    		
+            return $this->errorResponseApiaudiophoneUser(true, 400, $bduserstotal, 'Ha realizado una peticion incorrecta');  
     	}
     }
 
@@ -182,15 +151,9 @@ class ApiAudiophoneUserController extends Controller
         $apiaudiophoneusernew->apiaudiophoneusers_email = $apiaudiophoneuserdata['apiaudiophoneusers_email'];
         $apiaudiophoneusernew->apiaudiophoneusers_password = app('hash')->make($apiaudiophoneuserdata['apiaudiophoneusers_password']);
 
-       $apiaudiophoneusernew->save();
+        $apiaudiophoneusernew->save();
 
-    	return response()->json([
-
-    		'ok' => true,
-    		'status' => 201,
-            'apiaudiophoneusermessage' => 'Usuario Creado Exitosamente',
-    		'apiaudiophoneusernew' => $apiaudiophoneusernew
-    	], 201);
+        return $this->successResponseApiaudiophoneUserStore(true, 201, 'Usuario Creado Exitosamente', $apiaudiophoneusernew);
     }
 
     /**
@@ -247,13 +210,7 @@ class ApiAudiophoneUserController extends Controller
         // no se necesita pasarle parametros ya que se modifican los atributos el objeto
         $apiaudiophoneuserupdate->update();
 
-    	return response()->json([
-
-    		'ok' => true,
-    		'status' => 201,
-            'apiaudiophoneusermessage' => 'Usuario Actualizado Exitosamente',
-    		'apiaudiophoneuserupdate' => $apiaudiophoneuserupdate
-    	], 201);
+    	return $this->successResponseApiaudiophoneUserStore(true, 201, 'Usuario Actualizado Exitosamente', $apiaudiophoneuserupdate);
     }
 
     /**
@@ -280,23 +237,13 @@ class ApiAudiophoneUserController extends Controller
             $apiaudiophoneuserinactive->apiaudiophoneusers_status = $apiaudiophoneuserdata['apiaudiophoneusers_status'];
 
             $apiaudiophoneuserinactive->update();
+            
 
-            return response()->json([
-
-                'ok' => true,
-                'status' => 201,
-                'apiaudiophoneusermessage' => 'Usuario Inactivado Exitosamente',
-                'apiaudiophoneuserinactive' => $apiaudiophoneuserinactive
-            ], 201);
+            return $this->successResponseApiaudiophoneUserStore(true, 201, 'Usuario Inactivado Exitosamente', $apiaudiophoneuserinactive);
         }else{
 
-            return response()->json([
-
-                'ok' => true,
-                'status' => 422,
-                'apiaudiophoneusermessage' => 'No se ha Inactivado el Usuario',
-                'apiaudiophoneuserinactive' => $apiaudiophoneuserinactive
-            ], 422);
+            
+            return $this->errorResponseApiaudiophoneUserUpdate(true, 422, 'No se ha Inactivado el Usuario', $apiaudiophoneuserinactive);
         }
     }
 
@@ -324,22 +271,11 @@ class ApiAudiophoneUserController extends Controller
 
             $apiaudiophoneuseractivate->update();
 
-            return response()->json([
-
-                'ok' => true,
-                'status' => 201,
-                'apiaudiophoneusermessage' => 'Usuario Reactivado Exitosamente',
-                'apiaudiophoneuseractivate' => $apiaudiophoneuseractivate
-            ], 201);
+            
+            return $this->successResponseApiaudiophoneUserStore(true, 201, 'Usuario Reactivado Exitosamente', $apiaudiophoneuseractivate);
         }else{
 
-            return response()->json([
-
-                'ok' => true,
-                'status' => 422,
-                'apiaudiophoneusermessage' => 'No se ha Reactivado el Usuario',
-                'apiaudiophoneuseractivate' => $apiaudiophoneuseractivate
-            ], 422);
+            return $this->errorResponseApiaudiophoneUserUpdate(true, 422, 'No se ha Reactivado el Usuario', $apiaudiophoneuserinactive);
         }
     }
 
@@ -356,12 +292,7 @@ class ApiAudiophoneUserController extends Controller
 
        	$apiaudiophoneuserdestroy->delete();
 
-    	return response()->json([
-
-    		'ok' => true,
-    		'status' => 200,
-    		'apiaudiophoneuserdelete' => 'Usuario Eliminado Satisfactoriamente'
-    	], 200);
+    	return $this->errorResponseApiaudiophoneUserDestroy(true, 200, 'Usuario Eliminado Satisfactoriamente');
     }
 }
 

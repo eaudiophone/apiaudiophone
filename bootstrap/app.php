@@ -118,9 +118,9 @@ $app->configure('auth');
     'cors' => App\Http\Middleware\ApiaudiophoneMiddlewares\CorsMiddleware::class,
 
     /*
-        ::::: CALL TO MIDDLEWARE EXPIRETOKENMIDDLEWARE PERSONALIZED :::::
+        ::::: CALL TO MIDDLEWARE EXPIRETOKENMIDDLEWARE PERSONALIZED (prototipo no usar) :::::
     */ 
-    'expire.token' => App\Http\Middleware\ApiaudiophoneMiddlewares\ExpireTokenMiddleware::class,
+    //'expire.token' => App\Http\Middleware\ApiaudiophoneMiddlewares\ExpireTokenMiddleware::class,
 ]);
 
 /*

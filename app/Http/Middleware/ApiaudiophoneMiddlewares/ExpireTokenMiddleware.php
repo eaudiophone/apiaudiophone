@@ -21,8 +21,6 @@ class ExpireTokenMiddleware
 
         $userData = Auth::user();
 
-        dd($userData);
-
         $hora_actual = Carbon::now()->format('H:i:s');
 
         $expires_at = $userData->oauth_acces_token->max('expires_at'); 

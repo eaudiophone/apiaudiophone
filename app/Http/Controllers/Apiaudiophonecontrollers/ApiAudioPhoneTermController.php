@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Apiaudiophonecontrollers;
 
+use App\Traits\ApiResponserTrait;
 use App\Apiaudiophonemodels\ApiAudiophoneTerm;
 use App\Apiaudiophonemodels\ApiAudiophoneUser;
 use App\Apiaudiophonemodels\ApiAudiophoneService;
@@ -13,7 +14,8 @@ use Carbon\Carbon;
 
 class ApiAudioPhoneTermController extends Controller
 {
-	
+	use ApiResponserTrait;
+
 	/**
 	 *
 	 * show ApiaudiophoneTerm instance.
@@ -43,14 +45,7 @@ class ApiAudioPhoneTermController extends Controller
 
 			case false:
 
-				return response()->json([
-
-		    		'ok' => true,
-		    		'status' => 401,
-		            'apiaudiophoneusermessage' => 'Usuario No Autorizado, Inactivo',
-		    		'apiaudiophoneuser_status' => $audiophoneuserterm->apiaudiophoneusers_status, 
-		    		'apiaudiophoneusers_fullname' => $audiophoneuserterm->apiaudiophoneusers_fullname
-	    		], 401);
+				return $this->errorResponseApiaudiophoneTermShow(true, 401, 'Usuario No Autorizado, Inactivo', $audiophoneuserterm->apiaudiophoneusers_status, $audiophoneuserterm->apiaudiophoneusers_fullname);
 	    		
 	    		break;
 	    	case true:
@@ -67,7 +62,7 @@ class ApiAudioPhoneTermController extends Controller
 
 				$days_events_array = $this->string_to_array($apiaudiophonetermshowdata->apiaudiophoneterms_daysevents);
 
-				 //::::: BUSCAMOS EL PRIMER REGISTRO DE TERMS QUE COINCIDA CON EL ID DEL SERVICIO DEL REQUEST, SOLO PARA OBTENER EL NOMBRE DEL SERVICIO EN LA INSTRUC 76 ::::://		
+				 //::::: BUSCAMOS EL PRIMER REGISTRO DE TERMS QUE COINCIDA CON EL ID DEL SERVICIO DEL REQUEST, SOLO PARA OBTENER EL NOMBRE DEL SERVICIO EN LA INSTRUC 78 ::::://		
 
     			$term_data = ApiAudiophoneTerm::where('id_apiaudiophoneservices', $servicio_nro)->first();
 	
@@ -75,26 +70,14 @@ class ApiAudioPhoneTermController extends Controller
 
     			$nombre_servicio = $term_data->apiaudiophoneservice->apiaudiophoneservices_name;    		
 
-				return response()->json([
-
-					'ok' => true, 
-					'status' => 200,
-					'apiaudiophoneterm_mesaage' => 'ultima configuración del evento',
-					'apiaudiophoneservices_name' => $nombre_servicio,
-					'days_events_array' => $days_events_array, 
-					'apiaudiophonetermshowdata' => $apiaudiophonetermshowdata
-										
-				], 200);
+				
+    			return $this->successResponseApiaudiophoneTerm(true, 200, 'ultima configuración del evento', $nombre_servicio, $days_events_array, $apiaudiophonetermshowdata);
 
 				break;
 			default:
-			
-			return response()->json([
 
-				'ok' => true, 
-				'status' => 400,
-				'apiaudiophoneterm_mesaage' => 'Se requiere el ID del usuario en el URI'
-			], 400);
+
+			return $this->errorResponseApiaudiophoneTerm(true, 400, 'Se requiere el ID del usuario en el URI');
 		}
     }
 
@@ -206,25 +189,12 @@ class ApiAudioPhoneTermController extends Controller
 
 			$apiaudiophonetermnew->save();
 
-			return response()->json([
 
-				'ok' => true, 
-				'status' => 201,
-				'apiaudiophoneterm_mesaage' => 'Dias de Servicio Cargados Exitosamente',
-				'apiaudiophoneservices_name' => $service_name->apiaudiophoneservices_name,
-				'days_events_array' => $days_events_array,
-				'apiaudiophonetermnew' => $apiaudiophonetermnew
-			], 201);
+			return $this->successResponseApiaudiophoneTerm(true, 201, 'Dias de Servicio Cargados Exitosamente', $service_name->apiaudiophoneservices_name, $days_events_array, $apiaudiophonetermnew);			
 		}else{
 
-			return response()->json([
 
-	    		'ok' => true,
-	    		'status' => 401,
-	            'apiaudiophoneusermessage' => 'Usuario No Autorizado, Inactivo',
-	    		'apiaudiophoneuser_status' => $audiophoneuserterm->apiaudiophoneusers_status, 
-	    		'apiaudiophoneusers_fullname' => $audiophoneuserterm->apiaudiophoneusers_fullname
-    		], 401);			
+			return $this->errorResponseApiaudiophoneTermShow(true, 401, 'Usuario No Autorizado, Inactivo', $user_status, $audiophoneuserterm->apiaudiophoneusers_fullname);			
 		}
    	}	
 
@@ -351,26 +321,12 @@ class ApiAudioPhoneTermController extends Controller
 
 			$audiophonetermregister->update();
 
-	    	return response()->json([
 
-	    		'ok' => true,
-	    		'status' => 201,
-	            'apiaudiophoneusermessage' => 'Condiciones del Evento Actualizadas Exitosamente',
-	            'apiaudiophoneservices_name' => $nombre_servicio,
-	            'days_events_array' => $days_events_array,
-	    		'apiaudiophonetermupdate' => $audiophonetermregister
-	    	], 201);
+			return $this->successResponseApiaudiophoneTerm(true, 201, 'Condiciones del Evento Actualizadas Exitosamente', $nombre_servicio, $days_events_array, $audiophonetermregister);
 		}else{
 
 
-			return response()->json([
-
-				'ok' => true, 
-				'status' => 401,
-				'apiaudiophoneterm_mesaage' => 'Usuario no Autorizado, Inactivo', 
-				'apiaudiophoneuser_status' => $audiophoneuserterm->apiaudiophoneusers_status, 
-		    	'apiaudiophoneusers_fullname' => $audiophoneuserterm->apiaudiophoneusers_fullname
-			], 401);
+			return $this->errorResponseApiaudiophoneTermShow(true, 401, 'Usuario No Autorizado, Inactivo', $user_status, $audiophoneuserterm->apiaudiophoneusers_fullname);
 		}		
     }
 
@@ -394,12 +350,8 @@ class ApiAudioPhoneTermController extends Controller
 
     		case false:
 
-    			return response()->json([
 
-		    		'ok' => true,
-		    		'status' => 401,
-		    		'audiophonetermdelete' => 'No se pudo eliminar el registro, Usuario Inactivo'
-	    		]);
+    			return $this->errorResponseApiaudiophoneTermDestroy(true, 401, 'No se pudo eliminar el registro, Usuario Inactivo');
     		break;
 
     		case true:
@@ -414,23 +366,13 @@ class ApiAudioPhoneTermController extends Controller
 
     			$termconfiguration_last = ApiAudiophoneTerm::all()->last();
 
-    			return response()->json([
-
-		    		'ok' => true,
-		    		'status' => 200,
-		    		'apiaudiophonetermdelete' => 'Término Eliminado Satisfactoriamente, se activa ultima configuración del evento',
-		    		'termconfiguration_last' => $termconfiguration_last
-	    		], 200);
+    			
+    			return $this->successResponseApiaudiophoneTermDestroy(true, 200, 'Término Eliminado Satisfactoriamente, se activa ultima configuración del evento', $termconfiguration_last);
     		break;
 
     		default:
 
-    		return response()->json([
-
-				'ok' => true, 
-				'status' => 400,
-				'apiaudiophoneterm_mesaage' => 'Se requiere el ID del usuario en el URI'
-			], 400);
+    		return $this->errorResponseApiaudiophoneTermDestroy(true, 400, 'Se requiere el ID del usuario en el URI');
     	}    	
     }
 
