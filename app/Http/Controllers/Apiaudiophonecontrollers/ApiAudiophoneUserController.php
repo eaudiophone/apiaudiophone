@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Apiaudiophonecontrollers;
 
+use App\Traits\ApiResponserTrait;
 use App\Apiaudiophonemodels\ApiAudiophoneUser;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -14,6 +15,7 @@ use Carbon\Carbon;
 
 class ApiAudiophoneUserController extends Controller
 {
+    use ApiResponserTrait;
 
 	/**
      *  show ApiAudiophoneUser instance.
