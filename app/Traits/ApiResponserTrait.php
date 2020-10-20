@@ -81,7 +81,7 @@ trait ApiResponserTrait
 
       'ok' => $ok, 
       'status' => $code,
-      'apiaudiophoneterm_mesaage' => $apiaudiophoneterm_mesaage,
+      'apiaudiophoneterm_message' => $apiaudiophoneterm_mesaage,
       'apiaudiophoneservices_name' => $apiaudiophoneservices_name,
       'days_events_array' => $days_events_array, 
       'apiaudiophonetermshowdata' => $apiaudiophonetermshowdata                
@@ -103,6 +103,77 @@ trait ApiResponserTrait
       'termconfiguration_last' => $termconfiguration_last
     ], $code);
   }
+
+
+  /*
+ * Responser de afirmacciones estándar para ApiaudiophonEvent
+ *
+ */
+  public function successResponseApiaudiophonEventShow($ok = true, $code,  $apiaudiophoneventdata)
+  {
+  
+    return response()->json([
+
+      'ok' => $ok,
+      'status' => $code,
+      'apiaudiophoneventdata' => $apiaudiophoneventdata
+    ], $code);
+  }
+
+  /*
+ * Responser de afirmacion apiaudiophonevent
+ *
+ */
+  public function successResponseApiaudiophonEventStore($ok = null, $code, $apiaudiophoneventmessage, $apiaudiophoneservicename, $apiaudiophoneventnew)
+  {
+  
+    return response()->json([
+
+        'ok' => $ok,
+        'status' => $code,
+        'apiaudiophoneventmessage' => $apiaudiophoneventmessage,
+        'apiaudiophoneservicename' => $apiaudiophoneservicename,
+        'apiaudiophoneventnew' => $apiaudiophoneventnew
+      ], $code);
+  }
+
+
+  /*
+ * Responser de afirmacion apiaudiophonevent
+ *
+ */
+  public function successResponseApiaudiophonEventUpdate($ok = null, $code, $apiaudiophoneventmessage, $apiaudiophoneservicename, $apiaudiophoneventupdate)
+  {
+  
+    return response()->json([
+
+        'ok' => $ok,
+        'status' => $code,
+        'apiaudiophoneventmessage' => $apiaudiophoneventmessage,
+        'apiaudiophoneservicename' => $apiaudiophoneservicename,
+        'apiaudiophoneventupdate' => $apiaudiophoneventupdate
+      ], $code);
+  }
+
+ /*
+ * Responser de afirmacion para devolver los id de los terms basados en el id del servicio, hasta ahoara solo dos servicios.
+ *
+ */
+  public function successResponseApiaudiophonEventCreate($ok = null, $code, $apiaudiophoneventmessage, $apiaudiophonetermiduno, $nombre_servicio_uno, $apiaudiophonetermid_dos, $nombre_servicio_dos)
+  {
+  
+    return response()->json([
+
+        'ok' => $ok,
+        'status' => $code,
+        'apiaudiophoneventmessage' => $apiaudiophoneventmessage,
+        'apiaudiophoneterm_id_uno' => $apiaudiophonetermiduno,
+        'nombre_servicio_term_uno' => $nombre_servicio_uno,
+        'apiaudiophoneterm_id_dos' => $apiaudiophonetermid_dos,
+        'nombre_servicio_term_dos' => $nombre_servicio_dos
+      ], $code);
+  }
+
 
   /*
  * Responser de Errores para Credenciales Vencidas
@@ -209,6 +280,21 @@ trait ApiResponserTrait
       'ok' => $ok, 
       'status' => $code,
       'apiaudiophoneterm_mesaage' => $apiaudiophoneterm_mesaage
+    ], $code);
+  }
+
+  /*
+ * Responser de afirmacion estándar para ApiaudiophoneTermDestroy
+ *
+ */
+  public function errorResponseApiaudiophonEventDestroy($ok = null, $code, $apiaudiophonevent_mesaage)
+  {
+  
+    return response()->json([
+
+      'ok' => $ok, 
+      'status' => $code,
+      'apiaudiophonevent_mesaage' => $apiaudiophonevent_mesaage
     ], $code);
   }
 

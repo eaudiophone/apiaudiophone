@@ -16,7 +16,8 @@ class DatabaseSeeder extends Seeder
 
         	ApiAudiophoneUserSeeder::class,
         	ApiAudiophoneTermSeeder::class,
-            ApiaudiophoneServiceSeeder::class
+            ApiaudiophoneServiceSeeder::class,
+            ApiAudiophonEventSeeder::class
         ]);
     }
 }

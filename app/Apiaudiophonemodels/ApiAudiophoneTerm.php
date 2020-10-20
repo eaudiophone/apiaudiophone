@@ -5,6 +5,7 @@ namespace App\Apiaudiophonemodels;
 use Illuminate\Database\Eloquent\Model;
 use App\Apiaudiophonemodels\ApiAudiophoneUser;
 use App\Apiaudiophonemodels\ApiAudiophoneService;
+use App\Apiaudiophonemodels\ApiAudiophonEvent;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ApiAudiophoneTerm extends Model
@@ -58,5 +59,13 @@ class ApiAudiophoneTerm extends Model
     {
 
         return $this->belongsTo(ApiAudiophoneService::class, 'id_apiaudiophoneservices', 'apiaudiophoneservices_id');
+    }
+
+    //::::: INDICAMOS QUE UN TERMINO RIGE A VARIOS EVENTOS ::::://
+
+    public function apiaudiophonevent()
+    {
+
+        return $this->hasMany(ApiAudiophonEvent::class, 'id_apiaudiophoneterms', 'apiaudiophoneterms_id');
     }
 }

@@ -19,23 +19,12 @@ class ApiaudiophoneservicesCreateTable extends Migration
             //PrimaryKeyColumn
             $table->bigIncrements('apiaudiophoneservices_id');
 
-            //ForeignKeyColumns
-            //$table->unsignedBigInteger('id_apiaudiophoneusers');
-            //$table->unsignedBigInteger('id_apiaudiophoneterms');
-
             //Columns
             $table->string('apiaudiophoneservices_name', 65)->nullable(true);
             $table->string('apiaudiophoneservices_description', 65)->nullable(true);
             $table->timestamps();
             $table->softDeletes();
-
-            //Relationships
-            //$table->foreign('id_apiaudiophoneterms')->references('apiaudiophoneterms_id')->on('apiaudiophoneterms');
-            //$table->foreign('id_apiaudiophoneusers')->references('apiaudiophoneusers_id')->on('apiaudiophoneusers');
         });
-
-        //desactivamos momentaneamente para pruebas iniciales.
-        //Schema::disableForeignKeyConstraints();
     }
 
     /**

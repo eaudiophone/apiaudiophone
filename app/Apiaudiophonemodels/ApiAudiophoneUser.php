@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Lumen\Auth\Authorizable;
 use Illuminate\Support\Facades\Hash;
 use App\Apiaudiophonemodels\ApiAudiophoneTerm;
+use App\Apiaudiophonemodels\ApiAudiophoneService;
+use App\Apiaudiophonemodels\ApiAudiophonEvent;
 
 class ApiAudiophoneUser extends Model implements AuthenticatableContract, AuthorizableContract
 {
@@ -50,33 +52,31 @@ class ApiAudiophoneUser extends Model implements AuthenticatableContract, Author
         'apiaudiophoneusers_password'
     ];
 
-    /*Relationships
-
-    public function apiaudiophonemeeting(){
-
-        return $this->hasMany(ApiAudiophoneMeeting::class);
-    }
-
-    public function apiaudiophonebudget(){
-
-        return $this->hasMany(ApiAudiophoneBudget::class);
-    }*/
-
+    
     /**
-     *
-     * Relacion: un usuairo puede condicionar un termino de un servicio (primera fase)
-     * luego la relacion será: un usuario condiciona varios terminos de varios servicios.
-     * 
-     */
-
-    public function term()
+    * Relacion user vs. event uno a muchos
+    *
+    * @return App\Apiaudiophonemodels\ApiAudiophoneTerm
+    */
+    public function apiaudiophoneterm()
     {
 
-        return $this->hasOne(ApiAudiophoneTerm::class, 'id_apiaudiophoneusers');
+        return $this->hasMany(ApiAudiophoneTerm::class, 'id_apiaudiophoneusers', 'apiaudiophoneusers_id');
     }
 
     /**
-     * Relacion oauth_acces_token vs. apiaudiophonesusers uno a uno
+     * Relacion user vs. event uno a muchos
+     *
+     * @return App\Apiaudiophonemodels\ApiAudiophonEvent 
+     */
+    public function apiaudiophonevent(){
+
+        return $this->hasMany(ApiAudiophonEvent::class, 'id_apiaudiophoneusers', 'apiaudiophoneusers_id');
+    }
+
+    /**
+     * Relacion oauth_acces_token vs. apiaudiophonesusers uno a uno, AHORITA ESTA RELACION NO SE USA porq era para meterlo en un middleware
+     * de validación de token, en su lugar se personalizo la clase Habdling de las excepciones.
      *
      * @return Laravel\Passport\Token
      */

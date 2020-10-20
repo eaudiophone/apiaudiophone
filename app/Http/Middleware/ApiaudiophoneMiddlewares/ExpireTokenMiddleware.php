@@ -34,7 +34,7 @@ class ExpireTokenMiddleware
 
             return response()->json([
 
-                'error' => false,
+                'error' => true,
                 'status' => 401,
                 'message' => 'token expired'
             ], 401);            

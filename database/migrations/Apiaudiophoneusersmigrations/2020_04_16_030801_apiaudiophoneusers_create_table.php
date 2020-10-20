@@ -19,12 +19,6 @@ class ApiaudiophoneusersCreateTable extends Migration
             //PrimarykeyColumn
             $table->bigIncrements('apiaudiophoneusers_id');
 
-            /*ForeignKeysColumns
-            $table->unsignedBigInteger('id_apiaudiophonemeetings');
-            $table->unsignedBigInteger('id_apiaudiophonebudgets');
-            $table->unsignedBigInteger('id_apiaudiophoneterms');
-            */
-
             //Columns
             $table->string('apiaudiophoneusers_fullname', 60)->required();
             $table->string('apiaudiophoneusers_email', 60)->unique()->required();
@@ -33,16 +27,7 @@ class ApiaudiophoneusersCreateTable extends Migration
             $table->boolean('apiaudiophoneusers_status')->default(true);
             $table->timestamps();
             $table->softDeletes();
-
-            /*Relationships
-            $table->foreign('id_apiaudiophonemeetings')->references('apiaudiophonemeetings_id')->on('apiaudiophonemeetings')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('id_apiaudiophonebudgets');->references('apiaudiophonebudgets_id')->on('apiaudiophonebudgets')->onDelete('cascade')->onUpdate('cascade');
-            */
         });
-
-        /* Desactivar llaves foráneas
-        Schema::disableForeignKeyConstraints();
-        */
     }
 
     /**

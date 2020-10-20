@@ -8,7 +8,6 @@ use App\Apiaudiophonemodels\ApiAudiophoneUser;
 use App\Apiaudiophonemodels\ApiAudiophoneService;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -35,50 +34,59 @@ class ApiAudioPhoneTermController extends Controller
 
     	$servicio_data = $request->all();
 
-		//::::: BUSCAMOS USUARIO EN LA BD ::::://
+        //::::: VALIDAMOS SI EXISTEN O NO REGISTROS EN LA TABLA TERMS PARA CONTROLAR EL FLUJO DEL PROCESO ::::: //
 
-		$audiophoneuserterm = ApiAudiophoneUser::findOrFail($id_apiaudiophoneusers);
+        $bdtermstotal = ApiAudiophoneTerm::count();
 
-		//::::: VALIDAMOS QUE EL USUARIO ESTÉ ACTIVO PARA HACER LA CONSULTA ::::://
+        if($bdtermstotal > 0){
 
-		switch($audiophoneuserterm->apiaudiophoneusers_status){
+            //::::: BUSCAMOS USUARIO EN LA BD ::::://
 
-			case false:
+            $audiophoneuserterm = ApiAudiophoneUser::findOrFail($id_apiaudiophoneusers);
 
-				return $this->errorResponseApiaudiophoneTermShow(true, 401, 'Usuario No Autorizado, Inactivo', $audiophoneuserterm->apiaudiophoneusers_status, $audiophoneuserterm->apiaudiophoneusers_fullname);
-	    		
-	    		break;
-	    	case true:
+            //::::: VALIDAMOS QUE EL USUARIO ESTÉ ACTIVO PARA HACER LA CONSULTA ::::://
 
-	    		//::::: OBTENEMOS EL ID DEL SERVICIO DEL REQUEST::::://
-				
-				$servicio_nro = $servicio_data['id_apiaudiophoneservices'];
+            switch($audiophoneuserterm->apiaudiophoneusers_status){
 
-				//::::: OBTENEMOS EL ULTIMO REGISTRO DEL SERVICIO CONFIGURADO ::::://
+                case false:
 
-				$apiaudiophonetermshowdata = ApiAudiophoneTerm::where('id_apiaudiophoneservices', $servicio_nro)->get()->last();
+                    return $this->errorResponseApiaudiophoneTermShow(true, 401, 'Usuario No Autorizado, Inactivo', $audiophoneuserterm->apiaudiophoneusers_status, $audiophoneuserterm->apiaudiophoneusers_fullname);
+                    
+                    break;
+                case true:
 
-				//::::: TRANSFORMAMOS LOS DIAS DEL EVENTO EN UN ARREGLO ::::://
+                    //::::: OBTENEMOS EL ID DEL SERVICIO DEL REQUEST::::://
+                    
+                    $servicio_nro = $servicio_data['id_apiaudiophoneservices'];
 
-				$days_events_array = $this->string_to_array($apiaudiophonetermshowdata->apiaudiophoneterms_daysevents);
+                    //::::: OBTENEMOS EL ULTIMO REGISTRO DEL SERVICIO CONFIGURADO ::::://
 
-				 //::::: BUSCAMOS EL PRIMER REGISTRO DE TERMS QUE COINCIDA CON EL ID DEL SERVICIO DEL REQUEST, SOLO PARA OBTENER EL NOMBRE DEL SERVICIO EN LA INSTRUC 78 ::::://		
+                    $apiaudiophonetermshowdata = ApiAudiophoneTerm::where('id_apiaudiophoneservices', $servicio_nro)->get()->last();
 
-    			$term_data = ApiAudiophoneTerm::where('id_apiaudiophoneservices', $servicio_nro)->first();
-	
-    			//::::: ACCESAMOS AL NOMBRE DEL SERVICIO POR MEDIO DE RELACIONES ELOQUENT DE ESTA FORMA ::::://
+                    //::::: TRANSFORMAMOS LOS DIAS DEL EVENTO EN UN ARREGLO ::::://
 
-    			$nombre_servicio = $term_data->apiaudiophoneservice->apiaudiophoneservices_name;    		
+                    $days_events_array = $this->string_to_array($apiaudiophonetermshowdata->apiaudiophoneterms_daysevents);
 
-				
-    			return $this->successResponseApiaudiophoneTerm(true, 200, 'ultima configuración del evento', $nombre_servicio, $days_events_array, $apiaudiophonetermshowdata);
+                     //::::: BUSCAMOS EL PRIMER REGISTRO DE TERMS QUE COINCIDA CON EL ID DEL SERVICIO DEL REQUEST, SOLO PARA OBTENER EL NOMBRE DEL SERVICIO EN LA INSTRUC 78 ::::://        
 
-				break;
-			default:
+                    $term_data = ApiAudiophoneTerm::where('id_apiaudiophoneservices', $servicio_nro)->first();
+        
+                    //::::: ACCESAMOS AL NOMBRE DEL SERVICIO POR MEDIO DE RELACIONES ELOQUENT DE ESTA FORMA ::::://
 
+                    $nombre_servicio = $term_data->apiaudiophoneservice->apiaudiophoneservices_name;            
 
-			return $this->errorResponseApiaudiophoneTerm(true, 400, 'Se requiere el ID del usuario en el URI');
-		}
+                    
+                    return $this->successResponseApiaudiophoneTerm(true, 200, 'ultima configuración del evento', $nombre_servicio, $days_events_array, $apiaudiophonetermshowdata);
+
+                    break;
+                default:
+
+                return $this->errorResponseApiaudiophoneTerm(true, 400, 'Se requiere el ID del usuario en el URI');
+            }
+        }else{
+
+            return $this->errorResponse('No existen Terminos o Condiciones creados', 404);
+        }
     }
 
     /**
@@ -106,7 +114,6 @@ class ApiAudioPhoneTermController extends Controller
     	]);
     	
     	$apiaudiophonetermdata = $request->all();
-
     
     	//:::: BUSCAMOS EL NOMBRE DEL SERVICIO PARA DEVOLVERLO AL FRONT :::://
 				 
@@ -134,11 +141,22 @@ class ApiAudioPhoneTermController extends Controller
 
 			$apiaudiophonetermnew->id_apiaudiophoneusers = $id_apiaudiophoneusers;
 			$apiaudiophonetermnew->id_apiaudiophoneservices = $apiaudiophonetermdata['id_apiaudiophoneservices'];
-			$apiaudiophonetermnew->apiaudiophoneterms_quantityeventsweekly = $apiaudiophonetermdata['apiaudiophoneterms_quantityeventsweekly'];
-			$apiaudiophonetermnew->apiaudiophoneterms_quantityeventsmonthly = $apiaudiophonetermdata['apiaudiophoneterms_quantityeventsmonthly'];
 			$apiaudiophonetermnew->apiaudiophoneterms_rankevents = $apiaudiophonetermdata['apiaudiophoneterms_rankevents'];
 			$apiaudiophonetermnew->apiaudiophoneterms_begintime = $apiaudiophonetermdata['apiaudiophoneterms_begintime'];
 			$apiaudiophonetermnew->apiaudiophoneterms_finaltime = $apiaudiophonetermdata['apiaudiophoneterms_finaltime'];
+
+            //:::: VALIDACION DIAS SEMANALES DEBEN SER MEORES O IGUALES A LOS MENSUALES ::::://
+
+            if($apiaudiophonetermdata['apiaudiophoneterms_quantityeventsweekly'] > $apiaudiophonetermdata['apiaudiophoneterms_quantityeventsmonthly']){
+
+                return $this->errorResponse('Los eventos semanales superan a los permitidos en el mes', 400);
+            }else{
+
+    			$apiaudiophonetermnew->apiaudiophoneterms_quantityeventsweekly = $apiaudiophonetermdata['apiaudiophoneterms_quantityeventsweekly'];
+    			
+                $apiaudiophonetermnew->apiaudiophoneterms_quantityeventsmonthly = $apiaudiophonetermdata['apiaudiophoneterms_quantityeventsmonthly'];
+            }
+
 
 			switch($cantidad_dias){
 
@@ -267,11 +285,22 @@ class ApiAudioPhoneTermController extends Controller
 
     		$audiophonetermregister->id_apiaudiophoneusers = $id_apiaudiophoneusers;
     		$audiophonetermregister->id_apiaudiophoneservices = $apiaudiophonetermdata['id_apiaudiophoneservices'];
-    		$audiophonetermregister->apiaudiophoneterms_quantityeventsweekly = $apiaudiophonetermdata['apiaudiophoneterms_quantityeventsweekly'];
-    		$audiophonetermregister->apiaudiophoneterms_quantityeventsmonthly = $apiaudiophonetermdata['apiaudiophoneterms_quantityeventsmonthly'];
-    		$audiophonetermregister->apiaudiophoneterms_rankevents = $apiaudiophonetermdata['apiaudiophoneterms_rankevents'];
+            $audiophonetermregister->apiaudiophoneterms_rankevents = $apiaudiophonetermdata['apiaudiophoneterms_rankevents'];
     		$audiophonetermregister->apiaudiophoneterms_begintime = $apiaudiophonetermdata['apiaudiophoneterms_begintime'];
     		$audiophonetermregister->apiaudiophoneterms_finaltime = $apiaudiophonetermdata['apiaudiophoneterms_finaltime'];
+
+            
+            //:::: VALIDACION DIAS SEMANALES DEBEN SER MEORES O IGUALES A LOS MENSUALES ::::://
+
+            if($apiaudiophonetermdata['apiaudiophoneterms_quantityeventsweekly'] > $apiaudiophonetermdata['apiaudiophoneterms_quantityeventsmonthly']){
+
+                return $this->errorResponse('Los eventos semanales superan a los permitidos en el mes', 400);
+            }else{
+
+                $apiaudiophonetermnew->apiaudiophoneterms_quantityeventsweekly = $apiaudiophonetermdata['apiaudiophoneterms_quantityeventsweekly'];
+                
+                $apiaudiophonetermnew->apiaudiophoneterms_quantityeventsmonthly = $apiaudiophonetermdata['apiaudiophoneterms_quantityeventsmonthly'];
+            }
 
     		switch($cantidad_dias){
 
