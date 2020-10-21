@@ -63,20 +63,31 @@ class ApiAudioPhoneTermController extends Controller
 
                     $apiaudiophonetermshowdata = ApiAudiophoneTerm::where('id_apiaudiophoneservices', $servicio_nro)->get()->last();
 
-                    //::::: TRANSFORMAMOS LOS DIAS DEL EVENTO EN UN ARREGLO ::::://
-
-                    $days_events_array = $this->string_to_array($apiaudiophonetermshowdata->apiaudiophoneterms_daysevents);
-
-                     //::::: BUSCAMOS EL PRIMER REGISTRO DE TERMS QUE COINCIDA CON EL ID DEL SERVICIO DEL REQUEST, SOLO PARA OBTENER EL NOMBRE DEL SERVICIO EN LA INSTRUC 78 ::::://        
-
-                    $term_data = ApiAudiophoneTerm::where('id_apiaudiophoneservices', $servicio_nro)->first();
-        
-                    //::::: ACCESAMOS AL NOMBRE DEL SERVICIO POR MEDIO DE RELACIONES ELOQUENT DE ESTA FORMA ::::://
-
-                    $nombre_servicio = $term_data->apiaudiophoneservice->apiaudiophoneservices_name;            
-
                     
-                    return $this->successResponseApiaudiophoneTerm(true, 200, 'ultima configuración del evento', $nombre_servicio, $days_events_array, $apiaudiophonetermshowdata);
+                    //::::: EJECUTAMOS LA VALIDACCION PARA CUANDO SE DESEA CONSULTAR UN TERMINO DE UN SERCICIO NO CREADO ::::://
+
+                    if($apiaudiophonetermshowdata != null){
+
+                        
+                        //::::: TRANSFORMAMOS LOS DIAS DEL EVENTO EN UN ARREGLO ::::://
+
+                        $days_events_array = $this->string_to_array($apiaudiophonetermshowdata->apiaudiophoneterms_daysevents);
+                        
+
+                        //::::: BUSCAMOS EL PRIMER REGISTRO DE TERMS QUE COINCIDA CON EL ID DEL SERVICIO DEL REQUEST, SOLO PARA OBTENER EL NOMBRE DEL SERVICIO EN LA INSTRUC 78 ::::://        
+
+                        $term_data = ApiAudiophoneTerm::where('id_apiaudiophoneservices', $servicio_nro)->first();
+                        
+                        //::::: ACCESAMOS AL NOMBRE DEL SERVICIO POR MEDIO DE RELACIONES ELOQUENT DE ESTA FORMA ::::://
+
+                        $nombre_servicio = $term_data->apiaudiophoneservice->apiaudiophoneservices_name;            
+
+                        
+                        return $this->successResponseApiaudiophoneTerm(true, 200, 'ultima configuración del evento', $nombre_servicio, $days_events_array, $apiaudiophonetermshowdata);
+                    }else{
+
+                        return $this->errorResponse('Debe crear el termino o condicion para el servicio restante', 404);
+                    }       
 
                     break;
                 default:
