@@ -23,18 +23,51 @@ class ApiAudioPhonEventController extends Controller
      * @param  \App\Apiaudiophonemodels\ApiAudiophonEvent  $apiAudiophonEvent
      * @return \Illuminate\Http\Response
      */
-    public function showApiAudiophonEvent(Request $request, $id_apiaudiophoneusers = null)
+    public function showApiAudiophonEvent($id_apiaudiophoneusers = null)
     {
 
-        //::::: METODO PARA DEVOLVER LOS EVENTOS REALIZADOS POR EL USUARIO, DEVUELVE LOS ULTIMOS 5 EVENTOS CREADOS POR EL USUARIO :::::// 
-
+    	//::::: IDENTIFICAMOS SI EXISTEN O NO EVENTOS CREADOS EN LA TABLA :::::://
+        
         $bdevent_total = ApiAudiophonEvent::count();
 
         if($bdevent_total > 0){
-        	
-        	$event_by_user = ApiAudiophonEvent::where('id_apiaudiophoneusers', $id_apiaudiophoneusers)->latest()->take(5)->get();
+    	
+	    	//::::: OBTENEMOS EL TIPO DE USUARIO: ADMIN_ROLE Ó USER_ROLE PARA DEVOLVER LOS EVENTOS ::::://
 
-        	return $this->successResponseApiaudiophonEventShow(true, 200,  $event_by_user);
+	        $user = ApiAudiophoneUser::select('apiaudiophoneusers_role')->where('apiaudiophoneusers_id', $id_apiaudiophoneusers)->firstOrFail();
+
+	        $user_role = $user->apiaudiophoneusers_role;
+
+
+	        //::::: OBTENEMOS INICIO Y FIN DE MES ACTUAL (PRIMERA FASE, PARA MANDAR EL MES ACTUAL AL ADMIN_ROLE) ::::://
+
+	        $start_of_month = Carbon::today()->startOfMonth()->format('Y-m-d');
+
+	        $end_of_month = Carbon::today()->endOfMonth()->format('Y-m-d');
+
+		   
+	        //::: VALIDAMOS EL TIPO DE USUARIO PARA MANDAR LA INFORMACIÓN A LA VISTA :::://
+
+	        switch($user_role){
+
+	        	case('ADMIN_ROLE'):
+
+		        	$all_events_last_month = $this->event_show_last_month($start_of_month, $end_of_month);
+		        	
+		        	return $this->successResponseApiaudiophonEventShow(true, 200,  $all_events_last_month);
+	        	  	
+	        	  	break;
+	        	case('USER_ROLE'):
+
+	        		$all_events_by_user = $this->event_show_by_user($id_apiaudiophoneusers);
+
+	        		return $this->successResponseApiaudiophonEventShow(true, 200,  $all_events_by_user);
+	        		
+	        		break;
+	        	default:
+
+	        	return $this->errorResponse('Sin registros de Eventos en ApiaudiophonEvent, para el perfil', 404);
+        	}        	
         }else{
 
         	return $this->errorResponse('Sin registros de Eventos en ApiaudiophonEvent, debes crearlo', 404);
@@ -51,30 +84,74 @@ class ApiAudioPhonEventController extends Controller
     public function createApiAudiophonEvent($id_apiaudiophoneusers = null)
     {
         
-        // USAMOS EL CREATE PARA MANDAR A LA VISTA EL ID DEL TERM Y EL NOMBRE DEL SERVICIO DE ESE TERM
+        //:::: USAMOS EL CREATE PARA MANDAR A LA VISTA EL ID DEL TERM Y EL NOMBRE DEL SERVICIO DE ESE TERM :::://
 
         $bdterm_total = ApiAudiophoneTerm::count();
 
-        if($bdterm_total > 0){
 
-        	$last_conf_service_uno = ApiAudiophoneTerm::where('id_apiaudiophoneservices', 1)->get()->last();
+        //:::: PARA CUANDO EXISTE UN SOLO TERMINO CREADO SE TRAE EL ID DEL ULTIMO TERM CONFIGURADO Y EL ID DEL SERIVIO Y SU NOMBRE :::://
 
-        	$last_conf_service_dos = ApiAudiophoneTerm::where('id_apiaudiophoneservices', 2)->get()->last();
+        if($bdterm_total == 1){ 
+
+
+        	$last_conf_term = ApiAudiophoneTerm::select('apiaudiophoneterms_id', 'id_apiaudiophoneservices')->get()->last();
+
+        	$id_last_conf_term = $last_conf_term->apiaudiophoneterms_id;
+
+        	$id_last_conf_service = $last_conf_term->id_apiaudiophoneservices;
+
+        	$name_service = $last_conf_term->apiaudiophoneservice->apiaudiophoneservices_name;
+
+        
+        	switch($last_conf_term->id_apiaudiophoneservices){
+
+	    		case(1):
+
+
+	    			return $this->successResponseApiaudiophonEventCreateOnly(true, 200, 'ID terms ultima configuracion', $id_last_conf_term, $id_last_conf_service, $name_service);
+	    			
+	    			break;	    		
+	    		case(2):
+
+
+	    			return $this->successResponseApiaudiophonEventCreateOnly(true, 200, 'ID terms ultima configuracion', $id_last_conf_term, $id_last_conf_service, $name_service);
+	    			break;	    		
+	    		default:
+	    		
+	    		return $this->errorResponse('No existen Terminos o Condiciones para crear eventos', 404);
+    		}
+	    }elseif($bdterm_total > 1){
+
+
+	    	//:::: CUANDO EXISTEN MAS DE DOS TERMINOS CREADOS, INFORMACION DE LOS ULTIMOS TERMS CONFIGURADOS A LA VISTA, DE LOS SERVICIOS :::://
+
+	    	$last_conf_service_uno = ApiAudiophoneTerm::select('apiaudiophoneterms_id', 'id_apiaudiophoneservices')->where('id_apiaudiophoneservices', 1)->get()->last();
+
+        	$last_conf_service_dos = ApiAudiophoneTerm::select('apiaudiophoneterms_id', 'id_apiaudiophoneservices')->where('id_apiaudiophoneservices', 2)->get()->last();
+
+        	
+        	//:::: OBTENEMOS LOS ID DE LOS ULTIMOS TERMS CREADOS PARA AMBOS SERVICIOS :::://
 
         	$id_last_conf_service_uno = $last_conf_service_uno->apiaudiophoneterms_id;
 
         	$id_last_conf_service_dos = $last_conf_service_dos->apiaudiophoneterms_id;
 
+
+        	//:::: OBTENEMOS EL NOMBRE DE LOS ULTIMOS SERVICIOS CONFIGURADOS :::://
+        	
         	$nombre_servicio_uno = $last_conf_service_uno->apiaudiophoneservice->apiaudiophoneservices_name;
 
         	$nombre_servicio_dos = $last_conf_service_dos->apiaudiophoneservice->apiaudiophoneservices_name;
 
+
         	return $this->successResponseApiaudiophonEventCreate(true, 200, 'ID terms ultima configuracion', $id_last_conf_service_uno, $nombre_servicio_uno, $id_last_conf_service_dos, $nombre_servicio_dos);
+	    }else{
 
-        }else{
 
-        	return $this->errorResponse('Sin registros de Terms en Apiaudiophoneterms, debes crearlo', 404);
+        	return $this->errorResponse('No existen Terminos o Condiciones para crear eventos', 404);
         }
+
+        // ::: TAREA: HACER UN BUCLE QUE RECORRA LA EL MODELO DE SERVICIOS Y VAYA LLENANDO LAS VARIABLES DE SELECCIONN DE TERMINOS, DE ID Y DE NOMBRE DE SERVICIOS PARA LUEGO ENVIARLOS A LA VISTA ::: //
     }
 
 
@@ -103,16 +180,52 @@ class ApiAudioPhonEventController extends Controller
             'apiaudiophonevents_totalhours' => 'required|date_format:H:i'
         ]);
 
+       	
         //:::: CAPTURAMOS EL REQUEST :::://
 
         $apiaudiophoneventdata = $request->all();
+       	
+		
+		//:::: OBTENEMOS PRIMER DIA DEL MES ACTUAL ::::://
+
+       	$start_month = Carbon::today()->startOfMonth()->format('Y-m-d');
+
+       	
+  		//:::: OBTENEMOS UTLIMO DIA DEL MES ACTUAL :::://
+
+       	$end_month = Carbon::today()->endOfMonth()->format('Y-m-d');
+
+
+       	//:::: OBTENEMOS PRIMER DIA DE LA SEMANA ACTUAL :::://
+
+       	$star_week = Carbon::today()->startOfWeek()->format('Y-m-d');
+
+       	
+       	//:::: OBTENEMOS EL ULTIMO DÍA DE LA SEMANA ACTUAL :::://
+
+       	$end_week = Carbon::today()->endOfWeek()->format('Y-m-d');
+
+       	
+       	//:::: OBTENEMOS CONTEO DE CITAS SEMANALES GENERADAS POR EL USUARIO :::://
+
+       	$weekly_count = $this->event_count_by_user($id_apiaudiophoneusers, $star_week, $end_week);       
+
+
+       	//:::: OBTENEMOS CONTEO DE CITAS SEMANALES GENERADAS POR EL USUARIO :::://
+
+       	$monthly_count = $this->event_count_by_user($id_apiaudiophoneusers, $start_month, $end_month);
+
+
+        //:::: OBTENEMOS EL DIA ACTUAL :::://
+
+        $today = Carbon::today()->format('Y-m-d');
 
 
     	//:::: BUSCAMOS EL NOMBRE DEL SERVICIO DE ACUERDO AL ID_SERVICES DEL REQUEST ::::://
 
     	$apiaudiophonevent_service_name = $this->service_name($apiaudiophoneventdata['id_apiaudiophoneservices']);
 
-    
+    	
     	//:::: OBTENER BEGIN TIME DE LA ULTIMA CONFIGURACION DEL TERM DE ACUERDO AL ID DEL TERM :::://
 
     	$btime = $this->begin_time_last_configuration($apiaudiophoneventdata['id_apiaudiophoneterms']);
@@ -127,6 +240,7 @@ class ApiAudioPhonEventController extends Controller
 
 		$apiaudiophoneterm_day = $this->days_event_term($apiaudiophoneventdata['id_apiaudiophoneterms']);
 
+		
 		//:::: TRANSFORMAMOS EN STRING EL ARREGLO DE DIAS PARA MANDARLO DE VUELTA EN LA VALIDACIÓN ::::://    	
 
 		$apiaudiophoneterm_day_str = implode(',', $apiaudiophoneterm_day);
@@ -155,6 +269,8 @@ class ApiAudioPhonEventController extends Controller
 	    //::::: OBTENEMOS LA CANTIDAD DE DIAS MENSUALES CONFIGURADOS PARA EL EVENTO ::::://
 
 	    $quantity_events_monthly = $this->quantity_monthly_day_last_configuration($apiaudiophoneventdata['id_apiaudiophoneterms']);
+       
+
 
 
 	    //:::: CREAMOS UNA INSTANCIA DEL APIAUDIOPHONEVENT :::://
@@ -171,7 +287,7 @@ class ApiAudioPhonEventController extends Controller
     	$apiaudiophoneventnew->apiaudiophonevents_totalhours = $apiaudiophoneventdata['apiaudiophonevents_totalhours'];
 
     	
-    	//:::: VALIDACION PARA ALMACENAR EL BEGIN TIME DEL EVENTO, DEBE SER MAYOR A LA DEL TERM :::://
+    	//:::: VALIDACION PARA ALMACENAR EL BEGIN TIME DEL EVENTO, DEBE SER MAYOR O IGUAL A LA DEL TERM :::://
 
     	if(($apiaudiophoneventdata['apiaudiophonevents_begintime']) >= $btime){
 
@@ -182,7 +298,7 @@ class ApiAudioPhonEventController extends Controller
     		return $this->errorResponse('Hora de Inicio debe ser mayor o igual a la(s):'.$btime, 400);
     	}
 
-		//:::: VALIDACION PARA ALMACENAR EL FINAL TIME DEL EVENTO, DEBE SER MENOR A LA DEL TERM :::://
+		//:::: VALIDACION PARA ALMACENAR EL FINAL TIME DEL EVENTO, DEBE SER MENOR O IGUAL A LA DEL TERM :::://
 
     	if(($apiaudiophoneventdata['apiaudiophonevents_finaltime']) <= $ftime){
 
@@ -193,8 +309,8 @@ class ApiAudioPhonEventController extends Controller
     		return $this->errorResponse('Hora de Finalizacion debe ser menor o igual a la(s):'.$ftime, 400);
     	}
 
-    	//:::: APLICA LOGICA DE VALIDACION PARA ALMACENAR EL DATE DEL EVENTO, DEBE COINCIDIR CON LOS DIAS DEL TERM :::://
 
+    	//:::: LOGICA DE VALIDACION PARA ALMACENAR EL DATE DEL EVENTO, DEBE COINCIDIR CON LOS DIAS DEL TERM :::://
 
     	switch($rank_event){
 
@@ -225,10 +341,27 @@ class ApiAudioPhonEventController extends Controller
     		
     		$apiaudiophoneventnew->apiaudiophonevents_date = $apiaudiophoneventdata['apiaudiophonevents_date'];
     	}
+     
 
-    	$apiaudiophoneventnew->save();
+    	//:::: LOGICA DE VALIDACION QUE RESTRINGE LA GENERACIÓN DE CITAS POR USUARIO, DE ACUERDO A LO INDICADO POR EL TERM :::://
+      		
+      	
+      	if($weekly_count >= $quantity_events_weekly){
 
-    	return $this->successResponseApiaudiophonEventStore(true, 201, 'Evento Creado Exitosamente', $apiaudiophonevent_service_name, $apiaudiophoneventnew);
+      	
+        	return $this->errorResponseQuantityEvents(true, 405, 'Superaste las solicitudes de citas semanales, solo se permiten: '.$quantity_events_weekly);
+      	}elseif($monthly_count >= $quantity_events_monthly){
+
+      	
+			return $this->errorResponseQuantityEvents(true, 405, 'Superaste las solicitudes de citas mensuales, solo se permiten:'.$quantity_events_monthly);        	
+       	}else{
+
+        	
+
+	    	$apiaudiophoneventnew->save();
+
+	    	return $this->successResponseApiaudiophonEventStore(true, 201, 'Evento Creado Exitosamente', $apiaudiophonevent_service_name, $apiaudiophoneventnew);
+       	}
     }
     
     /**
@@ -325,7 +458,7 @@ class ApiAudioPhonEventController extends Controller
     	$apiaudiophoneventupdate->apiaudiophonevents_totalhours = $apiaudiophoneventdata_upd['apiaudiophonevents_totalhours'];
 
     	
-    	//:::: VALIDACION PARA ACTUALIZAR EL BEGIN TIME DEL EVENTO, DEBE SER MAYOR A LA DEL TERM :::://
+    	//:::: VALIDACION PARA ACTUALIZAR EL BEGIN TIME DEL EVENTO, DEBE SER MAYOR O IGUAL A LA DEL TERM :::://
 
     	if(($apiaudiophoneventdata_upd['apiaudiophonevents_begintime']) >= $btime){
 
@@ -336,7 +469,7 @@ class ApiAudioPhonEventController extends Controller
     		return $this->errorResponse('Hora de Inicio debe ser mayor o igual a la(s):'.$btime, 400);
     	}
 
-		//:::: VALIDACION PARA ACTUALIZAR EL FINAL TIME DEL EVENTO, DEBE SER MENOR A LA DEL TERM :::://
+		//:::: VALIDACION PARA ACTUALIZAR EL FINAL TIME DEL EVENTO, DEBE SER MENOR O IGUAL A LA DEL TERM :::://
 
     	if(($apiaudiophoneventdata_upd['apiaudiophonevents_finaltime']) <= $ftime){
 
@@ -436,8 +569,7 @@ class ApiAudioPhonEventController extends Controller
     /*  
      * Funcion que transforma los días de eventos en un arreglo
     */
-    public function string_to_array($string_days_events)
-    {
+    public function string_to_array($string_days_events){
 
     	return explode(', ', $string_days_events);
     }
@@ -450,7 +582,7 @@ class ApiAudioPhonEventController extends Controller
 
     	//necesitamos llegar al indice 7 en el arreglo de días para que tome como ultimo dia de la semana el valor 'domingo'
     	//de lo contrario dará un mensaje de error porque la funcion strtotime maneja como ultimo dia de la semana el indice 7
-    	//el indice 0 lo podemos llebar con cualquier valor en este caso le dejamos domingo...
+    	//el indice 0 lo podemos llenar con cualquier valor en este caso le dejamos domingo...
 
     	$dias_semana = ['domingo','lunes','martes','miercoles','jueves','viernes','sabado','domingo'];
 
@@ -555,8 +687,44 @@ class ApiAudioPhonEventController extends Controller
     	
     	$apiaudiophoneterm_day_monthly = ApiAudiophoneTerm::where('apiaudiophoneterms_id', $id_term)->first();
 
-    	$qwmonthlyday = $apiaudiophoneterm_day_monthly->apiaudiophoneterms_quantityeventsmonthly;
+    	$qmonthlyday = $apiaudiophoneterm_day_monthly->apiaudiophoneterms_quantityeventsmonthly;
 
-    	return $qwmonthlyday;
+    	return $qmonthlyday;
+    }
+
+
+    /*  
+     * Funcion que cuenta el numero de eventos semanales y mensuales para un usuario determinado
+    */
+    public function event_count_by_user($id_user, $begin, $finish){
+
+    	
+    	$count = ApiAudiophonEvent::whereBetween('created_at', [$begin, $finish])->count();
+
+    	return $count;
+    }
+
+
+    /*  
+     * Funcion que devuelve todos los eventos del utlimo mes para todos los usuarios para ADMIN_ROLE
+    */
+    public function event_show_last_month($begin, $finish){
+
+    	
+    	$event_last_month = ApiAudiophonEvent::whereBetween('created_at', [$begin, $finish])->orderBy('created_at', 'desc')->get();
+
+    	return $event_last_month;
+    }
+
+
+    /*  
+     * Funcion que devuelve todos los eventos del utlimo mes para todos los usuarios para ADMIN_ROLE
+    */
+    public function event_show_by_user($iduser){
+
+    	
+    	$event_by_user = ApiAudiophonEvent::where('id_apiaudiophoneusers', $iduser)->orderBy('created_at', 'desc')->get();
+
+    	return $event_by_user;
     }
 }

@@ -130,6 +130,13 @@ $router->delete('api/apiaudiophoneterm/destroy/{id_apiaudiophoneusers:[0-9]+}', 
 ]);*/
 
 
+
+/*
+
+	RUTAS PARA EL MODELO DE EVENTOS
+
+*/
+
 $router->post('api/apiaudiophonevent/show/{id_apiaudiophoneusers:[0-9]+}', [
 
 	'middleware' => ['cors', 'client.credentials', 'auth:api'],

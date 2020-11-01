@@ -74,7 +74,7 @@ class ApiAudioPhoneTermController extends Controller
                         $days_events_array = $this->string_to_array($apiaudiophonetermshowdata->apiaudiophoneterms_daysevents);
                         
 
-                        //::::: BUSCAMOS EL PRIMER REGISTRO DE TERMS QUE COINCIDA CON EL ID DEL SERVICIO DEL REQUEST, SOLO PARA OBTENER EL NOMBRE DEL SERVICIO EN LA INSTRUC 78 ::::://        
+                        //::::: BUSCAMOS EL PRIMER REGISTRO DE TERMS QUE COINCIDA CON EL ID DEL SERVICIO DEL REQUEST, SOLO PARA OBTENER EL NOMBRE DEL SERVICIO EN LA INSTRUC 83 ::::://        
 
                         $term_data = ApiAudiophoneTerm::where('id_apiaudiophoneservices', $servicio_nro)->first();
                         
@@ -86,7 +86,7 @@ class ApiAudioPhoneTermController extends Controller
                         return $this->successResponseApiaudiophoneTerm(true, 200, 'ultima configuración del evento', $nombre_servicio, $days_events_array, $apiaudiophonetermshowdata);
                     }else{
 
-                        return $this->errorResponse('Debe crear el termino o condicion para el servicio restante', 404);
+                        return $this->errorResponse('Debe crear el termino o condicion para este servicio', 404);
                     }       
 
                     break;

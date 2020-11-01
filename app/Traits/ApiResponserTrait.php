@@ -155,6 +155,26 @@ trait ApiResponserTrait
       ], $code);
   }
 
+
+ /*
+ * Responser de afirmacion para devolver los id de los terms basados en el id del servicio, caso cuando hay un solo termino creado.
+ *
+ */
+  public function successResponseApiaudiophonEventCreateOnly($ok = null, $code, $apiaudiophoneventmessage, $apiaudiophonetermid, $id_service, $nombre_servicio)
+  {
+  
+    return response()->json([
+
+        'ok' => $ok,
+        'status' => $code,
+        'apiaudiophoneventmessage' => $apiaudiophoneventmessage,
+        'apiaudiophoneterm_id' => $apiaudiophonetermid,
+        'id_service' => $id_service,
+        'nombre_servicio_term_' => $nombre_servicio
+      ], $code);
+  }
+
+
  /*
  * Responser de afirmacion para devolver los id de los terms basados en el id del servicio, hasta ahoara solo dos servicios.
  *
@@ -253,7 +273,27 @@ trait ApiResponserTrait
     ], $code);
   }
 
+
   /*
+ * Responser de error ApiaudiophonEvent, valida cuando un usuario supera el limite de citas semanales y mensuales
+ *
+ */
+  public function errorResponseQuantityEvents($ok = null, $code, $apiaudiophoneterm_message)
+  {
+  
+    return response()->json([
+
+      'ok' => $ok,
+      'status' => $code,
+      'apiaudiophoneusermessage' => $apiaudiophoneterm_message
+    ], $code);
+  }
+
+
+
+
+
+ /*
  * Responser de afirmacion estándar para ApiaudiophoneTermDestroy
  *
  */
