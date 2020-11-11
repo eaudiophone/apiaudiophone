@@ -170,6 +170,14 @@ $router->put('api/apiaudiophonevent/update/{id_apiaudiophoneusers:[0-9]+}', [
 ]);
 
 
+$router->put('api/apiaudiophonevent/status/update/{id_apiaudiophoneusers:[0-9]+}', [
+
+	'middleware' => ['cors', 'client.credentials', 'auth:api'],
+	'as' => 'event.status.update',
+	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhonEventController@updateStatusEvent'
+]);
+
+
 $router->delete('api/apiaudiophonevent/destroy/{id_apiaudiophoneusers:[0-9]+}', [
 
 	'middleware' => ['cors', 'client.credentials', 'auth:api'],

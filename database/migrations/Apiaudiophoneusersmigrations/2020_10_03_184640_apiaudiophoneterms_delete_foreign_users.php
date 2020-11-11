@@ -17,7 +17,7 @@ class ApiaudiophonetermsDeleteForeignUsers extends Migration
 
             //laravel usa esa convencion para crear el constraint entre tablas en este caso
             //agarra el nombre de la tabla + underscore + nombre del campo que se relaciona
-            //con la otra tabla en este caso 'id_apiaudiophoneusers' + underscore + el sufijo foreign, alejecutar esta migración podemos intentar hacer roll back.
+            //con la otra tabla en este caso 'id_apiaudiophoneusers' + underscore + el sufijo foreign, al ejecutar esta migración podemos intentar hacer roll back.
             $table->dropForeign('apiaudiophoneterms_id_apiaudiophoneusers_foreign');
         });
     }

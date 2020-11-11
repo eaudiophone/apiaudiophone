@@ -515,6 +515,84 @@ class ApiAudioPhonEventController extends Controller
     	return $this->successResponseApiaudiophonEventUpdate(true, 201, 'Evento Actualizado Exitosamente', $apiaudiophonevent_service_name, $apiaudiophoneventupdate);
     }
 
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param $id_apiaudiophoneusers
+     * @param \Illuminate\Http\Request $request 
+     * @return \Illuminate\Http\Response
+     */
+    public function updateStatusEvent(Request $request, $id_apiaudiophoneusers)
+    {
+
+    	//::::: Validación del Request ::::://
+        
+        $this->validate($request, [
+
+        	'apiaudiophonevents_id' => 'required|numeric',
+            'apiaudiophonevents_status' => 'required|regex:([A-Z])'            
+        ]);
+
+        //:::: OBTENEMOS DATOS DEL EVENTO PARA ACTUALIZAR ESTADO :::://
+
+        $event_data = $request->all();
+
+        
+        //:::: OBTENEMOS DATOS DEL USUARIO, DEBE SER ADMIN_ROLE Y ESTAR ACTIVO PARA PODER GESTIONAR :::://
+
+        $apiaudiophoneuser_data = ApiAudiophoneUser::findOrFail($id_apiaudiophoneusers);
+
+    	$status = $apiaudiophoneuser_data->apiaudiophoneusers_status;
+
+    	$role = $apiaudiophoneuser_data->apiaudiophoneusers_role;
+
+
+    	//:::: OBTENEMOS EL EVENTO A ACTUALIZAR A TRAVÉS DEL ID :::://
+
+    	$event_update = ApiAudiophonEvent::findOrFail($event_data['apiaudiophonevents_id']);
+
+    	
+    	//:::: VALIDAMOS ESTATUS Y ROL DEL USUARIO PARA ACTUALIZAR EL ESTATUS DEL EVENTO :::://
+
+    	if(($status == true) && ($role == 'ADMIN_ROLE')){
+
+    		
+    		switch($event_data['apiaudiophonevents_status']){
+
+    			case('ACEPTADO'):
+
+    				$event_update->apiaudiophonevents_status = $event_data['apiaudiophonevents_status'];
+    				
+    				break;
+    			case('POSPUESTO'):
+
+    				$event_update->apiaudiophonevents_status = $event_data['apiaudiophonevents_status'];
+    				
+    				break;
+    			case('RECHAZADO'):
+
+    				$event_update->apiaudiophonevents_status = $event_data['apiaudiophonevents_status'];
+    				break;
+    			case('CERRADO'):
+
+    				$event_update->apiaudiophonevents_status = $event_data['apiaudiophonevents_status'];
+    				break;
+    			default:
+
+    			return $this->errorResponse('El estatus '.$event_data['apiaudiophonevents_status'].' no esta permitido para ser almacenado', 422);
+    		}
+
+    		$event_update->update();
+
+    		return $this->successResponseApiaudiophoneUserStore(true, 201, 'Estatus actualizado a: '.$event_update->apiaudiophonevents_status, $event_update);
+    	}else{
+
+    		return $this->errorResponse('Usuario no Autorizado para actualizar estado del evento', 401);
+    	}
+    }	
+
+
     /**
      * Remove the specified resource from storage.
      *
