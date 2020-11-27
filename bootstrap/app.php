@@ -80,6 +80,13 @@ $app->configure('cors');
 
 $app->configure('auth');
 
+
+/*
+    ::::: LARAVEL DOMPDF :::::
+*/
+
+$app->configure('dompdf');
+
 /*
 |--------------------------------------------------------------------------
 | Register Middleware
@@ -162,6 +169,11 @@ $app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
     ::::: PROVIDERS FLIPBOX LUMEN  :::::
 */
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
+
+/*
+    ::::: PROVIDERS DOMPDF  :::::
+*/
+$app->register(\Barryvdh\DomPDF\ServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------

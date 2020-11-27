@@ -187,6 +187,23 @@ $router->delete('api/apiaudiophonevent/destroy/{id_apiaudiophoneusers:[0-9]+}', 
 
 
 /*
+	RUTAS PARA GENERAR EL PDF DEL PRESUPUESTO
+
+*
+
+$router->get('api/apiaudiophonebudget/generate/{id_apiaudiophoneusers:[0-9]+}', [
+
+
+	'middleware' => ['cors', 'client.credentials', 'auth:api'],
+	'as' => 'budget.generate',
+	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhoneBudgetPdfController@showApiAudioPhoneBudgetPdf'
+]);*/
+
+$router->get('/hola', function(){
+	return view('budgetview.presupuesto');
+});
+
+/*
 	
 	RUTAS DEL MODELO DE EVENTOS  
 
