@@ -165,60 +165,60 @@ class ApiAudioPhonEventController extends Controller
     public function storeApiAudiophonEvent(Request $request, $id_apiaudiophoneusers = null)
     {        
 
-        //::::: Validación del Request ::::://
-        
-        $this->validate($request, [
+      //::::: Validación del Request ::::://
+      
+      $this->validate($request, [
 
-            'id_apiaudiophoneservices' => 'required|numeric',
-            'id_apiaudiophoneterms' => 'required|numeric',
-            'apiaudiophonevents_title' => 'required|string|max:120',
-            'apiaudiophonevents_address' => 'string|max:120',
-            'apiaudiophonevents_description' => 'required|string|max:120',
-            'apiaudiophonevents_date' => 'required|date_format:Y-m-d',
-            'apiaudiophonevents_begintime' => 'required|date_format:H:i',
-            'apiaudiophonevents_finaltime' => 'required|date_format:H:i',
-            'apiaudiophonevents_totalhours' => 'required|date_format:H:i'
-        ]);
-
-       	
-        //:::: CAPTURAMOS EL REQUEST :::://
-
-        $apiaudiophoneventdata = $request->all();
-       	
-		
-		//:::: OBTENEMOS PRIMER DIA DEL MES ACTUAL ::::://
-
-       	$start_month = Carbon::today()->startOfMonth()->format('Y-m-d');
+          'id_apiaudiophoneservices' => 'required|numeric',
+          'id_apiaudiophoneterms' => 'required|numeric',
+          'apiaudiophonevents_title' => 'required|string|max:120',
+          'apiaudiophonevents_address' => 'string|max:120',
+          'apiaudiophonevents_description' => 'required|string|max:120',
+          'apiaudiophonevents_date' => 'required|date_format:Y-m-d',
+          'apiaudiophonevents_begintime' => 'required|date_format:H:i',
+          'apiaudiophonevents_finaltime' => 'required|date_format:H:i',
+          'apiaudiophonevents_totalhours' => 'required|date_format:H:i'
+      ]);
 
        	
-  		//:::: OBTENEMOS UTLIMO DIA DEL MES ACTUAL :::://
+      //:::: CAPTURAMOS EL REQUEST :::://
 
-       	$end_month = Carbon::today()->endOfMonth()->format('Y-m-d');
+      $apiaudiophoneventdata = $request->all();
+     	
+	
+	    //:::: OBTENEMOS PRIMER DIA DEL MES ACTUAL ::::://
 
+     	$start_month = Carbon::today()->startOfMonth()->format('Y-m-d');
 
-       	//:::: OBTENEMOS PRIMER DIA DE LA SEMANA ACTUAL :::://
+     	
+		  //:::: OBTENEMOS UTLIMO DIA DEL MES ACTUAL :::://
 
-       	$star_week = Carbon::today()->startOfWeek()->format('Y-m-d');
-
-       	
-       	//:::: OBTENEMOS EL ULTIMO DÍA DE LA SEMANA ACTUAL :::://
-
-       	$end_week = Carbon::today()->endOfWeek()->format('Y-m-d');
-
-       	
-       	//:::: OBTENEMOS CONTEO DE CITAS SEMANALES GENERADAS POR EL USUARIO :::://
-
-       	$weekly_count = $this->event_count_by_user($id_apiaudiophoneusers, $star_week, $end_week);       
+     	$end_month = Carbon::today()->endOfMonth()->format('Y-m-d');
 
 
-       	//:::: OBTENEMOS CONTEO DE CITAS SEMANALES GENERADAS POR EL USUARIO :::://
+     	//:::: OBTENEMOS PRIMER DIA DE LA SEMANA ACTUAL :::://
 
-       	$monthly_count = $this->event_count_by_user($id_apiaudiophoneusers, $start_month, $end_month);
+     	$star_week = Carbon::today()->startOfWeek()->format('Y-m-d');
+
+     	
+     	//:::: OBTENEMOS EL ULTIMO DÍA DE LA SEMANA ACTUAL :::://
+
+     	$end_week = Carbon::today()->endOfWeek()->format('Y-m-d');
+
+     	
+     	//:::: OBTENEMOS CONTEO DE CITAS SEMANALES GENERADAS POR EL USUARIO :::://
+
+     	$weekly_count = $this->event_count_by_user($id_apiaudiophoneusers, $star_week, $end_week);       
 
 
-        //:::: OBTENEMOS EL DIA ACTUAL :::://
+     	//:::: OBTENEMOS CONTEO DE CITAS SEMANALES GENERADAS POR EL USUARIO :::://
 
-        $today = Carbon::today()->format('Y-m-d');
+     	$monthly_count = $this->event_count_by_user($id_apiaudiophoneusers, $start_month, $end_month);
+
+
+      //:::: OBTENEMOS EL DIA ACTUAL :::://
+
+      $today = Carbon::today()->format('Y-m-d');
 
 
     	//:::: BUSCAMOS EL NOMBRE DEL SERVICIO DE ACUERDO AL ID_SERVICES DEL REQUEST ::::://
@@ -238,12 +238,12 @@ class ApiAudioPhonEventController extends Controller
 
     	//:::: OBTENER LOS DIAS PERMITIDOS DE LA ULTIMA CONFIGURACION DEL TERM DE ACUERDO AL ID DEL TERM ::::://
 
-		$apiaudiophoneterm_day = $this->days_event_term($apiaudiophoneventdata['id_apiaudiophoneterms']);
+  		$apiaudiophoneterm_day = $this->days_event_term($apiaudiophoneventdata['id_apiaudiophoneterms']);
 
-		
-		//:::: TRANSFORMAMOS EN STRING EL ARREGLO DE DIAS PARA MANDARLO DE VUELTA EN LA VALIDACIÓN ::::://    	
+  		
+  		//:::: TRANSFORMAMOS EN STRING EL ARREGLO DE DIAS PARA MANDARLO DE VUELTA EN LA VALIDACIÓN ::::://    	
 
-		$apiaudiophoneterm_day_str = implode(',', $apiaudiophoneterm_day);
+  		$apiaudiophoneterm_day_str = implode(',', $apiaudiophoneterm_day);
 
 
     	//::::: CONTAMOS CANTIDAD DE DÍAS CONFIGURADOS EN EL TERM ::::://	
@@ -272,15 +272,14 @@ class ApiAudioPhonEventController extends Controller
        
 
 
-
 	    //:::: CREAMOS UNA INSTANCIA DEL APIAUDIOPHONEVENT :::://
 
     	$apiaudiophoneventnew = new ApiAudiophonEvent;
 
 		
-		$apiaudiophoneventnew->id_apiaudiophoneusers = $id_apiaudiophoneusers;
-		$apiaudiophoneventnew->id_apiaudiophoneservices = $apiaudiophoneventdata['id_apiaudiophoneservices'];
-		$apiaudiophoneventnew->id_apiaudiophoneterms = $apiaudiophoneventdata['id_apiaudiophoneterms'];		    	
+		  $apiaudiophoneventnew->id_apiaudiophoneusers = $id_apiaudiophoneusers;
+		  $apiaudiophoneventnew->id_apiaudiophoneservices = $apiaudiophoneventdata['id_apiaudiophoneservices'];
+		  $apiaudiophoneventnew->id_apiaudiophoneterms = $apiaudiophoneventdata['id_apiaudiophoneterms'];		    	
     	$apiaudiophoneventnew->apiaudiophonevents_title = $apiaudiophoneventdata['apiaudiophonevents_title'];
     	$apiaudiophoneventnew->apiaudiophonevents_address = $apiaudiophoneventdata['apiaudiophonevents_address'];
     	$apiaudiophoneventnew->apiaudiophonevents_description = $apiaudiophoneventdata['apiaudiophonevents_description'];
@@ -298,7 +297,7 @@ class ApiAudioPhonEventController extends Controller
     		return $this->errorResponse('Hora de Inicio debe ser mayor o igual a la(s):'.$btime, 400);
     	}
 
-		//:::: VALIDACION PARA ALMACENAR EL FINAL TIME DEL EVENTO, DEBE SER MENOR O IGUAL A LA DEL TERM :::://
+		  //:::: VALIDACION PARA ALMACENAR EL FINAL TIME DEL EVENTO, DEBE SER MENOR O IGUAL A LA DEL TERM :::://
 
     	if(($apiaudiophoneventdata['apiaudiophonevents_finaltime']) <= $ftime){
 
@@ -312,35 +311,42 @@ class ApiAudioPhonEventController extends Controller
 
     	//:::: LOGICA DE VALIDACION PARA ALMACENAR EL DATE DEL EVENTO, DEBE COINCIDIR CON LOS DIAS DEL TERM :::://
 
-    	switch($rank_event){
+    	
+      if($apiaudiophoneventdata['apiaudiophonevents_date'] >= $today){
 
-    		case('5-days'):
+        switch($rank_event){
 
-    			if(($week_day_event_date != 'sabado') && ($week_day_event_date != 'domingo')){
+      		case('5-days'):
 
-					$apiaudiophoneventnew->apiaudiophonevents_date = $apiaudiophoneventdata['apiaudiophonevents_date'];    				
-    			}else{
+      			if(($week_day_event_date != 'sabado') && ($week_day_event_date != 'domingo')){
 
-    				return $this->errorResponse('Los dias permitidos son de lunea a viernes', 400);
-    			}
-    			
-    			break;
-    		case('range'):
+  					$apiaudiophoneventnew->apiaudiophonevents_date = $apiaudiophoneventdata['apiaudiophonevents_date'];    				
+      			}else{
 
-    			if(in_array($week_day_event_date, $apiaudiophoneterm_day)){
+      				return $this->errorResponse('Los dias permitidos son de lunea a viernes', 400);
+      			}
+      			
+      			break;
+      		case('range'):
 
-
-    				$apiaudiophoneventnew->apiaudiophonevents_date = $apiaudiophoneventdata['apiaudiophonevents_date'];
-    			}else{
+      			if(in_array($week_day_event_date, $apiaudiophoneterm_day)){
 
 
-    				return $this->errorResponse('Los dias permitidos son: '.$apiaudiophoneterm_day_str, 400);
-    			}
-    			break;
-    		default:
-    		
-    		$apiaudiophoneventnew->apiaudiophonevents_date = $apiaudiophoneventdata['apiaudiophonevents_date'];
-    	}
+      				$apiaudiophoneventnew->apiaudiophonevents_date = $apiaudiophoneventdata['apiaudiophonevents_date'];
+      			}else{
+
+
+      				return $this->errorResponse('Los dias permitidos son: '.$apiaudiophoneterm_day_str, 400);
+      			}
+      			break;
+      		default:
+      		
+      		$apiaudiophoneventnew->apiaudiophonevents_date = $apiaudiophoneventdata['apiaudiophonevents_date'];
+      	}
+      }else{
+
+        return $this->errorResponse('La fecha del evento debe ser mayor o igual a: '.$today, 400);
+      }
      
 
     	//:::: LOGICA DE VALIDACION QUE RESTRINGE LA GENERACIÓN DE CITAS POR USUARIO, DE ACUERDO A LO INDICADO POR EL TERM :::://
@@ -374,25 +380,25 @@ class ApiAudioPhonEventController extends Controller
     public function updateApiAudiophonEvent(Request $request, $id_apiaudiophoneusers)
     {
 
-        //::::: Validación del Request ::::://
-        
-        $this->validate($request, [
+      //::::: Validación del Request ::::://
+      
+      $this->validate($request, [
 
-            'id_apiaudiophoneservices' => 'required|numeric',
-            'id_apiaudiophoneterms' => 'required|numeric',
-            'apiaudiophonevents_id' => 'required|numeric',
-            'apiaudiophonevents_title' => 'required|string|max:120',
-            'apiaudiophonevents_address' => 'string|max:120',
-            'apiaudiophonevents_description' => 'required|string|max:120',
-            'apiaudiophonevents_date' => 'required|date_format:Y-m-d',
-            'apiaudiophonevents_begintime' => 'required|date_format:H:i',
-            'apiaudiophonevents_finaltime' => 'required|date_format:H:i',
-            'apiaudiophonevents_totalhours' => 'required|date_format:H:i'
-        ]);
+          'id_apiaudiophoneservices' => 'required|numeric',
+          'id_apiaudiophoneterms' => 'required|numeric',
+          'apiaudiophonevents_id' => 'required|numeric',
+          'apiaudiophonevents_title' => 'required|string|max:120',
+          'apiaudiophonevents_address' => 'string|max:120',
+          'apiaudiophonevents_description' => 'required|string|max:120',
+          'apiaudiophonevents_date' => 'required|date_format:Y-m-d',
+          'apiaudiophonevents_begintime' => 'required|date_format:H:i',
+          'apiaudiophonevents_finaltime' => 'required|date_format:H:i',
+          'apiaudiophonevents_totalhours' => 'required|date_format:H:i'
+      ]);
 
-        //:::: CAPTURAMOS EL REQUEST :::://
+      //:::: CAPTURAMOS EL REQUEST :::://
 
-        $apiaudiophoneventdata_upd = $request->all();
+      $apiaudiophoneventdata_upd = $request->all();
 
 
     	//:::: BUSCAMOS EL NOMBRE DEL SERVICIO DE ACUERDO AL ID_SERVICES DEL REQUEST ::::://
@@ -412,12 +418,12 @@ class ApiAudioPhonEventController extends Controller
 
     	//:::: OBTENER LOS DIAS PERMITIDOS DE LA ULTIMA CONFIGURACION DEL TERM DE ACUERDO AL ID DEL TERM ::::://
 
-		$apiaudiophoneterm_day = $this->days_event_term($apiaudiophoneventdata_upd['id_apiaudiophoneterms']);
+  		$apiaudiophoneterm_day = $this->days_event_term($apiaudiophoneventdata_upd['id_apiaudiophoneterms']);
 
 
-		//:::: TRANSFORMAMOS EN STRING EL ARREGLO DE DIAS PARA MANDARLO DE VUELTA EN LA VALIDACIÓN - RESPONSES ::::://    	
+  		//:::: TRANSFORMAMOS EN STRING EL ARREGLO DE DIAS PARA MANDARLO DE VUELTA EN LA VALIDACIÓN - RESPONSES ::::://    	
 
-		$apiaudiophoneterm_day_str = implode(',', $apiaudiophoneterm_day);
+  		$apiaudiophoneterm_day_str = implode(',', $apiaudiophoneterm_day);
 
     	//::::: CONTAMOS CANTIDAD DE DÍAS CONFIGURADOS EN EL TERM ::::://	
 
@@ -449,9 +455,9 @@ class ApiAudioPhonEventController extends Controller
     	$apiaudiophoneventupdate = ApiAudiophonEvent::findOrFail($apiaudiophoneventdata_upd['apiaudiophonevents_id']);
 
 		
-		$apiaudiophoneventupdate->id_apiaudiophoneusers = $id_apiaudiophoneusers;
-		$apiaudiophoneventupdate->id_apiaudiophoneservices = $apiaudiophoneventdata_upd['id_apiaudiophoneservices'];
-		$apiaudiophoneventupdate->id_apiaudiophoneterms = $apiaudiophoneventdata_upd['id_apiaudiophoneterms'];		    	
+  		$apiaudiophoneventupdate->id_apiaudiophoneusers = $id_apiaudiophoneusers;
+  		$apiaudiophoneventupdate->id_apiaudiophoneservices = $apiaudiophoneventdata_upd['id_apiaudiophoneservices'];
+  		$apiaudiophoneventupdate->id_apiaudiophoneterms = $apiaudiophoneventdata_upd['id_apiaudiophoneterms'];		    	
     	$apiaudiophoneventupdate->apiaudiophonevents_title = $apiaudiophoneventdata_upd['apiaudiophonevents_title'];
     	$apiaudiophoneventupdate->apiaudiophonevents_address = $apiaudiophoneventdata_upd['apiaudiophonevents_address'];
     	$apiaudiophoneventupdate->apiaudiophonevents_description = $apiaudiophoneventdata_upd['apiaudiophonevents_description'];
@@ -469,7 +475,7 @@ class ApiAudioPhonEventController extends Controller
     		return $this->errorResponse('Hora de Inicio debe ser mayor o igual a la(s):'.$btime, 400);
     	}
 
-		//:::: VALIDACION PARA ACTUALIZAR EL FINAL TIME DEL EVENTO, DEBE SER MENOR O IGUAL A LA DEL TERM :::://
+		  //:::: VALIDACION PARA ACTUALIZAR EL FINAL TIME DEL EVENTO, DEBE SER MENOR O IGUAL A LA DEL TERM :::://
 
     	if(($apiaudiophoneventdata_upd['apiaudiophonevents_finaltime']) <= $ftime){
 
@@ -482,33 +488,38 @@ class ApiAudioPhonEventController extends Controller
 
     	//:::: APLICA LOGICA DE VALIDACION PARA ACTUALIZAR EL DATE DEL EVENTO, DEBE COINCIDIR CON LOS DIAS DEL TERM :::://
 
+      if(($apiaudiophoneventdata['apiaudiophonevents_begintime']) >= $btime){
 
-    	switch($rank_event){
+      	switch($rank_event){
 
-    		case('5-days'):
+      		case('5-days'):
 
-    			if(($week_day_event_date != 'sabado') && ($week_day_event_date != 'domingo')){
+      			if(($week_day_event_date != 'sabado') && ($week_day_event_date != 'domingo')){
 
-					$apiaudiophoneventupdate->apiaudiophonevents_date = $apiaudiophoneventdata_upd['apiaudiophonevents_date'];    				
-    			}else{
+  					$apiaudiophoneventupdate->apiaudiophonevents_date = $apiaudiophoneventdata_upd['apiaudiophonevents_date'];    				
+      			}else{
 
-    				return $this->errorResponse('Los dias permitidos son de lunea a viernes', 400);
-    			}
-    			
-    			break;
-    		case('range'):
+      				return $this->errorResponse('Los dias permitidos son de lunea a viernes', 400);
+      			}
+      			
+      			break;
+      		case('range'):
 
-    			if(in_array($week_day_event_date, $apiaudiophoneterm_day)){
+      			if(in_array($week_day_event_date, $apiaudiophoneterm_day)){
 
-    				$apiaudiophoneventupdate->apiaudiophonevents_date = $apiaudiophoneventdata_upd['apiaudiophonevents_date'];
-    			}else{
+      				$apiaudiophoneventupdate->apiaudiophonevents_date = $apiaudiophoneventdata_upd['apiaudiophonevents_date'];
+      			}else{
 
-    				return $this->errorResponse('Los dias permitidos son: '.$apiaudiophoneterm_day_str, 400);
-    			}
-    			break;
-    		default:
-    			$apiaudiophoneventupdate->apiaudiophonevents_date = $apiaudiophoneventdata_upd['apiaudiophonevents_date'];
-    	}
+      				return $this->errorResponse('Los dias permitidos son: '.$apiaudiophoneterm_day_str, 400);
+      			}
+      			break;
+      		default:
+      			$apiaudiophoneventupdate->apiaudiophonevents_date = $apiaudiophoneventdata_upd['apiaudiophonevents_date'];
+      	}
+      }else{
+
+        return $this->errorResponse('La fecha del evento debe ser mayor o igual a: '.$today, 400);
+      }
 
     	$apiaudiophoneventupdate->update();
 
