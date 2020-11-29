@@ -105,6 +105,7 @@ $router->post('api/apiaudiophoneterm/store/{id_apiaudiophoneusers:[0-9]+}', [
 ]);
 
 
+// ::: ESTAS RUTAS ACTUALMENTE NO SON USADAS POR LA APLICACIÓN, SE DEBEN DEJAR PORQ EL CONTROLLER LAS TIENE ::: //
 
 /*$router->post('api/apiaudiophoneuser/token/show/{id_apiaudiophoneusers:[0-9]+}', [
 
@@ -129,6 +130,8 @@ $router->delete('api/apiaudiophoneterm/destroy/{id_apiaudiophoneusers:[0-9]+}', 
 	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhoneTermController@destroyApiAudiophoneTerm'
 ]);*/
 
+
+// ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: //
 
 
 /*
@@ -189,7 +192,7 @@ $router->delete('api/apiaudiophonevent/destroy/{id_apiaudiophoneusers:[0-9]+}', 
 /*
 	RUTAS PARA GENERAR EL PDF DEL PRESUPUESTO
 
-*
+*/
 
 $router->get('api/apiaudiophonebudget/generate/{id_apiaudiophoneusers:[0-9]+}', [
 
@@ -197,76 +200,10 @@ $router->get('api/apiaudiophonebudget/generate/{id_apiaudiophoneusers:[0-9]+}', 
 	'middleware' => ['cors', 'client.credentials', 'auth:api'],
 	'as' => 'budget.generate',
 	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhoneBudgetPdfController@showApiAudioPhoneBudgetPdf'
-]);*/
+]);
 
-$router->get('/hola', function(){
+
+$router->get('/prueba', function(){
+
 	return view('budgetview.presupuesto');
 });
-
-/*
-	
-	RUTAS DEL MODELO DE EVENTOS  
-
-
-
-$router->post('api/apiaudiophonevent/show/{id_apiaudiophoneusers:[0-9]+}', [
-
-	'middleware' => ['cors', 'client.credentials', 'auth:api'],
-	'as' => 'event.show',
-	'uses' => 'Apiaudiophonecontrollers\---'
-]);
-
-
-$router->post('api/apiaudiophonevent/store/{id_apiaudiophoneusers:[0-9]+}', [
-
-	'middleware' => ['cors', 'client.credentials', 'auth:api'],
-	'as' => 'event.store',
-	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhonEventController@storeApiAudiophonEvent'
-]);
-
-
-$router->put('api/apiaudiophonevent/update/{id_apiaudiophoneusers:[0-9]+}', [
-
-	'middleware' => ['cors', 'client.credentials', 'auth:api'],
-	'as' => 'event.update',
-	'uses' => 'Apiaudiophonecontrollers\--'
-]);
-
-
-$router->delete()('api/apiaudiophonevent/update/{id_apiaudiophoneusers:[0-9]+}', [
-
-	'middleware' => ['cors', 'client.credentials', 'auth:api'],
-	'as' => 'event.destroy',
-	'uses' => 'Apiaudiophonecontrollers\--'
-]);
-
-
-
-
-
-/*$router->post('api/apiaudiophoneuser/token/show/{id_apiaudiophoneusers:[0-9]+}', [
-
-	'middleware' => ['cors', 'client.credentials', 'auth:api'],
-	'as' => 'token.user.show',
-	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhoneTermController@showExpireTimeToken'
-]);
-
-$router->put('api/apiaudiophoneterm/update/{id_apiaudiophoneusers:[0-9]+}', [
-
-	'middleware' => ['cors', 'client.credentials', 'auth:api'],
-	'as' => 'term.update',
-	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhoneTermController@updateApiAudiophoneTerm'
-]);
-
-
-
-$router->delete('api/apiaudiophoneterm/destroy/{id_apiaudiophoneusers:[0-9]+}', [
-
-	'middleware' => ['cors', 'client.credentials', 'auth:api'],
-	'as' => 'term.destroy',
-	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhoneTermController@destroyApiAudiophoneTerm'
-]);*/
-
-
-
-
