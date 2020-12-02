@@ -198,23 +198,23 @@ class ApiAudioPhonEventController extends Controller
 
      	//:::: OBTENEMOS PRIMER DIA DE LA SEMANA ACTUAL :::://
 
-     	$star_week = Carbon::today()->startOfWeek()->format('Y-m-d');
+     	$start_week = Carbon::today()->startOfWeek()->format('Y-m-d');
 
      	
      	//:::: OBTENEMOS EL ULTIMO DÍA DE LA SEMANA ACTUAL :::://
 
      	$end_week = Carbon::today()->endOfWeek()->format('Y-m-d');
 
-     	
+    
      	//:::: OBTENEMOS CONTEO DE CITAS SEMANALES GENERADAS POR EL USUARIO :::://
 
-     	$weekly_count = $this->event_count_by_user($id_apiaudiophoneusers, $star_week, $end_week);       
+     	$weekly_count = $this->event_count_by_user($id_apiaudiophoneusers, $apiaudiophoneventdata['id_apiaudiophoneservices'], $start_week, $end_week);       
+      
+      
+      //:::: OBTENEMOS CONTEO DE CITAS SEMANALES GENERADAS POR EL USUARIO :::://
 
-
-     	//:::: OBTENEMOS CONTEO DE CITAS SEMANALES GENERADAS POR EL USUARIO :::://
-
-     	$monthly_count = $this->event_count_by_user($id_apiaudiophoneusers, $start_month, $end_month);
-
+     	$monthly_count = $this->event_count_by_user($id_apiaudiophoneusers, $apiaudiophoneventdata['id_apiaudiophoneservices'], $start_month, $end_month);
+      
 
       //:::: OBTENEMOS EL DIA ACTUAL :::://
 
@@ -351,18 +351,20 @@ class ApiAudioPhonEventController extends Controller
 
     	//:::: LOGICA DE VALIDACION QUE RESTRINGE LA GENERACIÓN DE CITAS POR USUARIO, DE ACUERDO A LO INDICADO POR EL TERM :::://
       		
-      	
+
+      	//dd($weekly_count, $monthly_count, $id_apiaudiophoneusers);
       	if($weekly_count >= $quantity_events_weekly){
 
-      	
+          //dd('conteo semanal', $weekly_count);
         	return $this->errorResponseQuantityEvents(true, 405, 'Superaste las solicitudes de citas semanales, solo se permiten: '.$quantity_events_weekly);
       	}elseif($monthly_count >= $quantity_events_monthly){
 
-      	
-			return $this->errorResponseQuantityEvents(true, 405, 'Superaste las solicitudes de citas mensuales, solo se permiten:'.$quantity_events_monthly);        	
+      	 //dd('conteo mensual', $monthly_count);
+			   return $this->errorResponseQuantityEvents(true, 405, 'Superaste las solicitudes de citas mensuales, solo se permiten:'.$quantity_events_monthly);     	
        	}else{
 
         	
+      //dd($weekly_count, $monthly_count);
 
 	    	$apiaudiophoneventnew->save();
 
@@ -488,7 +490,7 @@ class ApiAudioPhonEventController extends Controller
 
     	//:::: APLICA LOGICA DE VALIDACION PARA ACTUALIZAR EL DATE DEL EVENTO, DEBE COINCIDIR CON LOS DIAS DEL TERM :::://
 
-      if(($apiaudiophoneventdata['apiaudiophonevents_begintime']) >= $btime){
+      if($apiaudiophoneventdata['apiaudiophonevents_date'] >= $today){
 
       	switch($rank_event){
 
@@ -512,9 +514,10 @@ class ApiAudioPhonEventController extends Controller
 
       				return $this->errorResponse('Los dias permitidos son: '.$apiaudiophoneterm_day_str, 400);
       			}
-      			break;
-      		default:
-      			$apiaudiophoneventupdate->apiaudiophonevents_date = $apiaudiophoneventdata_upd['apiaudiophonevents_date'];
+      			break;      		
+          default:
+      		
+          $apiaudiophoneventupdate->apiaudiophonevents_date = $apiaudiophoneventdata_upd['apiaudiophonevents_date'];
       	}
       }else{
 
@@ -537,22 +540,22 @@ class ApiAudioPhonEventController extends Controller
     public function updateStatusEvent(Request $request, $id_apiaudiophoneusers)
     {
 
-    	//::::: Validación del Request ::::://
-        
-        $this->validate($request, [
+  	 //::::: Validación del Request ::::://
+      
+      $this->validate($request, [
 
-        	'apiaudiophonevents_id' => 'required|numeric',
-            'apiaudiophonevents_status' => 'required|regex:([A-Z])'            
-        ]);
+      	'apiaudiophonevents_id' => 'required|numeric',
+          'apiaudiophonevents_status' => 'required|regex:([A-Z])'            
+      ]);
 
-        //:::: OBTENEMOS DATOS DEL EVENTO PARA ACTUALIZAR ESTADO :::://
+      //:::: OBTENEMOS DATOS DEL EVENTO PARA ACTUALIZAR ESTADO :::://
 
-        $event_data = $request->all();
+      $event_data = $request->all();
 
-        
-        //:::: OBTENEMOS DATOS DEL USUARIO, DEBE SER ADMIN_ROLE Y ESTAR ACTIVO PARA PODER GESTIONAR :::://
+      
+      //:::: OBTENEMOS DATOS DEL USUARIO, DEBE SER ADMIN_ROLE Y ESTAR ACTIVO PARA PODER GESTIONAR :::://
 
-        $apiaudiophoneuser_data = ApiAudiophoneUser::findOrFail($id_apiaudiophoneusers);
+      $apiaudiophoneuser_data = ApiAudiophoneUser::findOrFail($id_apiaudiophoneusers);
 
     	$status = $apiaudiophoneuser_data->apiaudiophoneusers_status;
 
@@ -783,14 +786,15 @@ class ApiAudioPhonEventController extends Controller
 
 
     /*  
-     * Funcion que cuenta el numero de eventos semanales y mensuales para un usuario determinado
+     * Funcion que cuenta el numero de eventos para un usuario y servicio determinado
     */
-    public function event_count_by_user($id_user, $begin, $finish){
+    public function event_count_by_user($id_user, $id_ser, $begin, $finish){
 
-    	
-    	$count = ApiAudiophonEvent::whereBetween('created_at', [$begin, $finish])->count();
+      
+      $count_week = ApiAudiophonEvent::whereBetween('created_at', [$begin, $finish])->where('id_apiaudiophoneservices', $id_ser)->whereIn('id_apiaudiophoneusers', [$id_user])->count();
+      
 
-    	return $count;
+    	return $count_week;
     }
 
 
