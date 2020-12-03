@@ -490,7 +490,7 @@ class ApiAudioPhonEventController extends Controller
 
     	//:::: APLICA LOGICA DE VALIDACION PARA ACTUALIZAR EL DATE DEL EVENTO, DEBE COINCIDIR CON LOS DIAS DEL TERM :::://
 
-      if($apiaudiophoneventdata['apiaudiophonevents_date'] >= $today){
+      if($apiaudiophoneventdata_upd['apiaudiophonevents_date'] >= $today){
 
       	switch($rank_event){
 
@@ -545,7 +545,7 @@ class ApiAudioPhonEventController extends Controller
       $this->validate($request, [
 
       	'apiaudiophonevents_id' => 'required|numeric',
-          'apiaudiophonevents_status' => 'required|regex:([A-Z])'            
+        'apiaudiophonevents_status' => 'required|regex:([A-Z])'            
       ]);
 
       //:::: OBTENEMOS DATOS DEL EVENTO PARA ACTUALIZAR ESTADO :::://
