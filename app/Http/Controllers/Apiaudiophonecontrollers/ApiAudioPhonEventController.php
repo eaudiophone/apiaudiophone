@@ -408,6 +408,11 @@ class ApiAudioPhonEventController extends Controller
     	$apiaudiophonevent_service_name = $this->service_name($apiaudiophoneventdata_upd['id_apiaudiophoneservices']);
 
     
+      //:::: OBTENEMOS EL DIA ACTUAL :::://
+
+      $today_upd = Carbon::today()->format('Y-m-d');
+
+
     	//:::: OBTENER BEGIN TIME DE LA ULTIMA CONFIGURACION DEL TERM DE ACUERDO AL ID DEL TERM :::://
 
     	$btime = $this->begin_time_last_configuration($apiaudiophoneventdata_upd['id_apiaudiophoneterms']);
@@ -490,7 +495,7 @@ class ApiAudioPhonEventController extends Controller
 
     	//:::: APLICA LOGICA DE VALIDACION PARA ACTUALIZAR EL DATE DEL EVENTO, DEBE COINCIDIR CON LOS DIAS DEL TERM :::://
 
-      if($apiaudiophoneventdata_upd['apiaudiophonevents_date'] >= $today){
+      if($apiaudiophoneventdata_upd['apiaudiophonevents_date'] >= $today_upd){
 
       	switch($rank_event){
 
@@ -521,7 +526,7 @@ class ApiAudioPhonEventController extends Controller
       	}
       }else{
 
-        return $this->errorResponse('La fecha del evento debe ser mayor o igual a: '.$today, 400);
+        return $this->errorResponse('La fecha del evento debe ser mayor o igual a: '.$today_upd, 400);
       }
 
     	$apiaudiophoneventupdate->update();
