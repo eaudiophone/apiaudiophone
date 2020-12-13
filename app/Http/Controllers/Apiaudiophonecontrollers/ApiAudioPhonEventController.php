@@ -105,21 +105,21 @@ class ApiAudioPhonEventController extends Controller
         
         	switch($last_conf_term->id_apiaudiophoneservices){
 
-	    		case(1):
+  	    		case(1):
 
 
-	    			return $this->successResponseApiaudiophonEventCreateOnly(true, 200, 'ID terms ultima configuracion', $id_last_conf_term, $id_last_conf_service, $name_service);
-	    			
-	    			break;	    		
-	    		case(2):
+  	    			return $this->successResponseApiaudiophonEventCreateOnly(true, 200, 'ID terms ultima configuracion', $id_last_conf_term, $id_last_conf_service, $name_service);
+  	    			
+  	    			break;	    		
+  	    		case(2):
 
 
-	    			return $this->successResponseApiaudiophonEventCreateOnly(true, 200, 'ID terms ultima configuracion', $id_last_conf_term, $id_last_conf_service, $name_service);
-	    			break;	    		
-	    		default:
-	    		
-	    		return $this->errorResponse('No existen Terminos o Condiciones para crear eventos', 404);
-    		}
+  	    			return $this->successResponseApiaudiophonEventCreateOnly(true, 200, 'ID terms ultima configuracion', $id_last_conf_term, $id_last_conf_service, $name_service);
+  	    			break;	    		
+  	    		default:
+  	    		
+  	    		return $this->errorResponse('No existen Terminos o Condiciones para crear eventos', 404);
+      		}
 	    }elseif($bdterm_total > 1){
 
 
@@ -271,6 +271,12 @@ class ApiAudioPhonEventController extends Controller
 	    $quantity_events_monthly = $this->quantity_monthly_day_last_configuration($apiaudiophoneventdata['id_apiaudiophoneterms']);
        
 
+      //::::: OBTENEMOS EL TIPO DE USUARIO: ADMIN_ROLE Ó USER_ROLE PARA generación de eventos ::::://
+
+      $user = ApiAudiophoneUser::select('apiaudiophoneusers_role')->where('apiaudiophoneusers_id', $id_apiaudiophoneusers)->firstOrFail();
+
+      $user_role_new = $user->apiaudiophoneusers_role;
+
 
 	    //:::: CREAMOS UNA INSTANCIA DEL APIAUDIOPHONEVENT :::://
 
@@ -290,7 +296,7 @@ class ApiAudioPhonEventController extends Controller
 
     	if(($apiaudiophoneventdata['apiaudiophonevents_begintime']) >= $btime){
 
-    		
+
     		$apiaudiophoneventnew->apiaudiophonevents_begintime = $apiaudiophoneventdata['apiaudiophonevents_begintime'];
     	}else{
 
@@ -351,25 +357,28 @@ class ApiAudioPhonEventController extends Controller
 
     	//:::: LOGICA DE VALIDACION QUE RESTRINGE LA GENERACIÓN DE CITAS POR USUARIO, DE ACUERDO A LO INDICADO POR EL TERM :::://
       		
+      	
+    	if($weekly_count >= $quantity_events_weekly){
 
-      	//dd($weekly_count, $monthly_count, $id_apiaudiophoneusers);
-      	if($weekly_count >= $quantity_events_weekly){
+      
+      	return $this->errorResponseQuantityEvents(true, 405, 'Superaste las solicitudes de citas semanales, solo se permiten: '.$quantity_events_weekly);
+    	}elseif($monthly_count >= $quantity_events_monthly){
 
-          //dd('conteo semanal', $weekly_count);
-        	return $this->errorResponseQuantityEvents(true, 405, 'Superaste las solicitudes de citas semanales, solo se permiten: '.$quantity_events_weekly);
-      	}elseif($monthly_count >= $quantity_events_monthly){
+    	 
+		   return $this->errorResponseQuantityEvents(true, 405, 'Superaste las solicitudes de citas mensuales, solo se permiten:'.$quantity_events_monthly);
 
-      	 //dd('conteo mensual', $monthly_count);
-			   return $this->errorResponseQuantityEvents(true, 405, 'Superaste las solicitudes de citas mensuales, solo se permiten:'.$quantity_events_monthly);     	
-       	}else{
+      //:::: SOLO ADMIN_ROLE PUEDE CREAR EVENTOS ::::// 
+            	
+     	}elseif($user_role_new == 'ADMIN_ROLE'){
+      	
+    
+    	  $apiaudiophoneventnew->save();
 
-        	
-      //dd($weekly_count, $monthly_count);
-
-	    	$apiaudiophoneventnew->save();
-
-	    	return $this->successResponseApiaudiophonEventStore(true, 201, 'Evento Creado Exitosamente', $apiaudiophonevent_service_name, $apiaudiophoneventnew);
-       	}
+    	  return $this->successResponseApiaudiophonEventStore(true, 201, 'Evento Creado Exitosamente', $apiaudiophonevent_service_name, $apiaudiophoneventnew);
+      }else{
+        
+        return $this->errorResponse('Usuario no es administrador, no puede crear eventos', 400);
+     	}
     }
     
     /**
@@ -457,6 +466,13 @@ class ApiAudioPhonEventController extends Controller
 	    $quantity_events_monthly = $this->quantity_monthly_day_last_configuration($apiaudiophoneventdata_upd['id_apiaudiophoneterms']);
 
 
+      //::::: OBTENEMOS EL TIPO DE USUARIO ::::://
+
+      $user_upd = ApiAudiophoneUser::select('apiaudiophoneusers_role')->where('apiaudiophoneusers_id', $id_apiaudiophoneusers)->firstOrFail();
+
+      $user_role_upd = $user_upd->apiaudiophoneusers_role;
+
+
 	    //:::: OBTENEMOS LA INSTANCIA DEL APIAUDIOPHONEVENT A ACTUALIZAR :::://
 
     	$apiaudiophoneventupdate = ApiAudiophonEvent::findOrFail($apiaudiophoneventdata_upd['apiaudiophonevents_id']);
@@ -529,9 +545,15 @@ class ApiAudioPhonEventController extends Controller
         return $this->errorResponse('La fecha del evento debe ser mayor o igual a: '.$today_upd, 400);
       }
 
-    	$apiaudiophoneventupdate->update();
+    	if($user_role_upd == 'ADMIN_ROLE'){
 
-    	return $this->successResponseApiaudiophonEventUpdate(true, 201, 'Evento Actualizado Exitosamente', $apiaudiophonevent_service_name, $apiaudiophoneventupdate);
+        $apiaudiophoneventupdate->update();
+
+      	return $this->successResponseApiaudiophonEventUpdate(true, 201, 'Evento Actualizado Exitosamente', $apiaudiophonevent_service_name, $apiaudiophoneventupdate);
+      }else{
+
+        return $this->errorResponse('Usuario no es administrador, no puede actualizar eventos', 400);
+      }
     }
 
 

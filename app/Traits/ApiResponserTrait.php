@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 trait ApiResponserTrait
 {
 
+
   /*
  * Responser de afirmacciones estándar
  *
@@ -20,6 +21,7 @@ trait ApiResponserTrait
       'code' => $code
     ], $code);
   }
+
 
  /*
  * Responser de afirmacciones estándar para ApiaudiophoneUser
@@ -36,6 +38,7 @@ trait ApiResponserTrait
       'apiaudiophoneuserdata' => $apiaudiophoneuserdata
     ], $code);
   }
+
 
   /*
  * Responser de afirmacciones estándar para ApiaudiophoneUser
@@ -54,6 +57,7 @@ trait ApiResponserTrait
     ], $code);
   }
 
+
   /*
  * Responser de afirmacciones estándar para ApiaudiophoneUser
  *
@@ -69,6 +73,7 @@ trait ApiResponserTrait
         'apiaudiophoneusernew' => $apiaudiophoneusernew
       ], $code);
   }
+
 
  /*
  * Responser de afirmacciones estándar para ApiaudiophoneTerm
@@ -87,6 +92,7 @@ trait ApiResponserTrait
       'apiaudiophonetermshowdata' => $apiaudiophonetermshowdata                
     ], $code);
   }
+
 
   /*
  * Responser de afirmacciones estándar para ApiaudiophoneTerm
@@ -119,6 +125,7 @@ trait ApiResponserTrait
       'apiaudiophoneventdata' => $apiaudiophoneventdata
     ], $code);
   }
+
 
   /*
  * Responser de afirmacion apiaudiophonevent
@@ -196,6 +203,58 @@ trait ApiResponserTrait
 
 
   /*
+ * Responser de afirmacion estándar para ApiaudiophoneItem show
+ *
+ */
+  public function successResponseApiaudiophoneItem($ok = true, $code, $itemstotal, $apiaudiophoneitemdata)
+  {
+  
+    return response()->json([
+
+      'ok' => $ok,
+      'status' => $code,
+      'bditemstotal' => $itemstotal,
+      'apiaudiophoneitemdata' => $apiaudiophoneitemdata
+    ], $code);
+  }
+
+
+  /*
+ * Responser de afirmacciones estándar para ApiaudiophoneItem create
+ *
+ */
+  public function successResponseApiaudiophoneItemStore($ok = null, $code, $apiaudiophoneitemessage, $apiaudiophoneitemnew)
+  {
+  
+    return response()->json([
+
+        'ok' => $ok,
+        'status' => $code,
+        'apiaudiophoneitemessage' => $apiaudiophoneitemessage,
+        'apiaudiophoneitemnew' => $apiaudiophoneitemnew
+      ], $code);
+  }
+
+
+  /*
+ * Responser de afirmacciones estándar para ApiaudiophoneItem update
+ *
+ */
+  public function successResponseApiaudiophoneItemUpdate($ok = null, $code, $apiaudiophoneitemessage, $apiaudiophoneitemupdate)
+  {
+  
+    return response()->json([
+
+        'ok' => $ok,
+        'status' => $code,
+        'apiaudiophoneitemessage' => $apiaudiophoneitemessage,
+        'apiaudiophoneitemupdate' => $apiaudiophoneitemupdate
+      ], $code);
+  }
+
+
+
+  /*
  * Responser de Errores para Credenciales Vencidas
  *
  */
@@ -209,8 +268,9 @@ trait ApiResponserTrait
     ], $code);
   }
 
+
   /*
- * Responser de afirmacciones estándar para ApiaudiophoneUser
+ * Responser de error estándar para ApiaudiophoneUser
  *
  */
   public function errorResponseApiaudiophoneUser($ok = true, $code, $bduserstotal, $apiaudiophoneusermessage)
@@ -224,6 +284,7 @@ trait ApiResponserTrait
       'apiaudiophoneusermessage' => $apiaudiophoneusermessage
     ], $code);
   }
+
 
  /*
  * Responser de error estándar para ApiaudiophoneTerm
@@ -241,6 +302,7 @@ trait ApiResponserTrait
     ], $code);
   }
 
+
  /*
  * Responser de errores estándar para ApiaudiophoneTerm
  *
@@ -255,6 +317,7 @@ trait ApiResponserTrait
         'apiaudiophoneterm_mesaage' => $apiaudiophoneterm_mesaage
       ], $code);
   }
+
 
  /*
  * Responser de errores estándar para ApiaudiophoneTerm
@@ -290,11 +353,8 @@ trait ApiResponserTrait
   }
 
 
-
-
-
  /*
- * Responser de afirmacion estándar para ApiaudiophoneTermDestroy
+ * Responser de error estándar para ApiaudiophoneTermDestroy
  *
  */
   public function errorResponseApiaudiophoneUserDestroy($ok = null, $code, $apiaudiophoneterm_mesaage)
@@ -308,8 +368,9 @@ trait ApiResponserTrait
     ], $code);
   }
 
+ 
  /*
- * Responser de afirmacion estándar para ApiaudiophoneTermDestroy
+ * Responser de error estándar para ApiaudiophoneTermDestroy
  *
  */
   public function errorResponseApiaudiophoneTermDestroy($ok = null, $code, $apiaudiophoneterm_mesaage)
@@ -323,8 +384,9 @@ trait ApiResponserTrait
     ], $code);
   }
 
+ 
   /*
- * Responser de afirmacion estándar para ApiaudiophoneTermDestroy
+ * Responser de error estándar para ApiaudiophoneTermDestroy
  *
  */
   public function errorResponseApiaudiophonEventDestroy($ok = null, $code, $apiaudiophonevent_mesaage)
@@ -335,6 +397,22 @@ trait ApiResponserTrait
       'ok' => $ok, 
       'status' => $code,
       'apiaudiophonevent_mesaage' => $apiaudiophonevent_mesaage
+    ], $code);
+  }
+
+
+  /*
+ * Responser estándar para ApiaudiophoneItem delete
+ *
+ */
+  public function errorResponseApiaudiophoneItemDelete($ok = null, $code, $apiaudiophoneitem_mesaage)
+  {
+  
+    return response()->json([
+
+      'ok' => $ok, 
+      'status' => $code,
+      'apiaudiophoneterm_mesaage' => $apiaudiophoneitem_mesaage
     ], $code);
   }
 

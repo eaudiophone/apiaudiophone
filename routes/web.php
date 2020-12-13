@@ -207,3 +207,45 @@ $router->get('/prueba', function(){
 
 	return view('budgetview.presupuesto');
 });
+
+
+/*
+	RUTAS PARA EL MODELO ITEMS
+
+*/
+
+
+$router->post('api/apiaudiophoneitem/show/{id_apiaudiophoneusers:[0-9]+}', [
+
+
+	'middleware' => ['cors', 'client.credentials', 'auth:api'],
+	'as' => 'item.show',
+	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhoneItemController@showApiaudiophoneItem'
+]);
+
+
+$router->post('api/apiaudiophoneitem/store/{id_apiaudiophoneusers:[0-9]+}', [
+
+
+	'middleware' => ['cors', 'client.credentials', 'auth:api'],
+	'as' => 'item.store',
+	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhoneItemController@storeApiaudiophoneItem'
+]);
+
+
+$router->put('api/apiaudiophoneitem/update/{id_apiaudiophoneusers:[0-9]+}', [
+
+
+	'middleware' => ['cors', 'client.credentials', 'auth:api'],
+	'as' => 'item.update',
+	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhoneItemController@updateApiaudiophoneItem'
+]);
+
+
+$router->delete('api/apiaudiophoneitem/destroy/{id_apiaudiophoneusers:[0-9]+}', [
+
+
+	'middleware' => ['cors', 'client.credentials', 'auth:api'],
+	'as' => 'item.destroy',
+	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhoneItemController@destroyApiaudiophoneItem'
+]);

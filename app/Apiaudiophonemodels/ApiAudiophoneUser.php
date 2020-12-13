@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Apiaudiophonemodels\ApiAudiophoneTerm;
 use App\Apiaudiophonemodels\ApiAudiophoneService;
 use App\Apiaudiophonemodels\ApiAudiophonEvent;
+use App\Apiaudiophonemodels\ApiAudiophoneItem;
 
 class ApiAudiophoneUser extends Model implements AuthenticatableContract, AuthorizableContract
 {
@@ -54,7 +55,7 @@ class ApiAudiophoneUser extends Model implements AuthenticatableContract, Author
 
     
     /**
-    * Relacion user vs. event uno a muchos
+    * Relacion user vs. term uno a muchos
     *
     * @return App\Apiaudiophonemodels\ApiAudiophoneTerm
     */
@@ -74,9 +75,21 @@ class ApiAudiophoneUser extends Model implements AuthenticatableContract, Author
         return $this->hasMany(ApiAudiophonEvent::class, 'id_apiaudiophoneusers', 'apiaudiophoneusers_id');
     }
 
+
+    /**
+     * Relacion user vs. item uno a muchos
+     *
+     * @return App\Apiaudiophonemodels\ApiAudiophoneItem 
+     */
+    public function apiaudiophoneitem(){
+
+        return $this->hasMany(ApiAudiophoneItem::class, 'id_apiaudiophoneusers', 'apiaudiophoneusers_id');
+    }
+
+
     /**
      * Relacion oauth_acces_token vs. apiaudiophonesusers uno a uno, AHORITA ESTA RELACION NO SE USA porq era para meterlo en un middleware
-     * de validación de token, en su lugar se personalizo la clase Habdling de las excepciones.
+     * de validación de token, en su lugar se personalizo la clase Handling de las excepciones.
      *
      * @return Laravel\Passport\Token
      */
@@ -110,5 +123,14 @@ class ApiAudiophoneUser extends Model implements AuthenticatableContract, Author
     {
 
         return Hash::check($password, $this->apiaudiophoneusers_password);
+    }
+
+    //:::: SCOPES :::://
+    public function scopeItemUser($query, $id_apiaudiophoneusers){
+
+        if($id_apiaudiophoneusers){
+
+            return $query->where('apiaudiophoneusers_id', $id_apiaudiophoneusers);
+        }
     }
 }

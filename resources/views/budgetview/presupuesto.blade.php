@@ -59,7 +59,9 @@
 
 						<p>
 						   Nombre:<br> 
-						   Email:	
+						   Email:<br>
+						   Teléfono de Contacto:<br>
+						   Social_Network:	
 						</p>
 					</div>
 				</div>				
