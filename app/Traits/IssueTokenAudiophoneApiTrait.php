@@ -31,7 +31,6 @@ trait IssueTokenAudiophoneApiTrait
         });
 
 
-
         if ($response->getStatusCode() < 200 || $response->getStatusCode() > 299) {
             return $response;
         }
@@ -39,6 +38,7 @@ trait IssueTokenAudiophoneApiTrait
         $payload = json_decode($response->getBody()->__toString(), true);
 
         if (isset($payload['access_token'])) {
+            //$tokenId = $this->jwt->parse($payload['access_token'])->getClaim('jti');
             $tokenId = $this->jwt->parse($payload['access_token'])->getClaim('jti');
             $token = $this->tokens->find($tokenId);
 

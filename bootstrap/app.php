@@ -80,9 +80,8 @@ $app->configure('cors');
 
 $app->configure('auth');
 
-
 /*
-    ::::: LARAVEL DOMPDF :::::
+    ::::: LARAVEL-LUMEN DOMPDF :::::
 */
 
 $app->configure('dompdf');

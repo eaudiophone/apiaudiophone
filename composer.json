@@ -12,7 +12,8 @@
         "fruitcake/laravel-cors": "^1.0",
         "laravel/lumen-framework": "^7.0",
         "nesbot/carbon": "^2.34",
-        "symfony/http-kernel": "^5.1.5"
+        "symfony/http-kernel": "^5.1.5",
+        "lcobucci/jwt": "^3.4"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.9.1",

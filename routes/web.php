@@ -1,5 +1,6 @@
 <?php
 
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -199,14 +200,22 @@ $router->get('api/apiaudiophonebudget/generate/{id_apiaudiophoneusers:[0-9]+}', 
 
 	'middleware' => ['cors', 'client.credentials', 'auth:api'],
 	'as' => 'budget.generate',
-	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhoneBudgetPdfController@showApiAudioPhoneBudgetPdf'
+	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhoneBudgetPdfController@createApiAudioPhoneBudgetPdf'
 ]);
 
 
-$router->get('/prueba', function(){
 
-	return view('budgetview.presupuesto');
-});
+/*$router->get('/prueba', function(){
+
+
+	//return view('budgetview.presupuesto');
+
+	$pdf = app('dompdf.wrapper');
+	$pdf->loadView('budgetview.presupuesto');
+	return $pdf->stream();
+
+	// return view('budgetview.presupuesto');
+});*/
 
 
 /*

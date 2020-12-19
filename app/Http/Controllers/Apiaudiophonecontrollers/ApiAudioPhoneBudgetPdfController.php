@@ -3,15 +3,23 @@
 namespace App\Http\Controllers\Apiaudiophonecontrollers;
 
 use App\Http\Controllers\Controller;
+use App\Apiaudiophonemodels\ApiAudiophoneUser;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 class ApiAudioPhoneBudgetPdfController extends Controller
 {
     
-    public function showApiAudioPhoneBudgetPdf()
+    public function createApiAudioPhoneBudgetPdf(Request $request, $)
     {
 
-    	return view('budgetview.presupuesto');
+    	$pdf = app('dompdf.wrapper');
+		$pdf->loadView('budgetview.presupuesto');
+		return $pdf->stream();
+
+
+    	//$pdf = PDF::loadView();
+
+    	//return view('budgetview.presupuesto');
     }
 }

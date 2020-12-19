@@ -271,7 +271,7 @@ class ApiAudioPhoneItemController extends Controller
 
 
 	/**
-	 * show ApiaudiophoneItems Instance	
+	 * destroy ApiaudiophoneItems Instance	
 	 *
 	 * @param \Illuminate\Http\Request $request
 	 * @return \Illuminate\Http\Response 
