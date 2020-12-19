@@ -38,7 +38,6 @@ trait IssueTokenAudiophoneApiTrait
         $payload = json_decode($response->getBody()->__toString(), true);
 
         if (isset($payload['access_token'])) {
-            //$tokenId = $this->jwt->parse($payload['access_token'])->getClaim('jti');
             $tokenId = $this->jwt->parse($payload['access_token'])->getClaim('jti');
             $token = $this->tokens->find($tokenId);
 
