@@ -75,7 +75,7 @@ class ApiAudioPhoneItemController extends Controller
 
 					if(!($chain) && ($bd_item_total <= 5)){						
 					
-						$apiaudiophoneitemdata = ApiAudiophoneItem::select('apiaudiophoneitems_name', 'apiaudiophoneitems_description', 'apiaudiophoneitems_price')->oderBy('apiaudiophoneitems_id','asc')->get();
+						$apiaudiophoneitemdata = ApiAudiophoneItem::select('apiaudiophoneitems_name', 'apiaudiophoneitems_description', 'apiaudiophoneitems_price')->oderBy('apiaudiophoneitems_id','desc')->get();
 
 						return $this->successResponseApiaudiophoneItem(true, 200, $bd_item_total, $apiaudiophoneitemdata);
 
@@ -85,7 +85,7 @@ class ApiAudioPhoneItemController extends Controller
 							
 						// :::: Eviamos los Items creados a la vista :::: //
 
-						$apiaudiophoneitemdata = ApiAudiophoneItem::select('apiaudiophoneitems_name', 'apiaudiophoneitems_description', 'apiaudiophoneitems_price')->whereBetween('apiaudiophoneitems_id', [1, 5])->get();
+						$apiaudiophoneitemdata = ApiAudiophoneItem::select('apiaudiophoneitems_name', 'apiaudiophoneitems_description', 'apiaudiophoneitems_price')->whereBetween('apiaudiophoneitems_id', [1, 5])->oderBy('apiaudiophoneitems_id','desc')->get();
 
 
 						return $this->successResponseApiaudiophoneItem(true, 200, $bd_item_total, $apiaudiophoneitemdata);
@@ -100,7 +100,7 @@ class ApiAudioPhoneItemController extends Controller
 
 						// :::: Eviamos los Items creados a la vista :::: //
 
-						$apiaudiophoneitemdata = ApiAudiophoneItem::select('apiaudiophoneitems_name', 'apiaudiophoneitems_description', 'apiaudiophoneitems_price')->where('apiaudiophoneitems_name', 'like', '%'.$chain.'%')->orWhere('apiaudiophoneitems_description', 'like', '%'.$chain.'%')->ordeBy('apiaudiophoneitems_id', 'asc')->get();
+						$apiaudiophoneitemdata = ApiAudiophoneItem::select('apiaudiophoneitems_name', 'apiaudiophoneitems_description', 'apiaudiophoneitems_price')->where('apiaudiophoneitems_name', 'like', '%'.$chain.'%')->orWhere('apiaudiophoneitems_description', 'like', '%'.$chain.'%')->ordeBy('apiaudiophoneitems_id', 'desc')->get();
 
 
 						return $this->successResponseApiaudiophoneItem(true, 200, $apiaudiophoneitemdatacount, $apiaudiophoneitemdata); 
@@ -126,7 +126,7 @@ class ApiAudioPhoneItemController extends Controller
 						
 							// :::: Eviamos los Items creados a la vista :::: //
 
-							$apiaudiophoneitemdata = ApiAudiophoneItem::select('apiaudiophoneitems_name', 'apiaudiophoneitems_description', 'apiaudiophoneitems_price')->whereBetween('apiaudiophoneitems_id', [1, 5])->get();
+							$apiaudiophoneitemdata = ApiAudiophoneItem::select('apiaudiophoneitems_name', 'apiaudiophoneitems_description', 'apiaudiophoneitems_price')->whereBetween('apiaudiophoneitems_id', [1, 5])->orderBy('apiaudiophoneitems_id','desc')->get();
 
 
 							return $this->successResponseApiaudiophoneItem(true, 200, $bd_item_total, $apiaudiophoneitemdata);
@@ -137,7 +137,7 @@ class ApiAudioPhoneItemController extends Controller
 						
 							// :::: Eviamos los Items creados a la vista :::: //
 
-							$apiaudiophoneitemdata = ApiAudiophoneItem::select('apiaudiophoneitems_name', 'apiaudiophoneitems_description', 'apiaudiophoneitems_price')->whereBetween('apiaudiophoneitems_id', [1, 5])->get();
+							$apiaudiophoneitemdata = ApiAudiophoneItem::select('apiaudiophoneitems_name', 'apiaudiophoneitems_description', 'apiaudiophoneitems_price')->whereBetween('apiaudiophoneitems_id', [1, 5])->orderBy('apiaudiophoneitems_id','desc')->get();
 
 
 							return $this->successResponseApiaudiophoneItem(true, 200, $bd_item_total, $apiaudiophoneitemdata);
@@ -145,18 +145,46 @@ class ApiAudioPhoneItemController extends Controller
 						
 							// :::: Eviamos los Items creados a la vista :::: //
 
-							$apiaudiophoneitemdata = ApiAudiophoneItem::select('apiaudiophoneitems_name', 'apiaudiophoneitems_description', 'apiaudiophoneitems_price')->whereBetween('apiaudiophoneitems_id', [$start, $end])->get();
+							$apiaudiophoneitemdata = ApiAudiophoneItem::select('apiaudiophoneitems_name', 'apiaudiophoneitems_description', 'apiaudiophoneitems_price')->whereBetween('apiaudiophoneitems_id', [$start, $end])->orderBy('apiaudiophoneitems_id','desc')->get();
 
 							return $this->successResponseApiaudiophoneItem(true, 200, $bd_item_total, $apiaudiophoneitemdata);
 						}
 					}else{
+
+
 						return $this->errorResponse('Elementos del Request no Corresponden', 400);
 					}
-				}elseif($parameters_total == 0 || $parameters_total >= 3){
 
+					// :::: Primera consulta si hay menos de 5 items creados en la BD :::: //
+				}elseif($parameters_total == 0){
 
+					if($bd_item_total <= 5){						
+
+						$apiaudiophoneitemdata = ApiAudiophoneItem::select('apiaudiophoneitems_name', 'apiaudiophoneitems_description', 'apiaudiophoneitems_price')->orderBy('apiaudiophoneitems_id','desc')->get();
+
+						return $this->successResponseApiaudiophoneItem(true, 200, $bd_item_total, $apiaudiophoneitemdata);
+
+					// :::: Cuando es la primera consulta, sin parametros y hay mas de 5 usuarios :::: //
+
+					}else{							
+
+						// :::: Eviamos los Items creados a la vista :::: //
+
+						$apiaudiophoneitemdata = ApiAudiophoneItem::select('apiaudiophoneitems_name', 'apiaudiophoneitems_description', 'apiaudiophoneitems_price')->whereBetween('apiaudiophoneitems_id', [1, 5])->orderBy('apiaudiophoneitems_id','desc')->get();
+
+						return $this->successResponseApiaudiophoneItem(true, 200, $bd_item_total, $apiaudiophoneitemdata);
+											
+						// :::: Cuando enviamos a partir de tres parámetros en el request :::: //
+					}
+				}elseif($parameters_total >= 3){
+
+					
+					return $this->errorResponse('Excede los parámetros del Request', 400);
+				}else{
+
+					
 					return $this->errorResponse('Ha realizado una peticion incorrecta', 400);
-				}
+				}					
 			}
 		}else{
 
@@ -198,13 +226,16 @@ class ApiAudioPhoneItemController extends Controller
 		
 		if($user_item_rol == 'ADMIN_ROLE'){
 
-			$apiaudiophoneitemnew = ApiAudiophoneItem::create([
+			
+			$apiaudiophoneitemnew = new ApiAudiophoneItem;
 
-				'id_apiaudiophoneusers' => $id_apiaudiophoneusers,
-				'apiaudiophoneitems_name' => $item_data_store['apiaudiophoneitems_name'],
-				'apiaudiophoneitems_description' => $item_data_store['apiaudiophoneitems_description'],
-				'apiaudiophoneitems_price' => $item_data_store['apiaudiophoneitems_price']
-			]);
+			$apiaudiophoneitemnew->id_apiaudiophoneusers = $id_apiaudiophoneusers;			
+			$apiaudiophoneitemnew->apiaudiophoneitems_name = $item_data_store['apiaudiophoneitems_name'];			
+			$apiaudiophoneitemnew->apiaudiophoneitems_description = $item_data_store['apiaudiophoneitems_description'];			
+			$apiaudiophoneitemnew->apiaudiophoneitems_price = $item_data_store['apiaudiophoneitems_price'];			
+
+			$apiaudiophoneitemnew->save();
+
 
 			return $this->successResponseApiaudiophoneItemStore(true, 201, 'Item Creado Satisfactoriamente', $apiaudiophoneitemnew);
 
