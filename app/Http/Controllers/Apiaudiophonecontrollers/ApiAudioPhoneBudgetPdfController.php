@@ -10,8 +10,10 @@ use Carbon\Carbon;
 class ApiAudioPhoneBudgetPdfController extends Controller
 {
     
-    public function createApiAudioPhoneBudgetPdf(Request $request, $)
+    public function createApiAudioPhoneBudgetPdf()
     {
+
+    	dd('hola');
 
     	$pdf = app('dompdf.wrapper');
 		$pdf->loadView('budgetview.presupuesto');

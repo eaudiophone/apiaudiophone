@@ -96,7 +96,6 @@ class ApiAudioPhoneItemController extends Controller
 
 					}else{
 					
-					dd('hola3');
 						// :::: Contamos los Elementos que se obtienen para busqueda stringsearch :::: //
 
 						$apiaudiophoneitemdatacount = ApiAudiophoneItem::select('apiaudiophoneitems_id', 'id_apiaudiophoneusers', 'apiaudiophoneitems_name', 'apiaudiophoneitems_description', 'apiaudiophoneitems_price')->where('apiaudiophoneitems_name', 'like', '%'.$chain.'%')->orWhere('apiaudiophoneitems_description', 'like', '%'.$chain.'%')->count();
