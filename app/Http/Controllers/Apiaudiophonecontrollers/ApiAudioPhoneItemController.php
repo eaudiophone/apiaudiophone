@@ -75,6 +75,8 @@ class ApiAudioPhoneItemController extends Controller
 
 					if(!($chain) && ($bd_item_total <= 5)){						
 					
+						// :::: Eviamos los Items creados a la vista :::: //
+
 						$apiaudiophoneitemdata = ApiAudiophoneItem::select('apiaudiophoneitems_id', 'id_apiaudiophoneusers', 'apiaudiophoneitems_name', 'apiaudiophoneitems_description', 'apiaudiophoneitems_price')->orderBy('apiaudiophoneitems_id','asc')->get();
 
 						return $this->successResponseApiaudiophoneItem(true, 200, $bd_item_total, $apiaudiophoneitemdata);
@@ -82,7 +84,7 @@ class ApiAudioPhoneItemController extends Controller
 					// :::: Cuando es la primera consulta, la cadena el request esta vacía y existen mas de 5 usuarios :::: //
 
 					}elseif(!($chain) && ($bd_item_total >= 5)){
-							
+
 						// :::: Eviamos los Items creados a la vista :::: //
 
 						$apiaudiophoneitemdata = ApiAudiophoneItem::select('apiaudiophoneitems_id', 'id_apiaudiophoneusers', 'apiaudiophoneitems_name', 'apiaudiophoneitems_description', 'apiaudiophoneitems_price')->whereBetween('apiaudiophoneitems_id', [1, 5])->orderBy('apiaudiophoneitems_id','asc')->get();
@@ -94,6 +96,7 @@ class ApiAudioPhoneItemController extends Controller
 
 					}else{
 					
+					dd('hola3');
 						// :::: Contamos los Elementos que se obtienen para busqueda stringsearch :::: //
 
 						$apiaudiophoneitemdatacount = ApiAudiophoneItem::select('apiaudiophoneitems_id', 'id_apiaudiophoneusers', 'apiaudiophoneitems_name', 'apiaudiophoneitems_description', 'apiaudiophoneitems_price')->where('apiaudiophoneitems_name', 'like', '%'.$chain.'%')->orWhere('apiaudiophoneitems_description', 'like', '%'.$chain.'%')->count();
