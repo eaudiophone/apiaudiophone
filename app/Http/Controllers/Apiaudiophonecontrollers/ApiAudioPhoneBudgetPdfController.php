@@ -13,9 +13,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
     public function createApiAudioPhoneBudgetPdf()
     {
 
-    	dd('hola');
-
-    	$pdf = app('dompdf.wrapper');
+      	$pdf = app('dompdf.wrapper');
 		$pdf->loadView('budgetview.presupuesto');
 		return $pdf->stream();
 
