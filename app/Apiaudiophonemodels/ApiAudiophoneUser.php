@@ -14,6 +14,7 @@ use App\Apiaudiophonemodels\ApiAudiophoneTerm;
 use App\Apiaudiophonemodels\ApiAudiophoneService;
 use App\Apiaudiophonemodels\ApiAudiophonEvent;
 use App\Apiaudiophonemodels\ApiAudiophoneItem;
+use App\Apiaudiophonemodels\ApiAudiophoneBudget;
 
 class ApiAudiophoneUser extends Model implements AuthenticatableContract, AuthorizableContract
 {
@@ -88,6 +89,17 @@ class ApiAudiophoneUser extends Model implements AuthenticatableContract, Author
 
 
     /**
+     * Relacion user vs. budget uno a muchos
+     *
+     * @return App\Apiaudiophonemodels\ApiAudiophoneBudget 
+     */
+    public function apiaudiophonebudget(){
+
+        return $this->hasMany(ApiAudiophoneBudget::class, 'id_apiaudiophoneusers', 'apiaudiophoneusers_id');
+    }
+
+
+    /**
      * Relacion oauth_acces_token vs. apiaudiophonesusers uno a uno, AHORITA ESTA RELACION NO SE USA porq era para meterlo en un middleware
      * de validación de token, en su lugar se personalizo la clase Handling de las excepciones.
      *
@@ -126,6 +138,7 @@ class ApiAudiophoneUser extends Model implements AuthenticatableContract, Author
     }
 
     //:::: SCOPES :::://
+    
     public function scopeItemUser($query, $id_apiaudiophoneusers){
 
         if($id_apiaudiophoneusers){

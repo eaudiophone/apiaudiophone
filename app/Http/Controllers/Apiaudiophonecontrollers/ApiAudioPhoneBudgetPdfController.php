@@ -22,4 +22,55 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 
     	//return view('budgetview.presupuesto');
     }
+
+    /**
+	 * show ApiaudiophoneItems Instance	
+	 *
+	 * @param \Illuminate\Http\Request $request
+	 * @return \Illuminate\Http\Response 
+	*/
+    public function showApiaudiophoneBudget(Request $request, $id_apiaudiophoneusers = null)
+	{
+
+	}
+
+	/**
+	 * store ApiaudiophoneItems Instance	
+	 *
+	 * @param \Illuminate\Http\Request $request
+	 * @return \Illuminate\Http\Response 
+	*/
+	public function storeApiaudiophoneBudget(Request $request, $id_apiaudiophoneusers = null)
+	{
+
+
+		
+
+
+	}
+
+	/**
+	 * update ApiaudiophoneItems Instance	
+	 *
+	 * @param \Illuminate\Http\Request $request
+	 * @return \Illuminate\Http\Response 
+	*/
+	public function updateApiaudiophoneBudget(Request $request, $id_apiaudiophoneusers = null)
+	{
+
+	}
+
+
+	/**
+	 * destroy ApiaudiophoneItems Instance	
+	 *
+	 * @param \Illuminate\Http\Request $request
+	 * @return \Illuminate\Http\Response 
+	*/
+	public function destroyApiaudiophoneBudget(Request $request, $id_apiaudiophoneusers = null)
+	{
+
+	}
+
+
 }

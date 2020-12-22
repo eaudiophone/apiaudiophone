@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Apiaudiophonemodels\ApiAudiophoneUser;
 use App\Apiaudiophonemodels\ApiAudiophoneTerm;
 use App\Apiaudiophonemodels\ApiAudiophonEvent;
+use App\Apiaudiophonemodels\ApiAudiophoneBudget;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ApiAudiophoneService extends Model
@@ -55,6 +56,15 @@ class ApiAudiophoneService extends Model
     {
 
         return $this->hasMany(ApiAudiophonEvent::class, 'id_apiaudiophoneservices', 'apiaudiophoneservices_id');
+    }
+
+
+    //::::: UN SERVICIO TIENE VARIOS BUDGETS ::::://
+
+    public function apiaudiophonebudget()
+    {
+
+        return $this->hasMany(ApiAudiophoneBudget::class, 'id_apiaudiophoneservices', 'apiaudiophoneservices_id');
     }
 
 

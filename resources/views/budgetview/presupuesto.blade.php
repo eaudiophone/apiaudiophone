@@ -63,10 +63,11 @@
 						<h1 class="h3">Datos Del Cliente</h1>
 
 						<p>
-						   Nombre:<br> 
-						   Email:<br>
-						   Teléfono de Contacto:<br>
-						   Social_Network:	
+						   Nombre:</br> 
+						   Email:</br>
+						   Teléfono de Contacto:</br>
+						   Social_Network:</br>
+						   Servicio:	
 						</p>
 					</div>
 				</div>				
