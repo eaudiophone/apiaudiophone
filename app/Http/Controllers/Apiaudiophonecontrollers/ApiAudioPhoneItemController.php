@@ -71,7 +71,7 @@ class ApiAudioPhoneItemController extends Controller
 
 					$chain = $item_data_show['stringsearch'];
 
-					// :::: Cuando es la primera consulta, la cadena el request esta vacía y existen menos de 5 itess :::: //
+					// :::: Cuando es la primera consulta, la cadena el request esta vacía y existen menos de 5 items :::: //
 
 					if(!($chain) && ($bd_item_total <= 5)){						
 					
@@ -105,7 +105,7 @@ class ApiAudioPhoneItemController extends Controller
 
 						return $this->successResponseApiaudiophoneItem(true, 200, $bd_item_total, $apiaudiophoneitemdata);
 					
-						// :::: Cuando existe una busqueda por stringsearch asumimos que hay mas de 5 usuarios :::: //
+						// :::: Cuando stringsearch está vacía y asumimos que hay mas de 5 usuarios :::: //
 					}elseif(!($chain) && ($bd_item_total >= 5)){
 
 						// :::: Eviamos los Items creados a la vista :::: //
@@ -136,14 +136,14 @@ class ApiAudioPhoneItemController extends Controller
 
 					$keys_item_data_show = $this->arrayKeysRequest($item_data_show);
 
-					// :::: Validamos que lo recibido por el Request sean los 
+					// :::: Validamos que lo recibido por el Request sean los parametros de star y end :::: //
 
 					if(($keys_item_data_show[0] == 'start') && ($keys_item_data_show[1] == 'end')){
 
 						$start = $item_data_show['start'];
 						$end = $item_data_show['end'];
 
-						// :::: Cuando están vacíos los parametros de búsqueda, devuelve los primeros 5:::: //
+						// :::: Cuando están vacíos los parametros de búsqueda, devuelve los primeros 5 :::: //
 
 						if(!($start) && !($end)){
 						
@@ -187,10 +187,10 @@ class ApiAudioPhoneItemController extends Controller
 
 						return $this->successResponseApiaudiophoneItem(true, 200, $bd_item_total, $apiaudiophoneitemdata);
 
-						// :::: Cuando es la primera consulta, sin parametros y hay mas de 5 usuarios :::: //
+						// :::: Cuando es la primera consulta, sin parametros y hay mas de 5 items :::: //
 					}else{							
 
-						// :::: Eviamos los Items creados a la vista :::: //
+						// :::: Enviamos los Items creados a la vista :::: //
 
 						$apiaudiophoneitemdata = ApiAudiophoneItem::select('apiaudiophoneitems_id', 'id_apiaudiophoneusers', 'apiaudiophoneitems_name', 'apiaudiophoneitems_description', 'apiaudiophoneitems_price')->whereBetween('apiaudiophoneitems_id', [1, 5])->orderBy('apiaudiophoneitems_id','asc')->get();
 
@@ -241,7 +241,7 @@ class ApiAudioPhoneItemController extends Controller
 
 		//:::: Obtenemos el usuario que gestiona el item y accedemos al rol:::://
 
-		$user = ApiAudiophoneUser::itemuser($id_apiaudiophoneusers)->first();
+		$user = ApiAudiophoneUser::itemuser($id_apiaudiophoneusers)->firstOrFail();
 
 		$user_item_rol = $user->apiaudiophoneusers_role;
 

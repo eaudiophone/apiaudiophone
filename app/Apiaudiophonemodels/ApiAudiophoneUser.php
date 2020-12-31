@@ -146,4 +146,13 @@ class ApiAudiophoneUser extends Model implements AuthenticatableContract, Author
             return $query->where('apiaudiophoneusers_id', $id_apiaudiophoneusers);
         }
     }
+
+    
+    public function scopeBudgetUser($query, $id_apiaudiophoneusers){
+
+        if($id_apiaudiophoneusers){
+
+            return $query->where('apiaudiophoneusers_id', $id_apiaudiophoneusers);
+        }
+    }
 }

@@ -197,7 +197,7 @@ $router->delete('api/apiaudiophonevent/destroy/{id_apiaudiophoneusers:[0-9]+}', 
 $router->get('api/apiaudiophonebudget/generate/{id_apiaudiophoneusers:[0-9]+}', [
 
 
-	'middleware' => ['cors', 'client.credentials', 'auth:api'],
+	//'middleware' => ['cors', 'client.credentials', 'auth:api'],
 	'as' => 'budget.generate',
 	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhoneBudgetPdfController@createApiAudioPhoneBudgetPdf'
 ]);
@@ -209,6 +209,15 @@ $router->post('api/apiaudiophonebudget/show/{id_apiaudiophoneusers:[0-9]+}', [
 	'middleware' => ['cors', 'client.credentials', 'auth:api'],
 	'as' => 'budget.show',
 	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhoneBudgetPdfController@showApiaudiophoneBudget'
+]);
+
+
+$router->post('api/apiaudiophonebudget/create/{id_apiaudiophoneusers:[0-9]+}', [
+
+
+	'middleware' => ['cors', 'client.credentials', 'auth:api'],
+	'as' => 'budget.create',
+	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhoneBudgetPdfController@createApiaudiophoneBudget'
 ]);
 
 
@@ -235,7 +244,7 @@ $router->delete('api/apiaudiophonebudget/destroy/{id_apiaudiophoneusers:[0-9]+}'
 
 	'middleware' => ['cors', 'client.credentials', 'auth:api'],
 	'as' => 'budget.destroy',
-	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhoneBudgetPdfController@destroyApiaudiophoneItem'
+	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhoneBudgetPdfController@destroyApiaudiophoneBudget'
 ]);
 
 

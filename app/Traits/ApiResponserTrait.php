@@ -220,6 +220,23 @@ trait ApiResponserTrait
 
 
   /*
+ * Responser de afirmacion estándar para ApiaudiophoneBudget show
+ *
+ */
+  public function successResponseApiaudiophoneBudget($ok = true, $code, $budgetstotal, $apiaudiophonebudgetdata)
+  {
+  
+    return response()->json([
+
+      'ok' => $ok,
+      'status' => $code,
+      'bditemstotal' => $budgetstotal,
+      'apiaudiophoneitemdata' => $apiaudiophonebudgetdata
+    ], $code);
+  }
+
+
+  /*
  * Responser de afirmacciones estándar para ApiaudiophoneItem create
  *
  */
@@ -249,6 +266,39 @@ trait ApiResponserTrait
         'status' => $code,
         'apiaudiophoneitemessage' => $apiaudiophoneitemessage,
         'apiaudiophoneitemupdate' => $apiaudiophoneitemupdate
+      ], $code);
+  }
+
+  /*
+ * Responser de afirmacciones estándar para ApiaudiophoneBudget update
+ *
+ */
+  public function successResponseApiaudiophoneBudgetUpdate($ok = null, $code, $apiaudiophonebudgetmessage, $apiaudiophonebudgetupdate)
+  {
+  
+    return response()->json([
+
+        'ok' => $ok,
+        'status' => $code,
+        'apiaudiophonebudgetmessage' => $apiaudiophonebudgetmessage,
+        'apiaudiophonebudgetupdate' => $apiaudiophonebudgetupdate
+      ], $code);
+  }
+
+
+  /*
+ * Responser de afirmacciones estándar para ApiaudiophoneBudget create
+ *
+ */
+  public function successResponseApiaudiophoneBudgetStore($ok = null, $code, $apiaudiophonebudgetmessage, $apiaudiophonebudgetnew)
+  {
+  
+    return response()->json([
+
+        'ok' => $ok,
+        'status' => $code,
+        'apiaudiophonebudgetmessage' => $apiaudiophonebudgetmessage,
+        'apiaudiophonebudgetnew' => $apiaudiophonebudgetnew
       ], $code);
   }
 
@@ -416,4 +466,39 @@ trait ApiResponserTrait
     ], $code);
   }
 
+  /*
+ * Responser estándar para ApiaudiophoneBudget delete
+ *
+ */
+  public function errorResponseApiaudiophoneBudgetDelete($ok = null, $code, $apiaudiophonebudget_mesaage)
+  {
+  
+    return response()->json([
+
+      'ok' => $ok, 
+      'status' => $code,
+      'apiaudiophonebudget_mesaage' => $apiaudiophonebudget_mesaage
+    ], $code);
+  }
+
+
+  /*
+ * Responser de error ApiaudiophoneBudget, response cuando no hay budget creado en la base de datos
+ *
+ */
+  public function errorResponseBudgetCreateUno($ok = null, $code, $apiaudiophonebudget_message, $nombre_serv_uno, $id_serv_uno, $nombre_serv_dos, $id_serv_dos, $bditems)
+  {
+  
+    return response()->json([
+
+      'ok' => $ok,
+      'status' => $code,
+      'apiaudiophonebudget_message' => $apiaudiophonebudget_message,
+      'nombre_serv_uno' => $nombre_serv_uno, 
+      'id_serv_uno' => $id_serv_uno,
+      'nombre_serv_dos' => $nombre_serv_dos,
+      'id_serv_dos' => $id_serv_dos,
+      'bd_items' => $bditems
+    ], $code);
+  }
 }
