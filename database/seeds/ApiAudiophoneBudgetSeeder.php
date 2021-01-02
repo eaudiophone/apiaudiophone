@@ -1,5 +1,6 @@
 <?php
 
+use App\Apiaudiophonemodels\ApiAudiophoneBudget;
 use Illuminate\Database\Seeder;
 
 class ApiAudiophoneBudgetSeeder extends Seeder
@@ -11,6 +12,6 @@ class ApiAudiophoneBudgetSeeder extends Seeder
      */
     public function run()
     {
-        //
+        factory(ApiAudiophoneBudget::class, 10)->create();
     }
 }
