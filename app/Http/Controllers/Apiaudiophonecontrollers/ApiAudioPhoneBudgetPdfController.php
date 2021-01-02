@@ -133,11 +133,11 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 					
 						// :::: Contamos los Elementos que se obtienen para busqueda stringsearch :::: //
 
-						$apiaudiophonebudgetdatacount = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'created_at')->where('apiaudiophoneitems_name', 'like', '%'.$chain.'%')->orWhere('apiaudiophoneitems_description', 'like', '%'.$chain.'%')->count();
+						$apiaudiophonebudgetdatacount = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'created_at')->where('apiaudiophonebudgets_client_name', 'like', '%'.$chain.'%')->orWhere('apiaudiophonebudgets_client_email', 'like', '%'.$chain.'%')->count();
 
 						// :::: Eviamos los budgets creados a la vista :::: //
 
-						$apiaudiophonebudgetdata = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'created_at')->where('apiaudiophoneitems_name', 'like', '%'.$chain.'%')->orWhere('apiaudiophoneitems_description', 'like', '%'.$chain.'%')->orderBy('apiaudiophonebudgets_id', 'asc')->get();
+						$apiaudiophonebudgetdata = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'created_at')->where('apiaudiophonebudgets_client_name', 'like', '%'.$chain.'%')->orWhere('apiaudiophonebudgets_client_email', 'like', '%'.$chain.'%')->orderBy('apiaudiophonebudgets_id', 'asc')->get();
 
 
 						return $this->successResponseApiaudiophoneBudget(true, 200, $apiaudiophonebudgetdatacount, $apiaudiophonebudgetdata); 
@@ -403,7 +403,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 	}
 
 	/**
-	 * update ApiaudiophoneItems Instance	
+	 * update ApiaudiophoneBudgest instance
 	 *
 	 * @param \Illuminate\Http\Request $request
 	 * @return \Illuminate\Http\Response 

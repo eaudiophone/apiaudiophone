@@ -53,7 +53,7 @@ class ApiAudioPhonEventController extends Controller
 	        	case('ADMIN_ROLE'):
 
 		        	$all_events_last_month = $this->event_show_last_month($start_of_month, $end_of_month);
-		        	
+
 		        	return $this->successResponseApiaudiophonEventShow(true, 200,  $all_events_last_month);
 	        	  	
 	        	  	break;
