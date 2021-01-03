@@ -396,10 +396,10 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 
 
 
-      		$pdf = app('dompdf.wrapper');
+      		/*$pdf = app('dompdf.wrapper');
 			$pdf->loadView('budgetview.presupuesto');
 			
-			return $pdf->stream();
+			return $pdf->stream();*/
 
 
 			return $this->successResponseApiaudiophoneBudgetStore(true, 201, 'Budget Creado Satisfactoriamente', $apiaudiophonebudgetsnew);
