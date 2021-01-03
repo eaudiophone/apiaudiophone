@@ -230,8 +230,8 @@ trait ApiResponserTrait
 
       'ok' => $ok,
       'status' => $code,
-      'bditemstotal' => $budgetstotal,
-      'apiaudiophoneitemdata' => $apiaudiophonebudgetdata
+      'bdbudgetstotal' => $budgetstotal,
+      'apiaudiophonebudgetadata' => $apiaudiophonebudgetdata
     ], $code);
   }
 
