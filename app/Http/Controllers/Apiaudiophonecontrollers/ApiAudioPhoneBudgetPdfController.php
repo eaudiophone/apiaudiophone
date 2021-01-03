@@ -181,12 +181,6 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 						
 							// :::: Eviamos los budgets creados a la vista :::: //
 
-							
-							$trash = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'created_at')->whereBetween('apiaudiophonebudgets_id', [$start, $end])->orderBy('apiaudiophonebudgets_id','asc')->trashed()->get();
-
-							dd($trash);
-
-
 							$apiaudiophonebudgetdata = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'created_at')->whereBetween('apiaudiophonebudgets_id', [$start, $end])->orderBy('apiaudiophonebudgets_id','asc')->get();
 
 
