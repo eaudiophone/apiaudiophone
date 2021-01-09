@@ -231,7 +231,8 @@ class ApiAudioPhoneItemController extends Controller
 
 			'apiaudiophoneitems_name' => 'required|string|min:1|max:60',
 			'apiaudiophoneitems_description' => 'required|string|min:1|max:60',
-			'apiaudiophoneitems_price' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/'
+			'apiaudiophoneitems_price' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
+			'apiaudiophoneitems_status' => 'required|regex:([A-Z])',
 		]);
 
 		
@@ -255,6 +256,7 @@ class ApiAudioPhoneItemController extends Controller
 			$apiaudiophoneitemnew->apiaudiophoneitems_name = $item_data_store['apiaudiophoneitems_name'];			
 			$apiaudiophoneitemnew->apiaudiophoneitems_description = $item_data_store['apiaudiophoneitems_description'];			
 			$apiaudiophoneitemnew->apiaudiophoneitems_price = $item_data_store['apiaudiophoneitems_price'];			
+			$apiaudiophoneitemnew->apiaudiophoneitems_status = $item_data_store['apiaudiophoneitems_status'];			
 
 			$apiaudiophoneitemnew->save();
 
@@ -319,6 +321,74 @@ class ApiAudioPhoneItemController extends Controller
 		}else{
 
 			return $this->errorResponse('Usuario no autorizado para actualizar items', 401);
+		}
+	}
+
+
+	/**
+	 * update ApiaudiophoneItemStatus instance
+	 *
+	 * @param \Illuminate\Http\Request $request
+	 * @return \Illuminate\Http\Response 
+	*/
+	public function updateApiaudiophoneItemStatus(Request $request, $id_apiaudiophoneusers = null)
+	{
+
+		// :::: Validación del request, para esta actualización solo se recibe el id y el nuevo status :::: //
+
+		$this->validate($request, [
+
+			'apiaudiophoneitems_id' => 'required|numeric',
+			'apiaudiophoneitems_status' => 'required|regex:([A-Z])'
+		]);
+
+		
+		// :::: obetenemos los datos provenientes del request :::: //
+
+		$item_data_update_status = $request->all();
+
+		// :::: Obtenemos el rol y status del usuario :::: //
+
+        $user = ApiAudiophoneUser::itemuser($id_apiaudiophoneusers)->firstOrFail();
+
+		$user_item_rol = $user->apiaudiophoneusers_role;
+
+		$user_item_status = $user->apiaudiophoneusers_status;
+
+		
+		if(($user_item_rol == 'ADMIN_ROLE') && ($user_item_status == true)){
+
+
+			// :::: Obtenemos el Item para actualizar el estus del mismo :::: //
+
+			$item_update_status = ApiAudiophoneItem::findOrFail($item_data_update_status['apiaudiophoneitems_id']);
+
+			// :::: Evaluamos el estatus del item y actualizamos :::: //
+
+			switch($item_data_update_status['apiaudiophoneitems_status']){
+
+				case('INACTIVO'):
+
+					$item_update_status->apiaudiophoneitems_status = $item_data_update_status['apiaudiophoneitems_status'];
+				break;
+
+				case('ACTIVO'):
+
+					$item_update_status->apiaudiophoneitems_status = $item_data_update_status['apiaudiophoneitems_status'];
+				break;
+
+				default:
+
+				return $this->errorResponse('El estatus '.$item_data_update_status['apiaudiophoneitems_status'].' no esta permitido para ser almacenado', 422);
+			}
+
+			
+			$item_update_status->update();
+
+			return $this->successResponseApiaudiophoneItemStore(true, 201, 'Estado del Item ha sido Actualizdo Satisfactoriamente', $item_update_status);
+		}else{
+
+			return $this->errorResponse('Usuario no autorizado para actualizar Estatus del Item', 401);
 		}
 	}
 

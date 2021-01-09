@@ -256,7 +256,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
         switch ($user_budget_rol) 
         {
         	
-        	case 'ADMIN_ROLE':       	
+        	case ('ADMIN_ROLE'):       	
 
 		        //:::: Validamos si existen o no presupuestos creados en la base de datos :::://
 
@@ -264,7 +264,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 
 					// :::: Obtenemos los items creados en la base de datos :::: //
 
-			        $items_bd = ApiAudiophoneItem::select('apiaudiophoneitems_id', 'apiaudiophoneitems_name', 'apiaudiophoneitems_description', 'apiaudiophoneitems_price')->get();
+			        $items_bd = ApiAudiophoneItem::select('apiaudiophoneitems_id', 'apiaudiophoneitems_name', 'apiaudiophoneitems_description', 'apiaudiophoneitems_price')->where('apiaudiophoneitems_status', 'ACTIVO')->get();
 
 		        	// :::: Obtenemos las instancias de los servicios :::: //
 
@@ -292,7 +292,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 
 			    	// :::: Obtenemos los items creados en la base de datos :::: //
 
-			        $items_bd = ApiAudiophoneItem::select('apiaudiophoneitems_id', 'apiaudiophoneitems_name', 'apiaudiophoneitems_description', 'apiaudiophoneitems_price')->get();
+			        $items_bd = ApiAudiophoneItem::select('apiaudiophoneitems_id', 'apiaudiophoneitems_name', 'apiaudiophoneitems_description', 'apiaudiophoneitems_price')->where('apiaudiophoneitems_status', 'ACTIVO')->get();
 
 			    	// :::: Obtenemos las instancias de los servicios :::: //
 
@@ -349,6 +349,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 			'apiaudiophonebudgets_client_phone' => 'required|string|min:1|max:60',
 			'apiaudiophonebudgets_client_social' => 'required|string|min:1|max:60',
 			'apiaudiophonebudgets_total_price' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
+			'apiaudiophonebudgets_status' => 'required|regex:([A-Z])',
 			'apiaudiophonebudgets_items' => 'required|array',
 			'apiaudiophonebudgets_items.*' => 'required|array',
 			'apiaudiophonebudgets_items.*.apiaudiophonebudgets_items_quantity' => 'required|numeric',
@@ -358,10 +359,13 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 		]);
 
 
+
 		// :::: Capturamos la data que viene el request :::: //
 
 		$apiaudiophonebudgets_data = $request->all();
-		
+		//$link = $this->saveBudgetPdf($apiaudiophonebudgets_data);
+
+		//dd($link);
 		
 		// :::: Obtenemos el usuario que realiza el store o genera el budget y accedemos al rol :::: //
 
@@ -390,17 +394,17 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 			$apiaudiophonebudgetsnew->apiaudiophonebudgets_client_social = $apiaudiophonebudgets_data['apiaudiophonebudgets_client_social'];			
 			
 			$apiaudiophonebudgetsnew->apiaudiophonebudgets_total_price = $apiaudiophonebudgets_data['apiaudiophonebudgets_total_price'];			
+			
+			$apiaudiophonebudgetsnew->apiaudiophonebudgets_status = $apiaudiophonebudgets_data['apiaudiophonebudgets_status'];			
 									
 
 			$apiaudiophonebudgetsnew->save();
 
 
+			// :::: Mandamos el request para salvar el presupuesto en el servidor :::: //
 
-      		/*$pdf = app('dompdf.wrapper');
-			$pdf->loadView('budgetview.presupuesto');
-			
-			return $pdf->stream();*/
-
+			//$link = $this->saveBudgetPdf($apiaudiophonebudgets_data);
+      					
 
 			return $this->successResponseApiaudiophoneBudgetStore(true, 201, 'Budget Creado Satisfactoriamente', $apiaudiophonebudgetsnew);
 		}else{
@@ -466,9 +470,78 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 			return $this->successResponseApiaudiophoneBudgetUpdate(true, 201, 'Budget Actualizdo Satisfactoriamente', $apiaudiophonebudgetupdated);
 		}else{
 
-			return $this->errorResponse('Usuario no autorizado para actualizar items', 401);
+			return $this->errorResponse('Usuario no autorizado para actualizar Budgets', 401);
 		}
 	}
+
+
+	/**
+	 * update ApiaudiophoneBudgestStatus instance
+	 *
+	 * @param \Illuminate\Http\Request $request
+	 * @return \Illuminate\Http\Response 
+	*/
+	public function updateApiaudiophoneBudgetStatus(Request $request, $id_apiaudiophoneusers = null)
+	{
+
+		// :::: Validación del request, para esta actualización solo se recibe el id y el nuevo status :::: //
+
+		$this->validate($request, [
+
+			'apiaudiophonebudgets_id' => 'required|numeric',
+			'apiaudiophonebudgets_status' => 'required|regex:([A-Z])'
+		]);
+
+
+		// :::: obetenemos los datos provenientes del request :::: //
+
+		$budget_data_update_status = $request->all();
+
+		// :::: Obtenemos el rol y status del usuario :::: //
+
+        $user = ApiAudiophoneUser::budgetuser($id_apiaudiophoneusers)->firstOrFail();
+
+		$user_budget_rol = $user->apiaudiophoneusers_role;
+
+		$user_budget_status = $user->apiaudiophoneusers_status;
+
+		
+		if(($user_budget_rol == 'ADMIN_ROLE') && ($user_budget_status == true)){
+
+			
+			// :::: Obtenemos el Budget para actualizar el estus del mismo :::: //
+
+			$budget_update_status = ApiAudiophoneBudget::findOrFail($budget_data_update_status['apiaudiophonebudgets_id']);
+
+			// :::: Evaluamos el estatus del budget y actualizamos :::: //
+
+			switch($budget_data_update_status['apiaudiophonebudgets_status']){
+
+				case('PAGADO'):
+
+					$budget_update_status->apiaudiophonebudgets_status = $budget_data_update_status['apiaudiophonebudgets_status'];
+				break;
+
+				case('NO_APLICA'):
+
+					$budget_update_status->apiaudiophonebudgets_status = $budget_data_update_status['apiaudiophonebudgets_status'];
+				break;
+
+				default:
+
+				return $this->errorResponse('El estatus '.$budget_data_update_status['apiaudiophonebudgets_status'].' no esta permitido para ser almacenado', 422);
+			}
+
+
+			$budget_update_status->update();
+
+			return $this->successResponseApiaudiophoneBudgetStore(true, 201, 'Estado del Budget Actualizdo Satisfactoriamente', $budget_update_status);
+		}else{
+
+			
+			return $this->errorResponse('Usuario no autorizado para actualizar Estatus del Budget', 401);
+		}
+	}	
 
 
 	/**
@@ -512,7 +585,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 	}
 
 
-	// ::: Retorna Keys del Request :::: //
+	// ::: Retorna Keys del Request ::::  //
 
 	public function arrayKeysRequest(array $request_array){
 
@@ -520,5 +593,24 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 		$array_keys = array_keys($request_array);
 
 		return $array_keys;
+	}
+
+
+	public function saveBudgetPdf(array $request_array_store){
+
+
+		$today = Carbon::today()->endOfMonth()->format('Y-m-d');
+
+		$url = '\storage\Pdfbudgets'.$request_array_store['apiaudiophonebudgets_client_name'].'-'.$today.'.pdf';
+
+		dd($url);
+
+		$pdf = app('dompdf.wrapper');
+		$pdf->loadView('budgetview.presupuesto')->save($url);
+			
+			
+
+		return $url;
+
 	}
 }

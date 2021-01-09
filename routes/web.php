@@ -239,6 +239,15 @@ $router->put('api/apiaudiophonebudget/update/{id_apiaudiophoneusers:[0-9]+}', [
 ]);
 
 
+$router->put('api/apiaudiophonebudgetstatus/update/{id_apiaudiophoneusers:[0-9]+}', [
+
+
+	'middleware' => ['cors', 'client.credentials', 'auth:api'],
+	'as' => 'budget.status_update',
+	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhoneBudgetPdfController@updateApiaudiophoneBudgetStatus'
+]);
+
+
 $router->delete('api/apiaudiophonebudget/destroy/{id_apiaudiophoneusers:[0-9]+}', [
 
 
@@ -292,6 +301,15 @@ $router->put('api/apiaudiophoneitem/update/{id_apiaudiophoneusers:[0-9]+}', [
 	'middleware' => ['cors', 'client.credentials', 'auth:api'],
 	'as' => 'item.update',
 	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhoneItemController@updateApiaudiophoneItem'
+]);
+
+
+$router->put('api/apiaudiophoneitemstatus/update/{id_apiaudiophoneusers:[0-9]+}', [
+
+
+	'middleware' => ['cors', 'client.credentials', 'auth:api'],
+	'as' => 'item.status_update',
+	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhoneItemController@updateApiaudiophoneItemStatus'
 ]);
 
 
