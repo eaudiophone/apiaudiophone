@@ -44,7 +44,7 @@ class LoginAudiophoneUserController extends AccessTokenController
             $apiaudiophoneuser = ApiAudiophoneUser::where('apiaudiophoneusers_email',$email)->first();
 
             //validamos que el hash del password sea igual al que esta en la BD y que el estatus del user sea true
-            if($apiaudiophoneuser && Hash::check($password, $apiaudiophoneuser->apiaudiophoneusers_password) && $apiaudiophoneuser->apiaudiophoneusers_status == true && $grant_type == 'password'){
+            if(($apiaudiophoneuser) && (Hash::check($password, $apiaudiophoneuser->apiaudiophoneusers_password)) && ($apiaudiophoneuser->apiaudiophoneusers_status == true) && ($grant_type == 'password') && ($apiaudiophoneuser->apiaudiophoneusers_role == 'ADMIN_ROLE')){
 
               //Generamos el apiToken invocando la funcion del trait issueToken
               $tokenResponse = $this->issueToken($request);
@@ -60,7 +60,7 @@ class LoginAudiophoneUserController extends AccessTokenController
                     'apiaudiophoneusers_id' => $apiaudiophoneuser->apiaudiophoneusers_id,
                     'apiToken' => $tokenResponse
                 ]);
-            }elseif($apiaudiophoneuser && Hash::check($password, $apiaudiophoneuser->apiaudiophoneusers_password) && $apiaudiophoneuser->apiaudiophoneusers_status == false && $grant_type == 'password'){
+            }elseif(($apiaudiophoneuser) && (Hash::check($password, $apiaudiophoneuser->apiaudiophoneusers_password)) && ($apiaudiophoneuser->apiaudiophoneusers_status == false) && ($grant_type == 'password') && ($apiaudiophoneuser->apiaudiophoneusers_role == 'ADMIN_ROLE')){
 
                 return response()->json([
 
@@ -75,7 +75,7 @@ class LoginAudiophoneUserController extends AccessTokenController
 
                     'ok' => true,
                     'status' => 422,
-                    'message' => 'Credenciales Inválidas'
+                    'message' => 'Credenciales Inválidas, acceso único para Administradores.'
                 ]);
             }
         }else{

@@ -57,16 +57,18 @@ class ApiAudioPhonEventController extends Controller
 		        	return $this->successResponseApiaudiophonEventShow(true, 200,  $all_events_last_month);
 	        	  	
 	        	  	break;
+          // :::: SOLO LOS ADMINISTRADORES PODRÁN CONSULTAR LOS EVENTOS DE TODOS LOS USUARIOS :::: //
 	        	case('USER_ROLE'):
 
-	        		$all_events_by_user = $this->event_show_by_user($id_apiaudiophoneusers);
+	        		/*$all_events_by_user = $this->event_show_by_user($id_apiaudiophoneusers);
 
-	        		return $this->successResponseApiaudiophonEventShow(true, 200,  $all_events_by_user);
-	        		
+	        		return $this->successResponseApiaudiophonEventShow(true, 200,  $all_events_by_user);*/	        		
+              return $this->errorResponse('Perfil de usuario no autorizado para consultar eventos', 401);
+
 	        		break;
 	        	default:
 
-	        	return $this->errorResponse('Sin registros de Eventos en ApiaudiophonEvent, para el perfil', 404);
+	        	return $this->errorResponse('Sin registros de Eventos en ApiaudiophonEvent, para el mes en revisión', 404);
         	}        	
         }else{
 
@@ -84,10 +86,18 @@ class ApiAudioPhonEventController extends Controller
     public function createApiAudiophonEvent($id_apiaudiophoneusers = null)
     {
         
-        //:::: USAMOS EL CREATE PARA MANDAR A LA VISTA EL ID DEL TERM Y EL NOMBRE DEL SERVICIO DE ESE TERM :::://
+      //::::: OBTENEMOS EL TIPO DE USUARIO: ADMIN_ROLE SOLO PERMITIDO PARA CREAR EVENTOS ::::://
 
-        $bdterm_total = ApiAudiophoneTerm::count();
+      $user = ApiAudiophoneUser::select('apiaudiophoneusers_role')->where('apiaudiophoneusers_id', $id_apiaudiophoneusers)->firstOrFail();
 
+      $user_role = $user->apiaudiophoneusers_role;
+
+      //:::: USAMOS EL CREATE PARA MANDAR A LA VISTA EL ID DEL TERM Y EL NOMBRE DEL SERVICIO DE ESE TERM :::://
+
+      $bdterm_total = ApiAudiophoneTerm::count();
+
+
+      if($user_role == 'ADMIN_ROLE'){
 
         //:::: PARA CUANDO EXISTE UN SOLO TERMINO CREADO SE TRAE EL ID DEL ULTIMO TERM CONFIGURADO Y EL ID DEL SERIVIO Y SU NOMBRE :::://
 
@@ -120,12 +130,12 @@ class ApiAudioPhonEventController extends Controller
   	    		
   	    		return $this->errorResponse('No existen Terminos o Condiciones para crear eventos', 404);
       		}
-	    }elseif($bdterm_total > 1){
+        }elseif($bdterm_total > 1){
 
 
-	    	//:::: CUANDO EXISTEN MAS DE DOS TERMINOS CREADOS, INFORMACION DE LOS ULTIMOS TERMS CONFIGURADOS A LA VISTA, DE LOS SERVICIOS :::://
+      	  //:::: CUANDO EXISTEN MAS DE DOS TERMINOS CREADOS, INFORMACION DE LOS ULTIMOS TERMS CONFIGURADOS A LA VISTA, DE LOS SERVICIOS :::://
 
-	    	$last_conf_service_uno = ApiAudiophoneTerm::select('apiaudiophoneterms_id', 'id_apiaudiophoneservices')->where('id_apiaudiophoneservices', 1)->get()->last();
+      	  $last_conf_service_uno = ApiAudiophoneTerm::select('apiaudiophoneterms_id', 'id_apiaudiophoneservices')->where('id_apiaudiophoneservices', 1)->get()->last();
 
         	$last_conf_service_dos = ApiAudiophoneTerm::select('apiaudiophoneterms_id', 'id_apiaudiophoneservices')->where('id_apiaudiophoneservices', 2)->get()->last();
 
@@ -145,13 +155,17 @@ class ApiAudioPhonEventController extends Controller
 
 
         	return $this->successResponseApiaudiophonEventCreate(true, 200, 'ID terms ultima configuracion', $id_last_conf_service_uno, $nombre_servicio_uno, $id_last_conf_service_dos, $nombre_servicio_dos);
-	    }else{
+        }else{
 
 
         	return $this->errorResponse('No existen Terminos o Condiciones para crear eventos', 404);
         }
 
         // ::: TAREA: HACER UN BUCLE QUE RECORRA LA EL MODELO DE SERVICIOS Y VAYA LLENANDO LAS VARIABLES DE SELECCIONN DE TERMINOS, DE ID Y DE NOMBRE DE SERVICIOS PARA LUEGO ENVIARLOS A LA VISTA ::: //
+      }else{
+
+        return $this->errorResponse('Usuario no autorizado para el módulo de eventos', 401);
+      }
     }
 
 
@@ -646,43 +660,49 @@ class ApiAudioPhonEventController extends Controller
         
     	//::::: Validación del Request ::::://
         
-        $this->validate($request, [
+      $this->validate($request, [
 
-            'apiaudiophonevents_id' => 'required|numeric'
-        ]);
+          'apiaudiophonevents_id' => 'required|numeric'
+      ]);
 
 
-        $id_event = $request->input('apiaudiophonevents_id');
+      $id_event = $request->input('apiaudiophonevents_id');
 
-        $apiaudiophoneuserevent = ApiAudiophoneUser::findOrFail($id_apiaudiophoneusers);
+      $apiaudiophoneuserevent = ApiAudiophoneUser::findOrFail($id_apiaudiophoneusers);
 
     	$user_status = $apiaudiophoneuserevent->apiaudiophoneusers_status;
+      
+      $user_role = $apiaudiophoneuserevent->apiaudiophoneusers_role;
 
 
-    	switch($user_status){
+      if($user_role == 'ADMIN_ROLE'){        
 
+      	switch($user_status){
 
-    		case false:
+      		case false:
 
+      			return $this->errorResponse('No se pudo eliminar el registro, Usuario Inactivo', 401);
+      		break;
 
-    			return $this->errorResponse('No se pudo eliminar el registro, Usuario Inactivo', 401);
-    		break;
+      		case true:
 
-    		case true:
+      			//:::: OBTENEMOS ULTIMO REGISTRO DE LA BASE DE DATOS Y LO ELIMINAMOS ::::://
 
-    			//:::: OBTENEMOS ULTIMO REGISTRO DE LA BASE DE DATOS Y LO ELIMINAMOS ::::://
+      			$apiaudiophoneventdelete = ApiAudiophonEvent::findOrFail($id_event);
 
-    			$apiaudiophoneventdelete = ApiAudiophonEvent::findOrFail($id_event);
+      			$apiaudiophoneventdelete->delete();
+      			
+      			return $this->errorResponseApiaudiophonEventDestroy(true, 200, 'Evento eliminado Satisfactoriamente');    			
+      		break;
 
-    			$apiaudiophoneventdelete->delete();
-    			
-    			return $this->errorResponseApiaudiophonEventDestroy(true, 200, 'Evento eliminado Satisfactoriamente');    			
-    		break;
+      		default:
 
-    		default:
+      		return $this->errorResponse('Peticion mal realizada en la URL, incluir ID del usuario', 400);
+      	}
+      }else{
 
-    		return $this->errorResponse('Peticion mal realizada en la URL, incluir ID del usuario', 400);
-    	}
+        return $this->errorResponse('Usuario no Autorizado para eliminar eventos', 401);
+      }
     }
 
     /*  
