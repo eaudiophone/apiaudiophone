@@ -10,6 +10,7 @@ use App\Apiaudiophonemodels\ApiAudiophoneItem;
 use App\Apiaudiophonemodels\ApiAudiophoneBudget;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use PDF;
 
 class ApiAudioPhoneBudgetPdfController extends Controller
 {
@@ -363,7 +364,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 		// :::: Capturamos la data que viene el request :::: //
 
 		$apiaudiophonebudgets_data = $request->all();
-		//$link = $this->saveBudgetPdf($apiaudiophonebudgets_data);
+		$link = $this->saveBudgetPdf($apiaudiophonebudgets_data);
 
 		//dd($link);
 		
@@ -599,18 +600,35 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 	public function saveBudgetPdf(array $request_array_store){
 
 
-		$today = Carbon::today()->endOfMonth()->format('Y-m-d');
+		/*$today = Carbon::today()->endOfMonth()->format('Y-m-d');
 
-		$url = '\storage\Pdfbudgets'.$request_array_store['apiaudiophonebudgets_client_name'].'-'.$today.'.pdf';
+		$url ='storage/app/Budgets/';//.$request_array_store['apiaudiophonebudgets_client_name'].'-'.$today.'.pdf';
 
-		dd($url);
+		$s = $request_array_store['apiaudiophonebudgets_client_name'].'-'.$today.'pdf';
+
+		//$d = public_path();
 
 		$pdf = app('dompdf.wrapper');
-		$pdf->loadView('budgetview.presupuesto')->save($url);
+		$pdf->loadFile($s)->save( $url);
+
+		$pdf = app('dompdf.wrapper');
+		$pdf->loadView('budgetview.presupuesto');
+		return $pdf->stream();
 			
+		dd($s);*/
+
+
+		$pdf = app('dompdf.wrapper');
+		//$pdf->loadFile('C:\Users\marta\Documents\DevApps\laragon\www\apiaudiophone\resources\views\budgetview\presupuesto.blade')->save('C:\Users\marta\Documents\DevApps\laragon\www\apiaudiophone\public');
+		$pdf->loadView('budgetview.presupuesto')->save('C:\Users\marta\Documents\DevApps\laragon\www\apiaudiophone\public');
+		
+		dd('hola');
+
+
+		return $pdf->stream();
 			
 
-		return $url;
+		//return $s;
 
 	}
 }
