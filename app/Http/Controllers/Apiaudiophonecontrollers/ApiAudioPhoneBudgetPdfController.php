@@ -8,9 +8,10 @@ use App\Apiaudiophonemodels\ApiAudiophoneUser;
 use App\Apiaudiophonemodels\ApiAudiophoneService;
 use App\Apiaudiophonemodels\ApiAudiophoneItem;
 use App\Apiaudiophonemodels\ApiAudiophoneBudget;
+use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
-use PDF;
 
 class ApiAudioPhoneBudgetPdfController extends Controller
 {
@@ -18,17 +19,6 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 	 use ApiResponserTrait;
     
     
-    public function createApiAudioPhoneBudgetPdf()
-    {
-
-
-      	$pdf = app('dompdf.wrapper');
-		$pdf->loadView('budgetview.presupuesto');
-		return $pdf->stream();    	
-    }
-
-
-
     /**
 	 * Show ApiaudiophoneBudgets Instance	
 	 *
@@ -90,7 +80,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 					
 						// :::: Eviamos los budgets creados a la vista :::: //
 
-						$apiaudiophonebudgetdata = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price','apiaudiophonebudgets_status', 'created_at')->orderBy('apiaudiophonebudgets_id','asc')->get();
+						$apiaudiophonebudgetdata = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price','apiaudiophonebudgets_url','apiaudiophonebudgets_status', 'created_at')->orderBy('apiaudiophonebudgets_id','asc')->get();
 
 
 						return $this->successResponseApiaudiophoneBudget(true, 200, $bd_budget_total, $apiaudiophonebudgetdata);
@@ -102,7 +92,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 
 						// :::: Eviamos los Budgets creados a la vista :::: //
 
-						$apiaudiophonebudgetdata = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'apiaudiophonebudgets_status', 'created_at')->orderBy('apiaudiophonebudgets_id','asc')->get();
+						$apiaudiophonebudgetdata = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'apiaudiophonebudgets_url', 'apiaudiophonebudgets_status', 'created_at')->orderBy('apiaudiophonebudgets_id','asc')->get();
 
 
 						return $this->successResponseApiaudiophoneBudget(true, 200, $bd_budget_total, $apiaudiophonebudgetdata);
@@ -114,7 +104,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 
 						// :::: Eviamos los budgets creados a la vista :::: //
 
-						$apiaudiophonebudgetdata = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'apiaudiophonebudgets_status', 'created_at')->whereBetween('apiaudiophonebudgets_id', [1, 5])->orderBy('apiaudiophonebudgets_id','asc')->get();
+						$apiaudiophonebudgetdata = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'apiaudiophonebudgets_url', 'apiaudiophonebudgets_status', 'created_at')->whereBetween('apiaudiophonebudgets_id', [1, 5])->orderBy('apiaudiophonebudgets_id','asc')->get();
 
 
 						return $this->successResponseApiaudiophoneBudget(true, 200, $bd_budget_total, $apiaudiophonebudgetdata);
@@ -124,7 +114,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 
 						// :::: Eviamos los Items creados a la vista :::: //
 
-						$apiaudiophonebudgetdata = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'apiaudiophonebudgets_status', 'created_at')->whereBetween('apiaudiophonebudgets_id', [1, 5])->orderBy('apiaudiophonebudgets_id','asc')->get();
+						$apiaudiophonebudgetdata = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'apiaudiophonebudgets_url', 'apiaudiophonebudgets_status', 'created_at')->whereBetween('apiaudiophonebudgets_id', [1, 5])->orderBy('apiaudiophonebudgets_id','asc')->get();
 
 
 						return $this->successResponseApiaudiophoneBudget(true, 200, $bd_budget_total, $apiaudiophonebudgetdata);
@@ -134,11 +124,11 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 					
 						// :::: Contamos los Elementos que se obtienen para busqueda stringsearch :::: //
 
-						$apiaudiophonebudgetdatacount = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'apiaudiophonebudgets_status', 'created_at')->where('apiaudiophonebudgets_client_name', 'like', '%'.$chain.'%')->orWhere('apiaudiophonebudgets_client_email', 'like', '%'.$chain.'%')->count();
+						$apiaudiophonebudgetdatacount = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'apiaudiophonebudgets_url', 'apiaudiophonebudgets_status', 'created_at')->where('apiaudiophonebudgets_client_name', 'like', '%'.$chain.'%')->orWhere('apiaudiophonebudgets_client_email', 'like', '%'.$chain.'%')->count();
 
 						// :::: Eviamos los budgets creados a la vista :::: //
 
-						$apiaudiophonebudgetdata = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'apiaudiophonebudgets_status', 'created_at')->where('apiaudiophonebudgets_client_name', 'like', '%'.$chain.'%')->orWhere('apiaudiophonebudgets_client_email', 'like', '%'.$chain.'%')->orderBy('apiaudiophonebudgets_id', 'asc')->get();
+						$apiaudiophonebudgetdata = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'apiaudiophonebudgets_url', 'apiaudiophonebudgets_status', 'created_at')->where('apiaudiophonebudgets_client_name', 'like', '%'.$chain.'%')->orWhere('apiaudiophonebudgets_client_email', 'like', '%'.$chain.'%')->orderBy('apiaudiophonebudgets_id', 'asc')->get();
 
 
 						return $this->successResponseApiaudiophoneBudget(true, 200, $apiaudiophonebudgetdatacount, $apiaudiophonebudgetdata); 
@@ -163,7 +153,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 						
 							// :::: Eviamos los Budgets creados a la vista :::: //
 
-							$apiaudiophonebudgetdata = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'apiaudiophonebudgets_status', 'created_at')->whereBetween('apiaudiophonebudgets_id', [1, 5])->orderBy('apiaudiophonebudgets_id','asc')->get();
+							$apiaudiophonebudgetdata = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'apiaudiophonebudgets_url', 'apiaudiophonebudgets_status', 'created_at')->whereBetween('apiaudiophonebudgets_id', [1, 5])->orderBy('apiaudiophonebudgets_id','asc')->get();
 
 
 							return $this->successResponseApiaudiophoneBudget(true, 200, $bd_budget_total, $apiaudiophonebudgetdata);
@@ -174,7 +164,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 						
 							// :::: Eviamos los Budgets creados a la vista :::: //
 
-							$apiaudiophonebudgetdata = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'apiaudiophonebudgets_status','created_at')->whereBetween('apiaudiophonebudgets_id', [1, 5])->orderBy('apiaudiophonebudgets_id','asc')->get();
+							$apiaudiophonebudgetdata = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'apiaudiophonebudgets_url', 'apiaudiophonebudgets_status','created_at')->whereBetween('apiaudiophonebudgets_id', [1, 5])->orderBy('apiaudiophonebudgets_id','asc')->get();
 
 
 							return $this->successResponseApiaudiophoneBudget(true, 200, $bd_budget_total, $apiaudiophonebudgetdata);					
@@ -182,7 +172,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 						
 							// :::: Eviamos los budgets creados a la vista :::: //
 
-							$apiaudiophonebudgetdata = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'apiaudiophonebudgets_status', 'created_at')->whereBetween('apiaudiophonebudgets_id', [$start, $end])->orderBy('apiaudiophonebudgets_id','asc')->get();
+							$apiaudiophonebudgetdata = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'apiaudiophonebudgets_url', 'apiaudiophonebudgets_status', 'created_at')->whereBetween('apiaudiophonebudgets_id', [$start, $end])->orderBy('apiaudiophonebudgets_id','asc')->get();
 
 
 							return $this->successResponseApiaudiophoneBudget(true, 200, $bd_budget_total, $apiaudiophonebudgetdata);
@@ -198,7 +188,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 
 					if($bd_budget_total <= 5){						
 
-						$apiaudiophonebudgetdata = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'apiaudiophonebudgets_status', 'created_at')->orderBy('apiaudiophonebudgets_id','asc')->get();
+						$apiaudiophonebudgetdata = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'apiaudiophonebudgets_url', 'apiaudiophonebudgets_status', 'created_at')->orderBy('apiaudiophonebudgets_id','asc')->get();
 
 						return $this->successResponseApiaudiophoneBudget(true, 200, $bd_budget_total, $apiaudiophonebudgetdata);
 
@@ -207,7 +197,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 
 						// :::: Enviamos los Budgets creados a la vista :::: //
 
-						$apiaudiophonebudgetdata = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'apiaudiophonebudgets_status','created_at')->whereBetween('apiaudiophonebudgets_id', [1, 5])->orderBy('apiaudiophonebudgets_id','asc')->get();
+						$apiaudiophonebudgetdata = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'apiaudiophonebudgets_url', 'apiaudiophonebudgets_status','created_at')->whereBetween('apiaudiophonebudgets_id', [1, 5])->orderBy('apiaudiophonebudgets_id','asc')->get();
 
 						return $this->successResponseApiaudiophoneBudget(true, 200, $bd_budget_total, $apiaudiophonebudgetdata);
 											
@@ -360,20 +350,15 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 		]);
 
 
-
 		// :::: Capturamos la data que viene el request :::: //
 
 		$apiaudiophonebudgets_data = $request->all();
-		$link = $this->saveBudgetPdf($apiaudiophonebudgets_data);
 
-		//dd($link);
-		
 		// :::: Obtenemos el usuario que realiza el store o genera el budget y accedemos al rol :::: //
 
 		$user = ApiAudiophoneUser::budgetuser($id_apiaudiophoneusers)->firstOrFail();
 
 		$user_budget_rol = $user->apiaudiophoneusers_role;
-
 	
 		// :::: Procesamos la creación del Budget y mandamos los datos a la vista del pdf :::: //
 
@@ -396,18 +381,28 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 			
 			$apiaudiophonebudgetsnew->apiaudiophonebudgets_total_price = $apiaudiophonebudgets_data['apiaudiophonebudgets_total_price'];			
 			
-			$apiaudiophonebudgetsnew->apiaudiophonebudgets_status = $apiaudiophonebudgets_data['apiaudiophonebudgets_status'];			
-									
+			$apiaudiophonebudgetsnew->apiaudiophonebudgets_status = $apiaudiophonebudgets_data['apiaudiophonebudgets_status'];						
 
-			$apiaudiophonebudgetsnew->save();
+			$apiaudiophonebudgetsnew->save();			
+			
+
+			// :::: Consultamos el ultimo Budget creado en la tabla para obtener el ID y armar el nombdre del PDF :::: //
+
+			$apiaudiophonebudgetsnew_saved = ApiAudiophoneBudget::latest()->first();		
+
+			$id_budget_pdf = $apiaudiophonebudgetsnew_saved->apiaudiophonebudgets_id;
+			
+			
+			// :::: Mandamos el request para salvar el presupuesto en el servidor y obtener el link :::: //
+
+			$link = $this->saveBudgetPdf($apiaudiophonebudgets_data, $id_budget_pdf);
+	      		
+			$apiaudiophonebudgetsnew_saved->apiaudiophonebudgets_url = $link;
+
+      		$apiaudiophonebudgetsnew_saved->save();
 
 
-			// :::: Mandamos el request para salvar el presupuesto en el servidor :::: //
-
-			//$link = $this->saveBudgetPdf($apiaudiophonebudgets_data);
-      					
-
-			return $this->successResponseApiaudiophoneBudgetStore(true, 201, 'Budget Creado Satisfactoriamente', $apiaudiophonebudgetsnew);
+      		return $this->successResponseApiaudiophoneBudgetStore(true, 201, 'Budget Creado Satisfactoriamente', $apiaudiophonebudgetsnew_saved);
 		}else{
 
 			return $this->errorResponse('Usuario no autorizado para crear items', 401);
@@ -597,38 +592,53 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 	}
 
 
-	public function saveBudgetPdf(array $request_array_store){
+	public function saveBudgetPdf(array $request_array_store, $pdf_id = null){
 
+		// :::: obtenemos el día de generación del presupuesto :::: //
 
-		/*$today = Carbon::today()->endOfMonth()->format('Y-m-d');
+		$today = Carbon::today()->format('Y-m-d');
 
-		$url ='storage/app/Budgets/';//.$request_array_store['apiaudiophonebudgets_client_name'].'-'.$today.'.pdf';
+		// :::: Generamos el nombre del presupuesto :::: //
 
-		$s = $request_array_store['apiaudiophonebudgets_client_name'].'-'.$today.'pdf';
+		$nombre_pdf = $pdf_id.'_'.$request_array_store['apiaudiophonebudgets_client_name'].'_'.$today.'.pdf';
 
-		//$d = public_path();
+		// :::: Generamos la ruta del presupuesto donde será almacenado el documento :::: //
 
-		$pdf = app('dompdf.wrapper');
-		$pdf->loadFile($s)->save( $url);
+		$url = storage_path('app\Budgets\psp'.$nombre_pdf);
 
-		$pdf = app('dompdf.wrapper');
-		$pdf->loadView('budgetview.presupuesto');
-		return $pdf->stream();
-			
-		dd($s);*/
+		// :::: Armamamos los valores que vamos a mandar a la vista del Presupuesto :::: //
 
+		$items = $request_array_store['apiaudiophonebudgets_items'];
 
-		$pdf = app('dompdf.wrapper');
-		//$pdf->loadFile('C:\Users\marta\Documents\DevApps\laragon\www\apiaudiophone\resources\views\budgetview\presupuesto.blade')->save('C:\Users\marta\Documents\DevApps\laragon\www\apiaudiophone\public');
-		$pdf->loadView('budgetview.presupuesto')->save('C:\Users\marta\Documents\DevApps\laragon\www\apiaudiophone\public');
+		$totals = $request_array_store['apiaudiophonebudgets_total_price'];
 		
-		dd('hola');
+		$names = $request_array_store['apiaudiophonebudgets_client_name'];
+		
+		$emails = $request_array_store['apiaudiophonebudgets_client_email'];
+		
+		$phones = $request_array_store['apiaudiophonebudgets_client_phone'];
+		
+		$networks = $request_array_store['apiaudiophonebudgets_client_social'];
+
+		$services = $request_array_store['apiaudiophonebudgets_nameservice'];
 
 
-		return $pdf->stream();
-			
+		// :::: Cargamos la vista y mandamos los datos del presupuesto :::: //
 
-		//return $s;
+		$pdf = PDF::loadView('budgetview.presupuesto', 
+			['items' => $items, 
+			 'totals' => $totals,
+			 'names' => $names,
+			 'emails' => $emails,
+			 'phones' => $phones,
+			 'networks' => $networks,
+			 'todays' => $today,
+			 'ids' => $pdf_id,
+			 'services' => $services						
+			]
+		)->save($url);
 
+
+		return $url;
 	}
 }

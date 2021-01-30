@@ -39,7 +39,8 @@ class ApiAudiophoneBudget extends Model
         'apiaudiophonebudgets_client_name',
         'apiaudiophonebudgets_client_email',
         'apiaudiophonebudgets_client_phone',
-        'apiaudiophonebudgets_client_social'      
+        'apiaudiophonebudgets_client_social',
+        'apiaudiophonebudgets_url'      
     ];
 
 

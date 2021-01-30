@@ -175,6 +175,12 @@ $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 $app->register(\Barryvdh\DomPDF\ServiceProvider::class);
 
 /*
+    ::::: PROVIDERS FILESYSTEM  :::::
+*/
+$app->register(Irazasyed\Larasupport\Providers\ArtisanServiceProvider::class);
+
+
+/*
 |--------------------------------------------------------------------------
 | Load The Application Routes
 |--------------------------------------------------------------------------
