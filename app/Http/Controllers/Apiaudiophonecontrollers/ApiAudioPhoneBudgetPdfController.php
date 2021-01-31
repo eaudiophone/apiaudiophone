@@ -594,6 +594,9 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 
 	public function saveBudgetPdf(array $request_array_store, $pdf_id = null){
 
+
+		define('DS', DIRECTORY_SEPARATOR);
+
 		// :::: obtenemos el día de generación del presupuesto :::: //
 
 		$today = Carbon::today()->format('Y-m-d');
@@ -602,10 +605,22 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 
 		$nombre_pdf = $pdf_id.'_'.$request_array_store['apiaudiophonebudgets_client_name'].'_'.$today.'.pdf';
 
+		
+		// :::: Verificamos carpeta, si no existe y creamos con permisos 777 :::: //
+
+		$carpeta = str_replace("\\", DS, storage_path('app\Budgets'));
+
+		if(!file_exists($carpeta)){
+
+			mkdir($carpeta, 0777, true);
+		}
+
+		
 		// :::: Generamos la ruta del presupuesto donde será almacenado el documento :::: //
 
-		$url = storage_path('app\Budgets\psp'.$nombre_pdf);
+		$url = str_replace("\\", DS, storage_path('app\Budgets\psp'.$nombre_pdf));
 
+		
 		// :::: Armamamos los valores que vamos a mandar a la vista del Presupuesto :::: //
 
 		$items = $request_array_store['apiaudiophonebudgets_items'];
