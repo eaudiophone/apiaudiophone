@@ -595,6 +595,8 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 	public function saveBudgetPdf(array $request_array_store, $pdf_id = null){
 
 
+		// :::: Definimos el separador de carpetas, por el local del sistema :::: //		
+
 		define('DS', DIRECTORY_SEPARATOR);
 
 		// :::: obtenemos el día de generación del presupuesto :::: //
@@ -603,24 +605,24 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 
 		// :::: Generamos el nombre del presupuesto :::: //
 
-		$nombre_pdf = $pdf_id.'_'.$request_array_store['apiaudiophonebudgets_client_name'].'_'.$today.'.pdf';
+		$nombre_pdf = 'psp_'.$pdf_id.'_'.$request_array_store['apiaudiophonebudgets_client_name'].'_'.$today.'.pdf';
 
+
+		// ::: Definimos el nombre de la carpeta si no existe en el server :::: //
+
+		$carpeta = str_replace('\\', DS, storage_path('app'));
 		
-		// :::: Verificamos carpeta, si no existe y creamos con permisos 777 :::: //
-
-		$carpeta = str_replace("\\", DS, storage_path('app\Budgets'));
+		// :::: Verificamos carpeta, si no existe,  creamos con permisos 777 :::: //
 
 		if(!file_exists($carpeta)){
 
 			mkdir($carpeta, 0777, true);
 		}
-
-		
+	
 		// :::: Generamos la ruta del presupuesto donde será almacenado el documento :::: //
 
-		$url = str_replace("\\", DS, storage_path('app\Budgets\psp'.$nombre_pdf));
+		$url = str_replace('\\', DS,  storage_path('app\\').$nombre_pdf);
 
-		
 		// :::: Armamamos los valores que vamos a mandar a la vista del Presupuesto :::: //
 
 		$items = $request_array_store['apiaudiophonebudgets_items'];
@@ -653,7 +655,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 			]
 		)->save($url);
 
-
+		
 		return $url;
 	}
 }
