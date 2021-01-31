@@ -597,7 +597,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 
 		// :::: Definimos el separador de carpetas, por el local del sistema :::: //		
 
-		define('DS', DIRECTORY_SEPARATOR);
+		//define('DS', DIRECTORY_SEPARATOR);
 
 		// :::: obtenemos el día de generación del presupuesto :::: //
 
@@ -610,7 +610,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 
 		// ::: Definimos el nombre de la carpeta si no existe en el server :::: //
 
-		$carpeta = str_replace('\\', DS, storage_path('app'));
+		$carpeta = str_replace('\\', '/', storage_path('app'));
 		
 		// :::: Verificamos carpeta, si no existe,  creamos con permisos 777 :::: //
 
@@ -621,7 +621,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 	
 		// :::: Generamos la ruta del presupuesto donde será almacenado el documento :::: //
 
-		$url = str_replace('\\', DS,  storage_path('app\\').$nombre_pdf);
+		$url = 'file:///'.str_replace('\\', '/',  storage_path('app\\').$nombre_pdf);
 
 		// :::: Armamamos los valores que vamos a mandar a la vista del Presupuesto :::: //
 
