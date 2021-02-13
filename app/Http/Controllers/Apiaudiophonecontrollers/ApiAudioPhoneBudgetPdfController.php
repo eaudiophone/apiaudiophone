@@ -609,7 +609,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 
 		// ::: Definimos el nombre de la carpeta si no existe en el server :::: //
 
-		$carpeta = str_replace('\\', DS, strstr($_SERVER['DOCUMENT_ROOT'], 'apiaudiophone\public', true)).'appdocs\\';
+		$carpeta = str_replace('\\', DS, strstr($_SERVER['DOCUMENT_ROOT'], 'apiaudiophone\public', true).'appdocs\\');
 
 		// :::: Verificamos carpeta, si no existe,  creamos con permisos 777 :::: //
 
