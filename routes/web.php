@@ -194,14 +194,6 @@ $router->delete('api/apiaudiophonevent/destroy/{id_apiaudiophoneusers:[0-9]+}', 
 	RUTAS PARA GENERAR EL PDF DEL PRESUPUESTO
 */
 
-$router->get('api/apiaudiophonebudget/generate/{id_apiaudiophoneusers:[0-9]+}', [
-
-
-	//'middleware' => ['cors', 'client.credentials', 'auth:api'],
-	'as' => 'budget.generate',
-	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhoneBudgetPdfController@createApiAudioPhoneBudgetPdf'
-]);
-
 
 $router->post('api/apiaudiophonebudget/show/{id_apiaudiophoneusers:[0-9]+}', [
 
@@ -255,20 +247,6 @@ $router->delete('api/apiaudiophonebudget/destroy/{id_apiaudiophoneusers:[0-9]+}'
 	'as' => 'budget.destroy',
 	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhoneBudgetPdfController@destroyApiaudiophoneBudget'
 ]);
-
-
-
-/*$router->get('/prueba', function(){
-
-
-	//return view('budgetview.presupuesto');
-
-	$pdf = app('dompdf.wrapper');
-	$pdf->loadView('budgetview.presupuesto');
-	return $pdf->stream();
-
-	// return view('budgetview.presupuesto');
-});*/
 
 
 /*

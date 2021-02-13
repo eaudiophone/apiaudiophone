@@ -18,8 +18,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 
 	 use ApiResponserTrait;
     
-    
-    /**
+	/**
 	 * Show ApiaudiophoneBudgets Instance	
 	 *
 	 * @param \Illuminate\Http\Request $request
@@ -80,7 +79,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 					
 						// :::: Eviamos los budgets creados a la vista :::: //
 
-						$apiaudiophonebudgetdata = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price','apiaudiophonebudgets_url','apiaudiophonebudgets_status', 'created_at')->orderBy('apiaudiophonebudgets_id','asc')->get();
+						$apiaudiophonebudgetdata = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'apiaudiophonebudgets_url', 'apiaudiophonebudgets_status', 'created_at')->orderBy('apiaudiophonebudgets_id','asc')->get();
 
 
 						return $this->successResponseApiaudiophoneBudget(true, 200, $bd_budget_total, $apiaudiophonebudgetdata);
@@ -104,7 +103,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 
 						// :::: Eviamos los budgets creados a la vista :::: //
 
-						$apiaudiophonebudgetdata = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price', 'apiaudiophonebudgets_url', 'apiaudiophonebudgets_status', 'created_at')->whereBetween('apiaudiophonebudgets_id', [1, 5])->orderBy('apiaudiophonebudgets_id','asc')->get();
+						$apiaudiophonebudgetdata = ApiAudiophoneBudget::select('apiaudiophonebudgets_id','apiaudiophonebudgets_nameservice', 'apiaudiophonebudgets_client_name', 'apiaudiophonebudgets_client_email', 'apiaudiophonebudgets_client_phone', 'apiaudiophonebudgets_client_social', 'apiaudiophonebudgets_total_price','apiaudiophonebudgets_url', 'apiaudiophonebudgets_status', 'created_at')->whereBetween('apiaudiophonebudgets_id', [1, 5])->orderBy('apiaudiophonebudgets_id','asc')->get();
 
 
 						return $this->successResponseApiaudiophoneBudget(true, 200, $bd_budget_total, $apiaudiophonebudgetdata);
@@ -392,7 +391,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 
 			$id_budget_pdf = $apiaudiophonebudgetsnew_saved->apiaudiophonebudgets_id;
 			
-			
+
 			// :::: Mandamos el request para salvar el presupuesto en el servidor y obtener el link :::: //
 
 			$link = $this->saveBudgetPdf($apiaudiophonebudgets_data, $id_budget_pdf);
@@ -400,9 +399,10 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 			$apiaudiophonebudgetsnew_saved->apiaudiophonebudgets_url = $link;
 
       		$apiaudiophonebudgetsnew_saved->save();
-
+      		
 
       		return $this->successResponseApiaudiophoneBudgetStore(true, 201, 'Budget Creado Satisfactoriamente', $apiaudiophonebudgetsnew_saved);
+
 		}else{
 
 			return $this->errorResponse('Usuario no autorizado para crear items', 401);
@@ -594,10 +594,9 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 
 	public function saveBudgetPdf(array $request_array_store, $pdf_id = null){
 
+		//separador del direc
 
-		// :::: Definimos el separador de carpetas, por el local del sistema :::: //		
-
-		//define('DS', DIRECTORY_SEPARATOR);
+		define('DS', DIRECTORY_SEPARATOR);
 
 		// :::: obtenemos el día de generación del presupuesto :::: //
 
@@ -610,18 +609,19 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 
 		// ::: Definimos el nombre de la carpeta si no existe en el server :::: //
 
-		$carpeta = str_replace('\\', '/', storage_path('app'));
-		
+		$carpeta = str_replace('\\', DS, strstr($_SERVER['DOCUMENT_ROOT'], 'apiaudiophone\public', true)).'appdocs\\';
+
 		// :::: Verificamos carpeta, si no existe,  creamos con permisos 777 :::: //
 
 		if(!file_exists($carpeta)){
 
 			mkdir($carpeta, 0777, true);
 		}
-	
+
 		// :::: Generamos la ruta del presupuesto donde será almacenado el documento :::: //
 
-		$url = 'file:///'.str_replace('\\', '/',  storage_path('app\\').$nombre_pdf);
+		$url = $carpeta.$nombre_pdf;
+
 
 		// :::: Armamamos los valores que vamos a mandar a la vista del Presupuesto :::: //
 
@@ -642,20 +642,21 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 
 		// :::: Cargamos la vista y mandamos los datos del presupuesto :::: //
 
-		$pdf = PDF::loadView('budgetview.presupuesto', 
-			['items' => $items, 
-			 'totals' => $totals,
-			 'names' => $names,
-			 'emails' => $emails,
-			 'phones' => $phones,
-			 'networks' => $networks,
-			 'todays' => $today,
-			 'ids' => $pdf_id,
-			 'services' => $services						
-			]
-		)->save($url);
 
-		
+		$pdf = PDF::loadView('budgetview.presupuesto', 
+			[
+			'items' => $items, 
+		 	'totals' => $totals,
+		 	'names' => $names,
+		 	'emails' => $emails,
+		 	'phones' => $phones,
+		 	'networks' => $networks,
+		 	'todays' => $today,
+		 	'ids' => $pdf_id,
+		 	'services' => $services						
+			]
+		)->save($url);		
+
 		return $url;
 	}
 }

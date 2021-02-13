@@ -68,7 +68,7 @@ class LoginAudiophoneUserController extends AccessTokenController
                     'status' => 401,
                     'apiaudiophoneuser' => $apiaudiophoneuser->apiaudiophoneusers_fullname,
                     'message' => 'Usuario Inactivo'
-                ]);
+                ], 401);
             }else{
 
                 return response()->json([
@@ -76,7 +76,7 @@ class LoginAudiophoneUserController extends AccessTokenController
                     'ok' => true,
                     'status' => 422,
                     'message' => 'Credenciales Inválidas, acceso único para Administradores.'
-                ]);
+                ], 422);
             }
         }else{
 
@@ -85,7 +85,7 @@ class LoginAudiophoneUserController extends AccessTokenController
                 'ok' => true,
                 'status' => 400,
                 'message' => 'Error en los parámetros del request'
-            ]);
+            ], 400);
         }
     }
     /**
@@ -112,7 +112,7 @@ class LoginAudiophoneUserController extends AccessTokenController
                 'ok' => true,
                 'status' => 200,
                 'apiToken' => $tokenRefresh
-            ]);
+            ], 200);
         }else{
 
             return response()->json([
@@ -120,7 +120,7 @@ class LoginAudiophoneUserController extends AccessTokenController
                 'ok' => true,
                 'status' => 405,
                 'message' => 'Error en los parámetros del request'
-            ]);
+            ], 405);
         }
     }
     /**
@@ -137,7 +137,7 @@ class LoginAudiophoneUserController extends AccessTokenController
             'ok' => true,
             'status' => 200,
             'message' => 'Sesión Finalizada'
-        ]);
+        ], 200);
     }
     /**
      * Validate email ApiAudiophoneUser instance.
