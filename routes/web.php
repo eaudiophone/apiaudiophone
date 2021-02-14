@@ -122,15 +122,12 @@ $router->put('api/apiaudiophoneterm/update/{id_apiaudiophoneusers:[0-9]+}', [
 	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhoneTermController@updateApiAudiophoneTerm'
 ]);
 
-
-
 $router->delete('api/apiaudiophoneterm/destroy/{id_apiaudiophoneusers:[0-9]+}', [
 
 	'middleware' => ['cors', 'client.credentials', 'auth:api'],
 	'as' => 'term.destroy',
 	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhoneTermController@destroyApiAudiophoneTerm'
 ]);*/
-
 
 // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: //
 
