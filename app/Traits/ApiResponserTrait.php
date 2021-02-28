@@ -183,7 +183,7 @@ trait ApiResponserTrait
 
 
  /*
- * Responser de afirmacion para devolver los id de los terms basados en el id del servicio, hasta ahoara solo dos servicios.
+ * Responser de afirmacion para devolver los id de los terms basados en el id del servicio, hasta ahora solo dos servicios.
  *
  */
   public function successResponseApiaudiophonEventCreate($ok = null, $code, $apiaudiophoneventmessage, $apiaudiophonetermiduno, $nombre_servicio_uno, $apiaudiophonetermid_dos, $nombre_servicio_dos)

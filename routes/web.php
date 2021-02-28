@@ -161,7 +161,6 @@ $router->post('api/apiaudiophonevent/store/{id_apiaudiophoneusers:[0-9]+}', [
 ]);
 
 
-
 $router->put('api/apiaudiophonevent/update/{id_apiaudiophoneusers:[0-9]+}', [
 
 	'middleware' => ['cors', 'client.credentials', 'auth:api'],

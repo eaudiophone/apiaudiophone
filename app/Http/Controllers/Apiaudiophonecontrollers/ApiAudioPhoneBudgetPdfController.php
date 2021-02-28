@@ -405,7 +405,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 
 		}else{
 
-			return $this->errorResponse('Usuario no autorizado para crear items', 401);
+			return $this->errorResponse('Usuario no autorizado para crear presupuestos', 401);
 		}
 	}
 
@@ -466,7 +466,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 			return $this->successResponseApiaudiophoneBudgetUpdate(true, 201, 'Budget Actualizdo Satisfactoriamente', $apiaudiophonebudgetupdated);
 		}else{
 
-			return $this->errorResponse('Usuario no autorizado para actualizar Budgets', 401);
+			return $this->errorResponse('Usuario no autorizado para actualizar presupuestos', 401);
 		}
 	}
 
