@@ -161,7 +161,7 @@ class ApiAudioPhonEventController extends Controller
         	return $this->errorResponse('No existen Terminos o Condiciones para crear eventos', 404);
         }
 
-        // ::: TAREA: HACER UN BUCLE QUE RECORRA LA EL MODELO DE SERVICIOS Y VAYA LLENANDO LAS VARIABLES DE SELECCIONN DE TERMINOS, DE ID Y DE NOMBRE DE SERVICIOS PARA LUEGO ENVIARLOS A LA VISTA ::: //
+        // ::: TAREA: HACER UN BUCLE QUE RECORRA LA EL MODELO DE SERVICIOS Y VAYA LLENANDO LAS VARIABLES DE SELECCION DE TERMINOS, DE ID Y DE NOMBRE DE SERVICIOS PARA LUEGO ENVIARLOS A LA VISTA ::: //
       }else{
 
         return $this->errorResponse('Usuario no autorizado para el módulo de eventos', 401);
