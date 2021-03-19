@@ -16,14 +16,12 @@ class ApiaudiophonetermsAddForeignUser extends Migration
         
         Schema::table('apiaudiophoneterms', function(Blueprint $table){
 
-            $table->unsignedBigInteger('id_apiaudiophoneusers')->nullable(true)->after('id_apiaudiophoneservices');
+            $table->unsignedBigInteger('id_apiaudiophoneusers')->nullable(true)->after('apiaudiophoneterms_id');
 
             $table->foreign('id_apiaudiophoneusers')->references('apiaudiophoneusers_id')->on('apiaudiophoneusers');
         });
        
 
-        //desactivamos momentaneamente la relacion entre terms y users
-        Schema::disableForeignKeyConstraints();
     }
 
     /**
@@ -35,6 +33,8 @@ class ApiaudiophonetermsAddForeignUser extends Migration
     {
         
         Schema::table('apiaudiophoneterms', function(Blueprint $table){
+
+             $table->dropForeign('apiaudiophoneterms_id_apiaudiophoneusers_foreign');
 
             $table->dropColumn('id_apiaudiophoneusers');
         });

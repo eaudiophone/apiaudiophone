@@ -16,7 +16,7 @@ class ApiaudiophoneventsAddForeignServices extends Migration
 
         Schema::table('apiaudiophonevents', function(Blueprint $table){
 
-            $table->unsignedBigInteger('id_apiaudiophoneservices')->nullable(true)->after('apiaudiophonevents_id');
+            $table->unsignedBigInteger('id_apiaudiophoneservices')->nullable(true)->after('id_apiaudiophoneusers');
 
             $table->foreign('id_apiaudiophoneservices')->references('apiaudiophoneservices_id')->on('apiaudiophoneservices');
         });
@@ -30,6 +30,8 @@ class ApiaudiophoneventsAddForeignServices extends Migration
     public function down()
     {
         Schema::table('apiaudiophonevents', function(Blueprint $table){
+
+            $table->dropForeign('apiaudiophonevents_id_apiaudiophoneservices_foreign');
 
             $table->dropColumn('id_apiaudiophoneservices');
         });

@@ -15,7 +15,7 @@ class ApiaudiophoneservicesAddNameservice extends Migration
     {
         Schema::table('apiaudiophonebudgets', function(Blueprint $table){
 
-            $table->string('apiaudiophonebudgets_nameservice', 60)->required()->after('id_apiaudiophoneservices');
+            $table->string('apiaudiophonebudgets_nameservice', 60)->required()->after('apiaudiophonebudgets_id');
         });
     }
 

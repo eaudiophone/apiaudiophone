@@ -16,7 +16,7 @@ class AudiophonetermsAddForeignService extends Migration
 
         Schema::table('apiaudiophoneterms', function(Blueprint $table){
 
-            $table->unsignedBigInteger('id_apiaudiophoneservices')->nullable(true)->after('apiaudiophoneterms_id');
+            $table->unsignedBigInteger('id_apiaudiophoneservices')->nullable(true)->after('id_apiaudiophoneusers');
 
             $table->foreign('id_apiaudiophoneservices')->references('apiaudiophoneservices_id')->on('apiaudiophoneservices');
         });
@@ -32,6 +32,8 @@ class AudiophonetermsAddForeignService extends Migration
     {
         
         Schema::table('apiaudiophoneterms', function(Blueprint $table){
+
+            $table->dropForeign('apiaudiophoneterms_id_apiaudiophoneservices_foreign');
 
             $table->dropColumn('id_apiaudiophoneservices');
         });

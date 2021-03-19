@@ -19,10 +19,6 @@ class ApiaudiophonebudgetsAddForeignServices extends Migration
 
             $table->foreign('id_apiaudiophoneservices')->references('apiaudiophoneservices_id')->on('apiaudiophoneservices');
         });
-       
-
-        //desactivamos momentaneamente la relacion entre events y users
-        Schema::disableForeignKeyConstraints();
     }
 
     /**
@@ -32,6 +28,12 @@ class ApiaudiophonebudgetsAddForeignServices extends Migration
      */
     public function down()
     {
-        //
+        
+        Schema::table('apiaudiophonebudgets', function(Blueprint $table){
+
+            $table->dropForeign('apiaudiophonebudgets_id_apiaudiophoneservices_foreign');
+
+            $table->dropColumn('id_apiaudiophoneservices');
+        });
     }
 }

@@ -20,10 +20,6 @@ class ApiaudiophoneventsAddForeignTerms extends Migration
 
             $table->foreign('id_apiaudiophoneterms')->references('apiaudiophoneterms_id')->on('apiaudiophoneterms');
         });
-       
-
-        //dejamos activa las referencias entre terms y events
-        //Schema::disableForeignKeyConstraints();
     }
 
     /**
@@ -35,6 +31,8 @@ class ApiaudiophoneventsAddForeignTerms extends Migration
     {
         
         Schema::table('apiaudiophonevents', function(Blueprint $table){
+
+             $table->dropForeign('apiaudiophonevents_id_apiaudiophoneterms_foreign');
 
             $table->dropColumn('id_apiaudiophoneterms');
         });

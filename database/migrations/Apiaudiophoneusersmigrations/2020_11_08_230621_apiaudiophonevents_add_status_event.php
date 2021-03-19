@@ -16,7 +16,7 @@ class ApiaudiophoneventsAddStatusEvent extends Migration
         
         Schema::table('apiaudiophonevents', function(Blueprint $table){
 
-            $table->enum('apiaudiophonevents_status', ['INGRESADO', 'ACEPTADO', 'POSPUESTO', 'RECHAZADO', 'CERRADO'])->default('INGRESADO')->after('id_apiaudiophoneterms');
+            $table->enum('apiaudiophonevents_status', ['INGRESADO', 'ACEPTADO', 'POSPUESTO', 'RECHAZADO', 'CERRADO'])->default('INGRESADO')->after('apiaudiophonevents_description');
         });
     }
 
@@ -27,6 +27,9 @@ class ApiaudiophoneventsAddStatusEvent extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('apiaudiophonevents', function(Blueprint $table){
+
+            $table->dropColumn('apiaudiophonevents_status');
+        });
     }
 }

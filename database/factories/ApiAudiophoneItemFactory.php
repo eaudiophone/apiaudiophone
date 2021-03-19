@@ -9,7 +9,8 @@ $factory->define(ApiAudiophoneItem::class, function (Faker $faker) {
     return [
         
         'apiaudiophoneitems_name' => $faker->sentence($nbWords = 4, $variableNbWords = true),
-        'apiaudiophoneitems_description' => $faker->sentences($nb = 1, $asText = true), 
-        'apiaudiophoneitems_status' => $faker->randomElement(['ACTIVO', 'INACTIVO'])
+        'apiaudiophoneitems_description' => $faker->sentence($nbWords = 3, $variableNbWords = true), 
+        'apiaudiophoneitems_status' => $faker->randomElement(['ACTIVO', 'INACTIVO']),
+        'apiaudiophoneitems_price' => $faker->randomFloat($nbMaxDecimals = 2)
     ];
 });

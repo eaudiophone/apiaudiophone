@@ -37,6 +37,15 @@ class ApiaudiophonebudgetsCreateTable extends Migration
      */
     public function down()
     {
+
+        /*Schema::table('apiaudiophonebudgets', function(Blueprint $table){
+
+            $table->dropForeign('apiaudiophonebudgets_id_apiaudiophoneservices_foreign');
+
+            $table->dropColumn('id_apiaudiophoneservices');
+        });*/
+
+
         Schema::dropIfExists('apiaudiophonebudgets');
     }
 }
