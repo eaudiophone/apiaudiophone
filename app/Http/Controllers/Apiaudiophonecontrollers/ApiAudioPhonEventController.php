@@ -41,9 +41,9 @@ class ApiAudioPhonEventController extends Controller
 
 	        //::::: OBTENEMOS INICIO Y FIN DE MES ACTUAL (PRIMERA FASE, PARA MANDAR EL MES ACTUAL AL ADMIN_ROLE) ::::://
 
-	        $start_of_month = Carbon::today()->startOfMonth()->format('Y-m-d');
+	        $start_of_month = Carbon::today('America/Caracas')->startOfMonth()->format('Y-m-d');
 
-	        $end_of_month = Carbon::today()->endOfMonth()->format('Y-m-d');
+	        $end_of_month = Carbon::today('America/Caracas')->endOfMonth()->format('Y-m-d');
 
 		   
 	        //::: VALIDAMOS EL TIPO DE USUARIO PARA MANDAR LA INFORMACIÓN A LA VISTA :::://
@@ -202,22 +202,22 @@ class ApiAudioPhonEventController extends Controller
 	
 	    //:::: OBTENEMOS PRIMER DIA DEL MES ACTUAL ::::://
 
-     	$start_month = Carbon::today()->startOfMonth()->format('Y-m-d');
+     	$start_month = Carbon::today('America/Caracas')->startOfMonth()->format('Y-m-d');
 
      	
 		  //:::: OBTENEMOS UTLIMO DIA DEL MES ACTUAL :::://
 
-     	$end_month = Carbon::today()->endOfMonth()->format('Y-m-d');
+     	$end_month = Carbon::today('America/Caracas')->endOfMonth()->format('Y-m-d');
 
 
      	//:::: OBTENEMOS PRIMER DIA DE LA SEMANA ACTUAL :::://
 
-     	$start_week = Carbon::today()->startOfWeek()->format('Y-m-d');
+     	$start_week = Carbon::today('America/Caracas')->startOfWeek()->format('Y-m-d');
 
      	
      	//:::: OBTENEMOS EL ULTIMO DÍA DE LA SEMANA ACTUAL :::://
 
-     	$end_week = Carbon::today()->endOfWeek()->format('Y-m-d');
+     	$end_week = Carbon::today('America/Caracas')->endOfWeek()->format('Y-m-d');
 
     
      	//:::: OBTENEMOS CONTEO DE CITAS SEMANALES GENERADAS POR EL USUARIO :::://
@@ -232,7 +232,7 @@ class ApiAudioPhonEventController extends Controller
 
       //:::: OBTENEMOS EL DIA ACTUAL :::://
 
-      $today = Carbon::today()->format('Y-m-d');
+      $today = Carbon::today('America/Caracas')->format('Y-m-d');
 
 
     	//:::: BUSCAMOS EL NOMBRE DEL SERVICIO DE ACUERDO AL ID_SERVICES DEL REQUEST ::::://
@@ -433,7 +433,7 @@ class ApiAudioPhonEventController extends Controller
     
       //:::: OBTENEMOS EL DIA ACTUAL :::://
 
-      $today_upd = Carbon::today()->format('Y-m-d');
+      $today_upd = Carbon::today('America/Caracas')->format('Y-m-d');
 
 
     	//:::: OBTENER BEGIN TIME DE LA ULTIMA CONFIGURACION DEL TERM DE ACUERDO AL ID DEL TERM :::://

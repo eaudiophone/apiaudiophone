@@ -427,6 +427,5 @@ class ApiAudioPhoneTermController extends Controller
     }
 
 
-    //:::::::: PENDIENTE MANEJAR UNA TABLA DE LOGS DE ACCIONES DE USUARIOS PARA AUDITORIA DE SEGURIDAD ::::::::::://
     //:::::::: ENDPOINT UPDATE NO FUNCIONAL HASTA UNA SIGUIENTE FASE PERO ESTA LISTO :::::::::::: //
 }

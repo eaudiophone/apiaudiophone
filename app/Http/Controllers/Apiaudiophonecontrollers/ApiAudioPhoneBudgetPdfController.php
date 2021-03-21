@@ -600,7 +600,7 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 
 		// :::: obtenemos el día de generación del presupuesto :::: //
 
-		$today = Carbon::today()->format('Y-m-d');
+		$today = Carbon::today('America/Caracas')->format('Y-m-d');
 
 		// :::: Generamos el nombre del presupuesto :::: //
 
