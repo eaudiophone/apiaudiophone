@@ -15,6 +15,8 @@ use App\Apiaudiophonemodels\ApiAudiophoneService;
 use App\Apiaudiophonemodels\ApiAudiophonEvent;
 use App\Apiaudiophonemodels\ApiAudiophoneItem;
 use App\Apiaudiophonemodels\ApiAudiophoneBudget;
+use App\Apiaudiophonemodels\ApiAudiophoneClient;
+use App\Apiaudiophonemodels\ApiAudiophoneBalance;
 
 class ApiAudiophoneUser extends Model implements AuthenticatableContract, AuthorizableContract
 {
@@ -96,6 +98,30 @@ class ApiAudiophoneUser extends Model implements AuthenticatableContract, Author
     public function apiaudiophonebudget(){
 
         return $this->hasMany(ApiAudiophoneBudget::class, 'id_apiaudiophoneusers', 'apiaudiophoneusers_id');
+    }
+
+
+    /**
+    * Relacion user vs. client uno a muchos
+    *
+    * @return App\Apiaudiophonemodels\ApiAudiophoneClient
+    */
+    public function apiaudiophoneclient()
+    {
+
+        return $this->hasMany(ApiAudiophoneClient::class, 'id_apiaudiophoneusers', 'apiaudiophoneusers_id');
+    }
+
+
+    /**
+    * Relacion user vs. balance uno a muchos
+    *
+    * @return App\Apiaudiophonemodels\ApiAudiophoneBalance
+    */
+    public function apiaudiophonebalance()
+    {
+
+        return $this->hasMany(ApiAudiophoneBalance::class, 'id_apiaudiophoneusers', 'apiaudiophoneusers_id');
     }
 
 
