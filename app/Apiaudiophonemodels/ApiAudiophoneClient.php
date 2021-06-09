@@ -63,4 +63,17 @@ class ApiAudiophoneClient extends Model
 
     	return $this->hasMany(ApiAudiophoneBalance::class, 'id_audiophoneclients', 'apiaudiophoneclients_id');
     }
+
+
+    //::: SCOPE :::://
+
+    // Consultamos todos los clientes creados por un usuario //
+
+    public function scopeClientUser($query, $id_apiaudiophoneusers){
+
+        if($id_apiaudiophoneusers){
+
+            return $query->where('id_apiaudiophoneusers', $id_apiaudiophoneusers);
+        }
+    }
 }

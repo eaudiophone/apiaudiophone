@@ -67,4 +67,15 @@ class ApiAudiophoneBalance extends Model
 
     	return $this->belongsTo(ApiAudiophoneClient::class, 'id_audiophoneclients', 'id_audiophoneclients');
     }
+
+
+    //:::: SCOPES :::://
+
+    public function scopeBalanceClient($query, $id_apiaudiophoneclient){
+
+        if($id_apiaudiophoneclient){
+
+            return $query->where('id_apiaudiophoneclients', $id_apiaudiophoneclient);
+        }
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use Illuminate\Http\Response;
+use Illuminate\Contracts\Support\Jsonable;
 
 trait ApiResponserTrait
 {
@@ -303,6 +304,55 @@ trait ApiResponserTrait
   }
 
 
+ /*
+ * Responser de afirmacciones estándar para ApiaudiophoneClient show
+ *
+ */
+  public function successResponseApiaudiophoneClientShow($ok = null, $code, $apiaudiophoneclientshow)
+  {
+  
+    return response()->json([
+
+      'ok' => $ok,
+      'status' => $code,
+      'apiaudiophoneclientshow' => $apiaudiophoneclientshow
+    ], $code);
+  }
+
+
+ /*
+ * Responser de afirmacciones estándar para ApiaudiophoneClient store
+ *
+ */
+  public function successResponseApiaudiophoneClientStore($ok = null, $code, $apiaudiophoneclientmessage, $apiaudiophoneclientstore)
+  {
+  
+    return response()->json([
+
+      'ok' => $ok,
+      'status' => $code,
+      'apiaudiophoneclientmessage' => $apiaudiophoneclientmessage,
+      'apiaudiophoneclientstore' => $apiaudiophoneclientstore
+    ], $code);
+  }
+
+
+  /*
+ * Responser de afirmacciones estándar para ApiaudiophoneClient update
+ *
+ */
+  public function successResponseApiaudiophoneClientUpdate($ok = null, $code, $apiaudiophoneclientmessage, $apiaudiophoneclientsupdate)
+  {
+  
+    return response()->json([
+
+      'ok' => $ok,
+      'status' => $code,
+      'apiaudiophoneclientmessage' => $apiaudiophoneclientmessage,
+      'apiaudiophoneclientsupdate' => $apiaudiophoneclientsupdate
+    ], $code);
+  }
+
 
   /*
  * Responser de Errores para Credenciales Vencidas
@@ -478,6 +528,22 @@ trait ApiResponserTrait
       'ok' => $ok, 
       'status' => $code,
       'apiaudiophonebudget_mesaage' => $apiaudiophonebudget_mesaage
+    ], $code);
+  }
+
+
+  /*
+ * Responser de error estándar para ApiaudiophoneClientDestroy
+ *
+ */
+  public function errorResponseApiaudiophonClientDestroy($ok = null, $code, $apiaudiophonevent_message)
+  {
+  
+    return response()->json([
+
+      'ok' => $ok, 
+      'status' => $code,
+      'apiaudiophonevent_message' => $apiaudiophonevent_message
     ], $code);
   }
 

@@ -16,7 +16,7 @@ class ApiaudiophonclientsAddForeignUsers extends Migration
         Schema::table('apiaudiophoneclients', function(Blueprint $table){
 
 
-            $table->unsignedBigInteger('id_apiaudiophoneusers')->nullable(true)->after('id_apiaudiophonebalances');
+            $table->unsignedBigInteger('id_apiaudiophoneusers')->nullable(true)->after('apiaudiophoneclients_id');
 
             $table->foreign('id_apiaudiophoneusers')->references('apiaudiophoneusers_id')->on('apiaudiophoneusers');
         });
