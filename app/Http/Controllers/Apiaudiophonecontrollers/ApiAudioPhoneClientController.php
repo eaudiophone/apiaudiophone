@@ -68,7 +68,7 @@ class ApiAudioPhoneClientController extends Controller
 
                 case(0):
 
-                    return $this->errrorResponse('No existen Clientes, debe crearlos');
+                    return $this->errorResponse('No existen Clientes, debe crearlos', 404);
                     
                     break;
                 default:
