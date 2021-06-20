@@ -163,7 +163,6 @@ class ApiAudioPhoneClientController extends Controller
                     }
                 }else{
 
-
                     $clients_resutls = ApiAudiophoneClient::skip(0)->take($num_pag)->orderBy('apiaudiophoneclients_id', 'asc')->get();
 
                     return $this->successResponseApiaudiophoneClientShow(true, 200, $clients_resutls);
