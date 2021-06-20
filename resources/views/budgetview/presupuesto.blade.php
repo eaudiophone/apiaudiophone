@@ -157,7 +157,6 @@
 								<td class = "td_price">{{ $item['apiaudiophonebudgets_items_unit_price'] }}</td>
 								<td class = "td_price">{{ $item['apiaudiophonebudgets_items_subtotal'] }}</td>
 							</tr>
-
 						@endforeach
 					</tbody>
 					

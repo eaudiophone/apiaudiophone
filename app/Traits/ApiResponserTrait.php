@@ -319,6 +319,21 @@ trait ApiResponserTrait
     ], $code);
   }
 
+  /*
+ * Responser de afirmacciones estándar para ApiaudiophoneBalance show
+ *
+ */
+  public function successResponseApiaudiophoneBalanceShow($ok = null, $code, $apiaudiophonebalanceshow)
+  {
+  
+    return response()->json([
+
+      'ok' => $ok,
+      'status' => $code,
+      'apiaudiophonebalanceshow' => $apiaudiophonebalanceshow
+    ], $code);
+  }
+
 
  /*
  * Responser de afirmacciones estándar para ApiaudiophoneClient store

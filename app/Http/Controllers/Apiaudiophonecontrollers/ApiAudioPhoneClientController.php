@@ -30,7 +30,8 @@ class ApiAudioPhoneClientController extends Controller
 
         $this->validate($request, [
 
-            'stringsearch' => 'string'
+            'stringsearch' => 'string|min:0|max:60',
+            'start' => 'numeric'
         ]);
 
 
@@ -52,66 +53,124 @@ class ApiAudioPhoneClientController extends Controller
 
         $user_rol = $user->apiaudiophoneusers_role;
 
+        // :::: Obtenemos las llaves del request array :::: //
+
+        $keys_show_request = $this->arrayKeysRequest($client_data_show);
+
         // :::: Numero de registros por página :::: //
 
         $num_pag = 5;
 
-
-        //dd($num_pag);
-
-
         if($user_rol == 'ADMIN_ROLE'){
-
-            //dd($num_pag);
 
             switch($client_count_bd){
 
                 case(0):
 
-                    return $this->errrorResponse('No existen Clientes, debe crearlos');
+                    return $this->errrorResponse('No existen Clientes, debe crearlos', 404);
                     
                     break;
                 default:
 
                 // :::: Búsqueda con cadena vacía sin espacio :::: //
 
-                if(($parameters_total == 1) && (key($client_data_show) == 'stringsearch')){
+                if(($parameters_total == 2) && ($keys_show_request[0] == 'stringsearch') && ($keys_show_request[1] == 'start')){
 
-                    // :::: Obtenemos el valor de la cadena de búsqueda :::: //
-
+                    // :::: Obtenemos el valor por cadena de búsqueda :::: //
                     $chain = $client_data_show['stringsearch'];
+                    $start = $client_data_show['start'] - 1;
 
-                    // :::: Búsqueda cadena sin espacio :::: //
-                    if(ctype_space($chain) == false){
+                    //dd('hola', $start);
 
-                        $clients_resutls = ApiAudiophoneClient::where('apiaudiophoneclients_name', 'like', '%'.$chain.'%')->paginate($num_pag);
+                    // :::: Búsqueda de cadena con o espacio y sin inicio :::: //
+                    if(((ctype_space($chain) == true) && !($start)) || ((ctype_space($chain) == false) && !($start))){
+
+                        //dd('hola1', $start);
+
+                        $clients_resutls = ApiAudiophoneClient::where('apiaudiophoneclients_name', 'like', '%'.$chain.'%')
+                        ->skip(0)->take($num_pag)->orderBy('apiaudiophoneclients_id', 'asc')
+                        ->get();
 
                         return $this->successResponseApiaudiophoneClientShow(true, 200, $clients_resutls);
+                    // :::: Búsqueda de cadena con espacio con inicio :::: //
+                    }elseif(((ctype_space($chain) == true) && ($start)) || ((ctype_space($chain) == false) && ($start))){
 
-                        // :::: Búsqueda cadena con espacio :::: //
-                    }elseif(ctype_space($chain) == true){
+                        //dd('hola2', $start);
+                        
+                        $clients_resutls = ApiAudiophoneClient::where('apiaudiophoneclients_name', 'like', '%'.$chain.'%')
+                        ->skip($start)->take($num_pag)->orderBy('apiaudiophoneclients_id', 'asc')
+                        ->get();
 
-                        $clients_resutls = ApiAudiophoneClient::where('apiaudiophoneclients_name', 'like', '%'.$chain.'%')->paginate($num_pag);
-
-                        return $this->successResponseApiaudiophoneClientShow(true, 200, $clients_resutls);
-                    
-                        // :::: Búsqueda con cadena vacía :::: //
+                        return $this->successResponseApiaudiophoneClientShow(true, 200, $clients_resutls);     
+                    // :::: Búsqueda sin valor en el parámetro de búsqueda :::: //
                     }else{
 
-                        $clients_resutls = ApiAudiophoneClient::paginate($num_pag);
+                        //dd('hola3', $start);
+
+                        $clients_resutls = ApiAudiophoneClient::where('apiaudiophoneclients_name', 'like', '%'.$chain.'%')
+                        ->skip(0)->take($num_pag)->orderBy('apiaudiophoneclients_id', 'asc')
+                        ->get();
 
                         return $this->successResponseApiaudiophoneClientShow(true, 200, $clients_resutls);
                     }
-                }elseif($parameters_total == 0){
+                //  :::: Cuando nos envían el start de paginación ::::  //
+                }elseif(($parameters_total == 1) && ($keys_show_request[0] == 'start')){
 
-                    $clients_resutls = ApiAudiophoneClient::paginate($num_pag);
+                    // :::: Obtenemos los valores el inicio y el fin :::: //
+                    $start = $client_data_show['start'] - 1;
+
+
+                    // :::: cuando el estart no tiene valorres :::: //
+                    if(!($start)){
+
+                        $clients_resutls = ApiAudiophoneClient::skip(0)->take($num_pag)
+                        ->orderBy('apiaudiophoneclients_id', 'asc')
+                        ->get();
+
+                        return $this->successResponseApiaudiophoneClientShow(true, 200, $clients_resutls);
+                    // :::: cuando el start tiene valores :::: // 
+                    }else{
+
+                        $clients_resutls = ApiAudiophoneClient::skip($start)->take($num_pag)
+                        ->orderBy('apiaudiophoneclients_id', 'asc')
+                        ->get();
+
+                        return $this->successResponseApiaudiophoneClientShow(true, 200, $clients_resutls);
+                    }
+                }elseif(($parameters_total == 1) && ($keys_show_request[0] == 'stringsearch')){
+                    
+                    // :::: Obtenemos el valor por cadena de búsqueda :::: //
+                    $chain = $client_data_show['stringsearch'];
+
+                    // :::: cuando la cadena está llena con o sin espacio :::: //
+                    if(((ctype_space($chain) == true) && ($chain)) || ((ctype_space($chain) == false) && ($chain))){
+                    //dd('hola5');
+
+                        $clients_resutls = ApiAudiophoneClient::where('apiaudiophoneclients_name', 'like', '%'.$chain.'%')
+                        ->skip(0)->take($num_pag)->orderBy('apiaudiophoneclients_id', 'asc')
+                        ->get();
+
+                        return $this->successResponseApiaudiophoneClientShow(true, 200, $clients_resutls);
+                    // :::: cuando viene un parametro vacío del scringsearch :::: //    
+                    }elseif(!($chain)){
+                        //dd('hola6');
+
+                        ApiAudiophoneClient::skip(0)->take($num_pag)
+                        ->orderBy('apiaudiophoneclients_id', 'asc')
+                        ->get();
+
+                        return $this->successResponseApiaudiophoneClientShow(true, 200, $clients_resutls);                    
+                    }
+                }else{
+
+
+                    $clients_resutls = ApiAudiophoneClient::skip(0)->take($num_pag)->orderBy('apiaudiophoneclients_id', 'asc')->get();
 
                     return $this->successResponseApiaudiophoneClientShow(true, 200, $clients_resutls);
-                }
+                }                
             }
         }else{
 
-            dd('error');
             return $this->errorResponse('Usuario no autorizado para consultar Clientes', 401);
         }
     }
@@ -289,5 +348,14 @@ class ApiAudioPhoneClientController extends Controller
 
             return $this->errorResponse('Método no Permitido', 405);
         }
+    }
+
+    // :::: Obtenemos el Key del arreglo de la petición :::: //
+
+    public function arrayKeysRequest(array $request_array){
+
+        $array_keys = array_keys($request_array);
+
+        return $array_keys;
     }
 }
