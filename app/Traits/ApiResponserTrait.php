@@ -308,7 +308,7 @@ trait ApiResponserTrait
  * Responser de afirmacciones estándar para ApiaudiophoneClient show
  *
  */
-  public function successResponseApiaudiophoneClientShow($ok = null, $code, $bdclientotal, $apiaudiophoneclientshow)
+  public function successResponseApiaudiophoneClientShow($ok = null, $code, $bdclientstotal, $apiaudiophoneclientshow)
   {
   
     return response()->json([
@@ -324,7 +324,7 @@ trait ApiResponserTrait
  * Responser de afirmacciones estándar para ApiaudiophoneClient
  *
  */
-  public function successResponseApiaudiophoneClientCount($ok = true, $code, $bdclientotal, $apiaudiophoneclientcount, $apiaudiophoneclientdata)
+  public function successResponseApiaudiophoneClientCount($ok = true, $code, $bdclientstotal, $apiaudiophoneclientcount, $apiaudiophoneclientdata)
   {
 
     return response()->json([
