@@ -308,14 +308,32 @@ trait ApiResponserTrait
  * Responser de afirmacciones estándar para ApiaudiophoneClient show
  *
  */
-  public function successResponseApiaudiophoneClientShow($ok = null, $code, $apiaudiophoneclientshow)
+  public function successResponseApiaudiophoneClientShow($ok = null, $code, $bduserstotal, $apiaudiophoneclientshow)
   {
   
     return response()->json([
 
       'ok' => $ok,
       'status' => $code,
+      'bduserstotal' => $bduserstotal,
       'apiaudiophoneclientshow' => $apiaudiophoneclientshow
+    ], $code);
+  }
+
+   /*
+ * Responser de afirmacciones estándar para ApiaudiophoneClient
+ *
+ */
+  public function successResponseApiaudiophoneClientCount($ok = true, $code, $bduserstotal, $apiaudiophoneclientcount, $apiaudiophoneclientdata)
+  {
+
+    return response()->json([
+  
+    'ok' => $ok,
+    'status' => $code,
+    'bduserstotal' => $bduserstotal,
+    'apiaudiophoneclientcount' => $apiaudiophoneclientcount,
+    'apiaudiophoneclientdata' => $apiaudiophoneclientdata
     ], $code);
   }
 
@@ -323,17 +341,53 @@ trait ApiResponserTrait
  * Responser de afirmacciones estándar para ApiaudiophoneBalance show
  *
  */
-  public function successResponseApiaudiophoneBalanceShow($ok = null, $code, $apiaudiophonebalanceshow)
+  public function successResponseApiaudiophoneBalanceShow($ok = null, $code, $bdbalancetotal, $bdbalance_client, $apiaudiophonebalanceshow)
   {
   
     return response()->json([
 
       'ok' => $ok,
       'status' => $code,
+      'bdbalancetotal' => $bdbalancetotal,
+      'bdbalance_client' => $bdbalance_client,
       'apiaudiophonebalanceshow' => $apiaudiophonebalanceshow
     ], $code);
   }
 
+
+  /*
+ * Responser de afirmacciones estándar para ApiaudiophoneBalance create
+ *
+ */
+  public function successResponseApiaudiophoneBalanceCreate($ok = null, $code, $bdbalancetotal, $bdbalance_client, $apiaudiophonebalancecreate)
+  {
+  
+    return response()->json([
+
+      'ok' => $ok,
+      'status' => $code,
+      'bdbalancetotal' => $bdbalancetotal,
+      'bdbalance_client' => $bdbalance_client,
+      'apiaudiophonebalancecreate' => $apiaudiophonebalancecreate
+    ], $code);
+  }
+
+
+  /*
+ * Responser de afirmacciones estándar para ApiaudiophoneBalance store
+ *
+ */
+  public function successResponseApiaudiophoneBalanceStore($ok = null, $code, $message, $apiaudiophonebalancestore)
+  {
+  
+    return response()->json([
+
+      'ok' => $ok,
+      'status' => $code,
+      'message' => $message,
+      'apiaudiophonebalancestore' => $apiaudiophonebalancestore
+    ], $code);
+  }
 
  /*
  * Responser de afirmacciones estándar para ApiaudiophoneClient store

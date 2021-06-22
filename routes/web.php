@@ -340,3 +340,59 @@ $router->delete('api/apiaudiophoneclient/destroy/{id_apiaudiophoneusers:[0-9]+}'
 	'as' => 'client.destroy',
 	'uses' => 'Apiaudiophonecontrollers\ApiAudioPhoneClientController@destroyApiAudiophoneClient'
 ]);
+
+/*
+	RUTAS PARA EL MODELO BALANCES
+*/
+
+/*$router->get('api/prueba', function(){
+
+	$clientes = ApiAudiophoneClient::simplePaginate(2);
+
+	return $clientes;
+
+});*/
+
+$router->post('api/apiaudiophonebalance/show/{id_apiaudiophoneusers:[0-9]+}', [
+
+
+	'middleware' => ['cors', 'client.credentials', 'auth:api'],
+	'as' => 'client.show',
+	'uses' => 'Apiaudiophonecontrollers\ApiAudiophonceBalanceController@showApiaudiophoneBalance'
+]);
+
+
+$router->post('api/apiaudiophonebalance/create/{id_apiaudiophoneusers:[0-9]+}', [
+
+
+	'middleware' => ['cors', 'client.credentials', 'auth:api'],
+	'as' => 'client.store',
+	'uses' => 'Apiaudiophonecontrollers\ApiAudiophonceBalanceController@createApiaudiophoneBalance'
+]);
+
+
+$router->post('api/apiaudiophonebalance/store/{id_apiaudiophoneusers:[0-9]+}', [
+
+
+	'middleware' => ['cors', 'client.credentials', 'auth:api'],
+	'as' => 'client.store',
+	'uses' => 'Apiaudiophonecontrollers\ApiAudiophonceBalanceController@storeApiaudiophoneBalance'
+]);
+
+
+$router->put('api/apiaudiophonebalance/update/{id_apiaudiophoneusers:[0-9]+}', [
+
+
+	'middleware' => ['cors', 'client.credentials', 'auth:api'],
+	'as' => 'client.update',
+	'uses' => 'Apiaudiophonecontrollers\ApiAudiophonceBalanceController@updateApiaudiophoneBalance'
+]);
+
+
+$router->delete('api/apiaudiophonebalance/destroy/{id_apiaudiophoneusers:[0-9]+}', [
+
+
+	'middleware' => ['cors', 'client.credentials', 'auth:api'],
+	'as' => 'client.destroy',
+	'uses' => 'Apiaudiophonecontrollers\ApiAudiophonceBalanceController@destroyApiaudiophoneBalance'
+]);

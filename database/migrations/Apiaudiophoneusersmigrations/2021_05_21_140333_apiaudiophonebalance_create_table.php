@@ -23,8 +23,8 @@ class ApiaudiophonebalanceCreateTable extends Migration
             $table->string('apiaudiophonebalances_desc', 60)->nullable(true);
             $table->unsignedInteger('apiaudiophonebalances_horlab')->required();
             $table->unsignedDecimal('apiaudiophonebalances_tarif', 12, 2)->required();
-            $table->unsignedDecimal('apiaudiophonebalances_debe', 12, 2)->required();
-            $table->unsignedDecimal('apiaudiophonebalances_haber', 12, 2)->required();
+            $table->unsignedDecimal('apiaudiophonebalances_debe', 12, 2)->nullable(true);
+            $table->unsignedDecimal('apiaudiophonebalances_haber', 12, 2)->nullable(true);
             $table->unsignedDecimal('apiaudiophonebalances_total', 12, 2)->required();
             $table->timestamps();
             $table->softDeletes();

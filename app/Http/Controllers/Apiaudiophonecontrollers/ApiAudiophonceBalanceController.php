@@ -30,8 +30,7 @@ class ApiAudiophonceBalanceController extends Controller
 
             'id_apiaudiophoneclients' => 'numeric|required',
             'stringsearch' => 'string|min:0|max:60',
-            'start' => 'numeric',
-            'end' => 'numeric' 
+            'start' => 'numeric' 
         ]);
 
        // :::: Obtenemos los valores del request :::: //
@@ -46,25 +45,17 @@ class ApiAudiophonceBalanceController extends Controller
 
         $id_client_request = $balance_data_show['id_apiaudiophoneclients'];
 
-        // :::: Obtenemos el stringsearch :::: //
-
-        $string_client_request = $balance_data_show['stringsearch'];
-
-        // :::: Obtenemos el start de la consulta :::: //
-
-        $start_client_request = $balance_data_show['start'];
-
-        // :::: Obtenemos el end de la consulta :::: //
-
-        $end_client_request = $balance_data_show['end'];
-
         // :::: Obtenemos las keys del arreglo de parámetros de entrada :::: //
 
         $keys_balance_data_show = $this->arrayKeysRequest($balance_data_show);
 
-        // :::: Obtenemos la cantidad de registros contables por cliente :::: //
+        // :::: Obtenemos la cantidad de registros contables general :::: //
 
-        $count_balance_client = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $id_client_request)->count();
+        $bdbalancetotal = ApiAudiophoneBalance::count();
+
+        // :::: Obtenemos la cantidad de registros contables por cliente:::: //
+
+        $count_balance_client = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $id_client_request)->count();        
 
         // :::: Obtenemos el rol del usuario :::: //
 
@@ -82,82 +73,132 @@ class ApiAudiophonceBalanceController extends Controller
 
            switch($count_balance_client)
            {
-
+                // :::: Cuando no existen registros contables para ese cliente :::: //
                 case 0:
 
-                    return $this->errorResponse('No existen registros contables para el cliente', 404);
-
-                    break;
+                  return $this->errorResponse('No existen registros contables para el cliente', 404);
+                break;
                 default:
 
-               if($parameters_total == 0){
+                // :::: Cuando es la primera consulta, solo viene el id del cliente :::: //
+                if(($parameters_total == 1) && ($keys_balance_data_show[0] == 'id_apiaudiophoneclients')){
 
-                    return $this->errorResponse('Petición Inválida', 405);
-
-                // :::: cuando trae un parámetro el request :::: //
-                }elseif($parameters_total == 1){
- 
-                    $data_balance_show = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $id_client_request)
+                    $balance_results = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $id_client_request)
+                    ->skip(0)->take($num_pag)
                     ->orderBy('apiaudiophonebalances_id', 'desc')
-                    ->paginate($num_pag);
+                    ->get();
 
-                    return $this->successResponseApiaudiophoneBalanceShow(true, 200, $data_client_show);
+                    return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $count_balance_client, $balance_results);
 
-                // :::: cuando trae dos parámetros el request y con valor en cadena :::: //
-                }elseif(($parameters_total == 2) && ($keys_balance_data_show[0] == 'id_apiaudiophoneclients') && ($keys_balance_data_show[1] == 'stringsearch') && ($string_client_request)){
+                // :::: Cuando se hace búsqueda por stringsearch, id cliente requerido :::: //
+                }elseif(($parameters_total == 2) && ($keys_balance_data_show[0] == 'id_apiaudiophoneclients') && ($keys_balance_data_show[1] == 'stringsearch')){
 
+                    // :::: Obtenemos valor de la cadena :::: //
+                    $chain = $balance_data_show['stringsearch'];
 
-                    $data_balance_show = ApiAudiophoneBalance::where(['id_apiaudiophoneclients', $id_client_request], ['apiaudiophonebalances_desc', 'like', '%'.$string_client_request.'%'])
-                    ->orWhere(['id_apiaudiophoneclients', $id_client_request], ['apiaudiophonebalances_date', 'like', '%'.$string_client_request.'%'])
-                    ->orderBy('apiaudiophonebalances_id', 'desc')
-                    ->paginate($num_pag);
-
-                    return $this->successResponseApiaudiophoneBalanceShow(true, 200, $data_client_show);    
-
-                // :::: cuando trae dos parámetros el request y sin valor en cadena :::: //
-                }elseif(($parameters_total == 2) && ($keys_balance_data_show[0] == 'id_apiaudiophoneclients') && ($keys_balance_data_show[1] == 'stringsearch') && (!($string_client_request))){
-
-                    $data_balance_show = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $id_client_request)
-                    ->orderBy('apiaudiophonebalances_id', 'desc')
-                    ->paginate($num_pag);
-
-                    return $this->successResponseApiaudiophoneBalanceShow(true, 200, $data_client_show);
-                
-                // :::: cuando trae tres parámetros el request y con todos los valores del request :::: //
-                }elseif(($parameters_total == 3) && ($keys_balance_data_show[0] == 'id_apiaudiophoneclients') && ($keys_balance_data_show[1] == 'start') && ($keys_balance_data_show[2] == 'end') && ($start_client_request) && ($end_client_request)){
+                    // :::: Cuando hay cadena con o sin espacio, primera búsqueda con stringsearch :::: //
+                    if(((ctype_space($chain) == true) && ($chain)) || ((ctype_space($chain) == false) && ($chain))){
 
 
-                    $data_balance_show = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $id_client_request)
-                    ->whereBetween('apiaudiophonebalances_id', [$start, $end])
-                    ->orderBy('apiaudiophonebalances_id', 'desc')
-                    ->paginate($num_pag);
+                        $balance_results = ApiAudiophoneBalance::where(['id_apiaudiophoneclients', $id_client_request], ['apiaudiophonebalances_desc', 'like', '%'.$chain.'%'])
+                        ->orWhere(['id_apiaudiophoneclients', $id_client_request], ['apiaudiophonebalances_date', 'like', '%'.$chain.'%'])
+                        ->skip(0)->take($num_pag)
+                        ->orderBy('apiaudiophonebalances_id', 'desc')
+                        ->get();
 
-                    return $this->successResponseApiaudiophoneBalanceShow(true, 200, $data_client_show);
-               
-                // :::: cuando trae tres parámetros el request y sin valor en el end de la consulta:::: //
-                }elseif(($parameters_total == 3) && ($keys_balance_data_show[0] == 'id_apiaudiophoneclients') && ($keys_balance_data_show[1] == 'start') && ($keys_balance_data_show[2] == 'end') && ($start_client_request) && (!($end_client_request))){
+                        $balance_results_count = count($balance_results); 
+                        
+                        return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $balance_results_count, $balance_results);                        
+                    // :::: Cuando no hay cadena:::: // 
+                    }else{
+
+                        $balance_results = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $id_client_request)
+                        ->skip(0)->take($num_pag)
+                        ->orderBy('apiaudiophonebalances_id', 'desc')
+                        ->get();
+
+                        return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $count_balance_client, $balance_results);
+                    }
+                // :::: Cuando se hace búsqueda por paginación :::: // 
+                }elseif(($parameters_total == 2) && ($keys_balance_data_show[0] == 'id_apiaudiophoneclients') && ($keys_balance_data_show[1] == 'start')){
+
+                    // :::: Obtenemos valor del start :::: //
+                    $start = $balance_data_show['start'] - 1;
+
+                    // :::: Cuando no hay parámetro start :::: //
+                    if(!($start)){
+
+                        $balance_results = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $id_client_request)
+                        ->skip(0)->take($num_pag)
+                        ->orderBy('apiaudiophonebalances_id', 'desc')
+                        ->get();
+
+                        return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $count_balance_client, $balance_results);
+                    // :::: Cuando hay parámetro start :::: // 
+                    }else{
+
+                        $balance_results = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $id_client_request)
+                        ->skip($start)->take($num_pag)
+                        ->orderBy('apiaudiophonebalances_id', 'desc')
+                        ->get();
+
+                        return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $count_balance_client, $balance_results);
+                    }
+                // :::: Cuando se hace búsqueda por stringsarch y por parámetro de búsqueda :::: //
+                }elseif(($parameters_total == 3) && ($keys_balance_data_show[0] == 'id_apiaudiophoneclients') && ($keys_balance_data_show[1] == 'stringsearch') && ($keys_balance_data_show[1] == 'start')){
 
 
-                    $data_balance_show = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $id_client_request)
-                    ->whereBetween('apiaudiophonebalances_id', [$start, $end])
-                    ->orderBy('apiaudiophonebalances_id', 'desc')
-                    ->paginate($num_pag);
+                    // :::: Obtenemos valor del request :::: //
+                    $chain = $balance_data_show['stringsearch'];
+                    $start = $balance_data_show['start'] - 1;
 
-                    return $this->successResponseApiaudiophoneBalanceShow(true, 200, $data_client_show);
-               
-                // :::: cuando trae tres parámetros el request y sin valor en el start de la consulta:::: //
-                }elseif(($parameters_total == 3) && ($keys_balance_data_show[0] == 'id_apiaudiophoneclients') && ($keys_balance_data_show[1] == 'start') && ($keys_balance_data_show[2] == 'end') && (!($start_client_request)) && ($end_client_request)){
+                    // :::: Cuando hay cadena con o sin espacio sin parámetro start de inicio :::: //
+                    if(((ctype_space($chain) == true) && !($start)) || ((ctype_space($chain) == false) && !($start))){
 
 
-                    $data_balance_show = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $id_client_request)
-                    ->whereBetween('apiaudiophonebalances_id', [$start, $end])
-                    ->orderBy('apiaudiophonebalances_id', 'desc')
-                    ->paginate($num_pag);
+                        $balance_results = ApiAudiophoneBalance::where(['id_apiaudiophoneclients', $id_client_request], ['apiaudiophonebalances_desc', 'like', '%'.$chain.'%'])
+                        ->orWhere(['id_apiaudiophoneclients', $id_client_request], ['apiaudiophonebalances_date', 'like', '%'.$chain.'%'])
+                        ->skip(0)->take($num_pag)
+                        ->orderBy('apiaudiophonebalances_id', 'desc')
+                        ->get();
 
-                    return $this->successResponseApiaudiophoneBalanceShow(true, 200, $data_client_show);
-                
+                        $balance_results_count = count($balance_results);
+                        
+                        return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $balance_results_count, $balance_results);
+
+                    // :::: Cuando hay cadena con o sin espacio con parámetro start de inicio :::: //       
+                    }elseif(((ctype_space($chain) == true) && ($start)) || ((ctype_space($chain) == false) && ($start))){
+
+
+                        $balance_results = ApiAudiophoneBalance::where(['id_apiaudiophoneclients', $id_client_request], ['apiaudiophonebalances_desc', 'like', '%'.$chain.'%'])
+                        ->orWhere(['id_apiaudiophoneclients', $id_client_request], ['apiaudiophonebalances_date', 'like', '%'.$chain.'%'])
+                        ->skip($start)->take($num_pag)
+                        ->orderBy('apiaudiophonebalances_id', 'desc')
+                        ->get();
+
+                        $balance_results_count = count($balance_results);
+                        
+                        return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $balance_results_count, $balance_results);
+
+                    // :::: Cuando hay el stringsearch y el start están vacíos :::: //
+                    }else{
+
+                        $balance_results = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $id_client_request)
+                        ->skip(0)->take($num_pag)
+                        ->orderBy('apiaudiophonebalances_id', 'desc')
+                        ->get();
+
+                        return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $count_balance_client, $balance_results);
+                    }
+                // :::: si no vienen parámetros de consulta adicionales al ID del cliente :::: //  
                 }else{
 
+                    $balance_results = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $id_client_request)
+                    ->skip(0)->take($num_pag)
+                    ->orderBy('apiaudiophonebalances_id', 'desc')
+                    ->get();
+
+                    return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $count_balance_client, $balance_results);
                 }
             }
         }else{
@@ -184,6 +225,10 @@ class ApiAudiophonceBalanceController extends Controller
         // :::: Obtenemos el ID del cliente :::: //
 
         $id_client_request = $request['id_apiaudiophoneclients'];
+        
+        // :::: Obtenemos la cantidad de registros contables general :::: //
+
+        $bdbalancetotal = ApiAudiophoneBalance::count();
 
         // :::: Obtenemos la cantidad de registros de balance por usuario :::: //
 
@@ -215,9 +260,13 @@ class ApiAudiophonceBalanceController extends Controller
 
                 // :::: Consultamos registros creados para ese cliente :::: //
 
-                $data_balance_create = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $id_client_request)->paginate($num_pag);
+                $data_balance_create = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $id_client_request)
+                ->skip(0)->take($num_pag)
+                ->get();
 
-                return $this->successResponseApiaudiophoneBalanceCreate(true, 200, $data_balance_create);
+                $data_balance_create_count = count($data_balance_create);
+
+                return $this->successResponseApiaudiophoneBalanceCreate(true, 200, $bdbalancetotal, $data_balance_create_count, $data_balance_create);
             }
         }else{
 
@@ -226,20 +275,71 @@ class ApiAudiophonceBalanceController extends Controller
     }
 
 
-
-
-
     /**
      * store ApiAudiophoneBalance Instance 
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response 
     */
-    public function storeApiaudiophoneBalance(){
+    public function storeApiaudiophoneBalance(Request $request, $id_apiaudiophoneusers = null){
 
+        // :::: Validación del Request :::: //
+
+        $this->validate($request, [
+
+            'id_apiaudiophoneclients' => 'required|numeric',
+            'apiaudiophonebalances_date' => 'string|min:0|max:60',
+            'apiaudiophonebalances_desc' => 'required|string|min:0|max:60',
+            'apiaudiophonebalances_horlab' => 'required|numeric',
+            'apiaudiophonebalances_tarif' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
+            'apiaudiophonebalances_debe' => 'numeric|regex:/^\d+(\.\d{1,2})?$/',
+            'apiaudiophonebalances_haber' => 'numeric|regex:/^\d+(\.\d{1,2})?$/',
+            'apiaudiophonebalances_total' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/'
+        ]);
+
+        // :::: Obtenemos los datos provenientes del request :::: //
+
+        $balance_data_store = $request->all();
+
+        // :::: Obtenemos el rol de usuario :::: //
+
+        $user = ApiAudiophoneUser::userbalance($id_apiaudiophoneusers)->first();
+
+        $user_role = $user->apiaudiophoneusers_role;
+
+        // :::: Procedemos a actualizar el cliente :::: //
+
+        switch($user_rol){
+
+
+            case('USER_ROLE'):
+
+                return $this->errorResponse('Usuario no autorizado para crear Clientes', 401);
+            break;
+
+            case('ADMIN_ROLE'):
+
+                $apiaudiophonebalancenew = new ApiAudiophoneBalance;
+
+                $apiaudiophonebalancenew->id_apiaudiophoneusers = $id_apiaudiophoneusers;
+                $apiaudiophonebalancenew->id_apiaudiophoneclients = $balance_data_store['id_apiaudiophoneclients'];
+                $apiaudiophonebalancenew->apiaudiophonebalances_date = $balance_data_store['apiaudiophonebalances_date'];
+                $apiaudiophonebalancenew->apiaudiophonebalances_desc = $balance_data_store['apiaudiophonebalances_desc'];
+                $apiaudiophonebalancenew->apiaudiophonebalances_tarif = $balance_data_store['apiaudiophonebalances_tarif'];
+                $apiaudiophonebalancenew->apiaudiophonebalances_debe = $balance_data_store['apiaudiophonebalances_debe'];
+                $apiaudiophonebalancenew->apiaudiophonebalances_haber = $balance_data_store['apiaudiophonebalances_haber'];
+                $apiaudiophonebalancenew->apiaudiophonebalances_total = $balance_data_store['apiaudiophonebalances_total'];
+
+                $apiaudiophonebalancenew->save();
+
+                return $this->successResponseApiaudiophoneBalanceStore(true, 201, 'Cliente creado Satisfactoriamente', $apiaudiophoneclientnew);
+            break;
+
+            default:
+
+            return $this->errorResponse('Metodo no Permitido', 405);
+        }
     }
-
-
 
 
     /**
@@ -273,20 +373,5 @@ class ApiAudiophonceBalanceController extends Controller
         $array_keys = array_keys($request_array);
 
         return $array_keys;
-    }
-
-
-    // :::: Función que devuelve el start de la consulta por el show :::: //
-
-
-    public function starValue($endvalue){
-
-    }
-
-
-    // :::: Función que devuelve el end de la consulta por el show :::: //
-
-    public function endvalue($starValue){
-
     }
 }

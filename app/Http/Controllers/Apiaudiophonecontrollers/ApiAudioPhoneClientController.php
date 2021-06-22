@@ -82,7 +82,7 @@ class ApiAudioPhoneClientController extends Controller
 
                     //dd('hola', $start);
 
-                    // :::: Búsqueda de cadena con o espacio y sin inicio :::: //
+                    // :::: Búsqueda de cadena con o sin espacio y sin inicio :::: //
                     if(((ctype_space($chain) == true) && !($start)) || ((ctype_space($chain) == false) && !($start))){
 
                         //dd('hola1', $start);
@@ -91,27 +91,29 @@ class ApiAudioPhoneClientController extends Controller
                         ->skip(0)->take($num_pag)->orderBy('apiaudiophoneclients_id', 'asc')
                         ->get();
 
-                        return $this->successResponseApiaudiophoneClientShow(true, 200, $clients_resutls);
-                    // :::: Búsqueda de cadena con espacio con inicio :::: //
+                        return $this->successResponseApiaudiophoneClientShow(true, 200, $client_count_bd, $clients_resutls);
+                    // :::: Búsqueda de cadena con o sin espacio con inicio :::: //
                     }elseif(((ctype_space($chain) == true) && ($start)) || ((ctype_space($chain) == false) && ($start))){
 
-                        //dd('hola2', $start);
-                        
+                        //dd('hola2', $start);              
+
                         $clients_resutls = ApiAudiophoneClient::where('apiaudiophoneclients_name', 'like', '%'.$chain.'%')
                         ->skip($start)->take($num_pag)->orderBy('apiaudiophoneclients_id', 'asc')
                         ->get();
 
-                        return $this->successResponseApiaudiophoneClientShow(true, 200, $clients_resutls);     
+                        $clients_resutls_count = count($clients_resutls);
+
+                        return $this->successResponseApiaudiophoneClientCount(true, 200, $client_count_bd, $clients_resutls_count, $clients_resutls);     
                     // :::: Búsqueda sin valor en el parámetro de búsqueda :::: //
                     }else{
 
                         //dd('hola3', $start);
-
+                        
                         $clients_resutls = ApiAudiophoneClient::where('apiaudiophoneclients_name', 'like', '%'.$chain.'%')
                         ->skip(0)->take($num_pag)->orderBy('apiaudiophoneclients_id', 'asc')
                         ->get();
 
-                        return $this->successResponseApiaudiophoneClientShow(true, 200, $clients_resutls);
+                        return $this->successResponseApiaudiophoneClientShow(true, 200, $client_count_bd, $clients_resutls);
                     }
                 //  :::: Cuando nos envían el start de paginación ::::  //
                 }elseif(($parameters_total == 1) && ($keys_show_request[0] == 'start')){
@@ -119,15 +121,15 @@ class ApiAudioPhoneClientController extends Controller
                     // :::: Obtenemos los valores el inicio y el fin :::: //
                     $start = $client_data_show['start'] - 1;
 
-
-                    // :::: cuando el estart no tiene valorres :::: //
+                    // :::: cuando el start no tiene valorres :::: //
                     if(!($start)){
 
+                        //dd('hola4', $start);
                         $clients_resutls = ApiAudiophoneClient::skip(0)->take($num_pag)
                         ->orderBy('apiaudiophoneclients_id', 'asc')
                         ->get();
 
-                        return $this->successResponseApiaudiophoneClientShow(true, 200, $clients_resutls);
+                        return $this->successResponseApiaudiophoneClientShow(true, 200, $client_count_bd, $clients_resutls);
                     // :::: cuando el start tiene valores :::: // 
                     }else{
 
@@ -135,37 +137,44 @@ class ApiAudioPhoneClientController extends Controller
                         ->orderBy('apiaudiophoneclients_id', 'asc')
                         ->get();
 
-                        return $this->successResponseApiaudiophoneClientShow(true, 200, $clients_resutls);
+                        $clients_resutls_count = count($clients_resutls);
+
+                        //dd('hola5', $start, $clients_resutls_count);
+
+                        return $this->successResponseApiaudiophoneClientCount(true, 200, $client_count_bd, $clients_resutls_count, $clients_resutls);
                     }
                 }elseif(($parameters_total == 1) && ($keys_show_request[0] == 'stringsearch')){
                     
                     // :::: Obtenemos el valor por cadena de búsqueda :::: //
                     $chain = $client_data_show['stringsearch'];
 
-                    // :::: cuando la cadena está llena con o sin espacio :::: //
+                    // :::: Cuando la cadena está llena con o sin espacio :::: //
                     if(((ctype_space($chain) == true) && ($chain)) || ((ctype_space($chain) == false) && ($chain))){
-                    //dd('hola5');
+                    
+                        //dd('hola6', $start);                        
 
                         $clients_resutls = ApiAudiophoneClient::where('apiaudiophoneclients_name', 'like', '%'.$chain.'%')
                         ->skip(0)->take($num_pag)->orderBy('apiaudiophoneclients_id', 'asc')
                         ->get();
 
-                        return $this->successResponseApiaudiophoneClientShow(true, 200, $clients_resutls);
-                    // :::: cuando viene un parametro vacío del scringsearch :::: //    
-                    }elseif(!($chain)){
-                        //dd('hola6');
+                        $clients_resutls_count = count($clients_resutls);
 
-                        ApiAudiophoneClient::skip(0)->take($num_pag)
+                        return $this->successResponseApiaudiophoneClientCount(true, 200, $client_count_bd, $clients_resutls_count, $clients_resutls);
+                    // :::: cuando viene un parametro vacío del scringsearch :::: //    
+                    }else{
+                        //dd('hola7');
+
+                        $clients_resutls = ApiAudiophoneClient::skip(0)->take($num_pag)
                         ->orderBy('apiaudiophoneclients_id', 'asc')
                         ->get();
 
-                        return $this->successResponseApiaudiophoneClientShow(true, 200, $clients_resutls);                    
+                        return $this->successResponseApiaudiophoneClientShow(true, 200, $client_count_bd, $clients_resutls); 
                     }
                 }else{
 
                     $clients_resutls = ApiAudiophoneClient::skip(0)->take($num_pag)->orderBy('apiaudiophoneclients_id', 'asc')->get();
 
-                    return $this->successResponseApiaudiophoneClientShow(true, 200, $clients_resutls);
+                    return $this->successResponseApiaudiophoneClientShow(true, 200, $client_count_bd, $clients_resutls);
                 }                
             }
         }else{
@@ -223,7 +232,7 @@ class ApiAudioPhoneClientController extends Controller
 
                 $apiaudiophoneclientnew->save();
 
-                return $this->successResponseApiaudiophoneClientStore(true, 200, 'Cliente creado Satisfactoriamente', $apiaudiophoneclientnew);
+                return $this->successResponseApiaudiophoneClientStore(true, 201, 'Cliente creado Satisfactoriamente', $apiaudiophoneclientnew);
             break;
 
             default:
@@ -286,7 +295,7 @@ class ApiAudioPhoneClientController extends Controller
 
                 $apiaudiophoneclientupdate->update();
 
-                return $this->successResponseApiaudiophoneClientUpdate(true, 200, 'Cliente actualizdo Satisfactoriamente', $apiaudiophoneclientupdate);
+                return $this->successResponseApiaudiophoneClientUpdate(true, 201, 'Cliente actualizdo Satisfactoriamente', $apiaudiophoneclientupdate);
             break;
 
             default:
