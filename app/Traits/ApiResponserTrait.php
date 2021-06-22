@@ -315,7 +315,7 @@ trait ApiResponserTrait
 
       'ok' => $ok,
       'status' => $code,
-      'bduserstotal' => $bduserstotal,
+      'bdclientstotal' => $bduserstotal,
       'apiaudiophoneclientshow' => $apiaudiophoneclientshow
     ], $code);
   }
@@ -331,9 +331,9 @@ trait ApiResponserTrait
   
     'ok' => $ok,
     'status' => $code,
-    'bduserstotal' => $bduserstotal,
+    'bdclientstotal' => $bduserstotal,
     'apiaudiophoneclientcount' => $apiaudiophoneclientcount,
-    'apiaudiophoneclientdata' => $apiaudiophoneclientdata
+    'apiaudiophoneclientshow' => $apiaudiophoneclientdata
     ], $code);
   }
 
