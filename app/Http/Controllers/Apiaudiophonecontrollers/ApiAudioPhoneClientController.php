@@ -338,7 +338,7 @@ class ApiAudioPhoneClientController extends Controller
 
             case('USER_ROLE'):
 
-                return $this->errorResponse('Usuario no autorizado para actualizar Clientes', 401);
+                return $this->errorResponse('Usuario no autorizado para eliminar Clientes', 401);
             break;
 
             case('ADMIN_ROLE'):

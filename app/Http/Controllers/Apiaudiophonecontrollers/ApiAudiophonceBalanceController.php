@@ -108,7 +108,7 @@ class ApiAudiophonceBalanceController extends Controller
 
                         $balance_results_count = count($balance_results); 
                         
-                        return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $balance_results_count, $balance_results);                        
+                        return $this->successResponseApiaudiophoneBalanceCount(true, 200, $bdbalancetotal, $balance_results_count, $balance_results);                        
                     // :::: Cuando no hay cadena:::: // 
                     }else{
 
@@ -117,7 +117,7 @@ class ApiAudiophonceBalanceController extends Controller
                         ->orderBy('apiaudiophonebalances_id', 'desc')
                         ->get();
 
-                        return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $count_balance_client, $balance_results);
+                        return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $balance_results);
                     }
                 // :::: Cuando se hace búsqueda por paginación :::: // 
                 }elseif(($parameters_total == 2) && ($keys_balance_data_show[0] == 'id_apiaudiophoneclients') && ($keys_balance_data_show[1] == 'start')){
@@ -133,7 +133,7 @@ class ApiAudiophonceBalanceController extends Controller
                         ->orderBy('apiaudiophonebalances_id', 'desc')
                         ->get();
 
-                        return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $count_balance_client, $balance_results);
+                        return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $balance_results);
                     // :::: Cuando hay parámetro start :::: // 
                     }else{
 
@@ -142,7 +142,7 @@ class ApiAudiophonceBalanceController extends Controller
                         ->orderBy('apiaudiophonebalances_id', 'desc')
                         ->get();
 
-                        return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $count_balance_client, $balance_results);
+                        return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $balance_results);
                     }
                 // :::: Cuando se hace búsqueda por stringsarch y por parámetro de búsqueda :::: //
                 }elseif(($parameters_total == 3) && ($keys_balance_data_show[0] == 'id_apiaudiophoneclients') && ($keys_balance_data_show[1] == 'stringsearch') && ($keys_balance_data_show[1] == 'start')){
@@ -164,7 +164,7 @@ class ApiAudiophonceBalanceController extends Controller
 
                         $balance_results_count = count($balance_results);
                         
-                        return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $balance_results_count, $balance_results);
+                        return $this->successResponseApiaudiophoneBalanceCount(true, 200, $bdbalancetotal, $balance_results_count, $balance_results);
 
                     // :::: Cuando hay cadena con o sin espacio con parámetro start de inicio :::: //       
                     }elseif(((ctype_space($chain) == true) && ($start)) || ((ctype_space($chain) == false) && ($start))){
@@ -178,7 +178,7 @@ class ApiAudiophonceBalanceController extends Controller
 
                         $balance_results_count = count($balance_results);
                         
-                        return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $balance_results_count, $balance_results);
+                        return $this->successResponseApiaudiophoneBalanceCount(true, 200, $bdbalancetotal, $balance_results_count, $balance_results);
 
                     // :::: Cuando hay el stringsearch y el start están vacíos :::: //
                     }else{
@@ -253,7 +253,7 @@ class ApiAudiophonceBalanceController extends Controller
 
                 case 0:
 
-                    return $this->errorResponse('No existen registros para el cliente: '.$user->apiaudiophoneusers_fullname, 404);
+                    return $this->errorResponse('No existen registros contables para el cliente', 404);
                 break
                 
                 default:
@@ -314,7 +314,7 @@ class ApiAudiophonceBalanceController extends Controller
 
             case('USER_ROLE'):
 
-                return $this->errorResponse('Usuario no autorizado para crear Clientes', 401);
+                return $this->errorResponse('Usuario no autorizado para crear Balances', 401);
             break;
 
             case('ADMIN_ROLE'):
@@ -332,7 +332,7 @@ class ApiAudiophonceBalanceController extends Controller
 
                 $apiaudiophonebalancenew->save();
 
-                return $this->successResponseApiaudiophoneBalanceStore(true, 201, 'Cliente creado Satisfactoriamente', $apiaudiophoneclientnew);
+                return $this->successResponseApiaudiophoneBalanceStore(true, 201, 'Balance creado Satisfactoriamente', $apiaudiophonebalancenew);
             break;
 
             default:
@@ -348,8 +348,69 @@ class ApiAudiophonceBalanceController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response 
     */
-    public function updateApiaudiophoneBalance(){
+    public function updateApiaudiophoneBalance(Request $request, $id_apiaudiophoneusers = null){
 
+        // :::: Validación del Request :::: //
+
+        $this->validate($request, [
+
+            'id_apiaudiophoneclients' => 'required|numeric',
+            'apiaudiophonebalances_id' => 'required|numeric',
+            'apiaudiophonebalances_date' => 'string|min:0|max:60',
+            'apiaudiophonebalances_desc' => 'required|string|min:0|max:60',
+            'apiaudiophonebalances_horlab' => 'required|numeric',
+            'apiaudiophonebalances_tarif' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
+            'apiaudiophonebalances_debe' => 'numeric|regex:/^\d+(\.\d{1,2})?$/',
+            'apiaudiophonebalances_haber' => 'numeric|regex:/^\d+(\.\d{1,2})?$/',
+            'apiaudiophonebalances_total' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/'
+        ]);
+
+        // :::: Obtenemos los datos provenientes del request :::: //
+
+        $balance_data_update = $request->all();
+
+        // :::: Obtenemos el ID del balance a actualizar :::: //
+
+        $balance_id_update = $request['apiaudiophonebalances_id'];
+
+        // :::: Obtenemos el rol de usuario :::: //
+
+        $user = ApiAudiophoneUser::userbalance($id_apiaudiophoneusers)->first();
+
+        $user_role = $user->apiaudiophoneusers_role;
+
+        // :::: Procedemos a actualizar el cliente :::: //
+
+        switch($user_rol){
+
+
+            case('USER_ROLE'):
+
+                return $this->errorResponse('Usuario no autorizado para actualizar Balances', 401);
+            break;
+
+            case('ADMIN_ROLE'):
+
+                $apiaudiophonebalanceupdate = ApiAudiophoneBalance::findOrFail($balance_id_update);
+
+                $apiaudiophonebalanceupdate->id_apiaudiophoneusers = $id_apiaudiophoneusers;
+                $apiaudiophonebalanceupdate->id_apiaudiophoneclients = $balance_data_update['id_apiaudiophoneclients'];
+                $apiaudiophonebalanceupdate->apiaudiophonebalances_date = $balance_data_update['apiaudiophonebalances_date'];
+                $apiaudiophonebalanceupdate->apiaudiophonebalances_desc = $balance_data_update['apiaudiophonebalances_desc'];
+                $apiaudiophonebalanceupdate->apiaudiophonebalances_tarif = $balance_data_update['apiaudiophonebalances_tarif'];
+                $apiaudiophonebalanceupdate->apiaudiophonebalances_debe = $balance_data_update['apiaudiophonebalances_debe'];
+                $apiaudiophonebalanceupdate->apiaudiophonebalances_haber = $balance_data_update['apiaudiophonebalances_haber'];
+                $apiaudiophonebalanceupdate->apiaudiophonebalances_total = $balance_data_update['apiaudiophonebalances_total'];
+
+                $apiaudiophonebalancenew->update();
+
+                return $this->successResponseApiaudiophoneBalanceStore(true, 201, 'Balance actualizado Satisfactoriamente', $apiaudiophonebalanceupdate);
+            break;
+
+            default:
+
+            return $this->errorResponse('Metodo no Permitido', 405);
+        }
     }
 
 
@@ -360,8 +421,54 @@ class ApiAudiophonceBalanceController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response 
     */
-    public function destroyApiaudiophoneBalance(){
+    public function destroyApiaudiophoneBalance(Request $request, $id_apiaudiophoneusers = null){
         
+        // :::: Validación del Request :::: //
+
+        $this->validate($request, [
+
+            'apiaudiophonebalances_id' => 'required|numeric'
+        ]);
+
+
+        // :::: Obtenemos los datos provenientes del request y el id del cliente a eliminar :::: //
+
+        $balance_data_delete = $request->all();
+
+        // :::: Obtenemos el ID del balance a eliminar de las consultas :::: //
+
+        $balance_delete_id = $balance_data_delete['apiaudiophonebalances_id'];
+
+        // :::: Obtenemos el rol de usuario :::: //
+
+        $user = ApiAudiophoneUser::userclient($id_apiaudiophoneusers)->first();
+
+        $user_rol = $user->apiaudiophoneusers_role;
+
+        // :::: Procedemos a eliminar el cliente :::: //
+
+        switch($user_rol){
+
+            case('USER_ROLE'):
+
+                return $this->errorResponse('Usuario no autorizado para eliminar Balances', 401);
+            break;
+
+            case('ADMIN_ROLE'):
+
+                // :::: Obtenemos el cliente a eliminar :::: //
+
+                $apiaudiophonebalancetdelete = ApiAudiophoneBalance::findOrFail($balance_delete_id);
+
+                $apiaudiophonebalancedelete->delete();
+
+                return $this->errorResponseApiaudiophonBalanceDestroy(true, 200, 'Balance eliminado Satisfactoriamente');
+            break;
+
+            default:
+
+            return $this->errorResponse('Método no Permitido', 405);
+        }
     }
 
 

@@ -341,7 +341,7 @@ trait ApiResponserTrait
  * Responser de afirmacciones estándar para ApiaudiophoneBalance show
  *
  */
-  public function successResponseApiaudiophoneBalanceShow($ok = null, $code, $bdbalancetotal, $bdbalance_client, $apiaudiophonebalanceshow)
+  public function successResponseApiaudiophoneBalanceCount($ok = null, $code, $bdbalancetotal, $bdbalance_client, $apiaudiophonebalanceshow)
   {
   
     return response()->json([
@@ -354,6 +354,21 @@ trait ApiResponserTrait
     ], $code);
   }
 
+  /*
+ * Responser de afirmacciones estándar para ApiaudiophoneBalance show
+ *
+ */
+  public function successResponseApiaudiophoneBalanceShow($ok = null, $code, $bdbalancetotal, $apiaudiophonebalanceshow)
+  {
+  
+    return response()->json([
+
+      'ok' => $ok,
+      'status' => $code,
+      'bdbalancetotal' => $bdbalancetotal,
+      'apiaudiophonebalanceshow' => $apiaudiophonebalanceshow
+    ], $code);
+  }
 
   /*
  * Responser de afirmacciones estándar para ApiaudiophoneBalance create
@@ -372,7 +387,6 @@ trait ApiResponserTrait
     ], $code);
   }
 
-
   /*
  * Responser de afirmacciones estándar para ApiaudiophoneBalance store
  *
@@ -386,6 +400,22 @@ trait ApiResponserTrait
       'status' => $code,
       'message' => $message,
       'apiaudiophonebalancestore' => $apiaudiophonebalancestore
+    ], $code);
+  }
+
+  /*
+ * Responser de afirmacciones estándar para ApiaudiophoneBalance update
+ *
+ */
+  public function successResponseApiaudiophoneBalanceUpdate($ok = null, $code, $message, $apiaudiophonebalanceupdate)
+  {
+  
+    return response()->json([
+
+      'ok' => $ok,
+      'status' => $code,
+      'message' => $message,
+      'apiaudiophonebalanceupdate' => $apiaudiophonebalanceupdate
     ], $code);
   }
 
@@ -613,6 +643,22 @@ trait ApiResponserTrait
       'ok' => $ok, 
       'status' => $code,
       'apiaudiophonevent_message' => $apiaudiophonevent_message
+    ], $code);
+  }
+
+
+  /*
+ * Responser de error estándar para ApiaudiophoneBalanceDestroy
+ *
+ */
+  public function errorResponseApiaudiophonBalanceDestroy($ok = null, $code, $apiaudiophonebalance_message)
+  {
+  
+    return response()->json([
+
+      'ok' => $ok, 
+      'status' => $code,
+      'apiaudiophonebalance_message' => $apiaudiophonebalance_message
     ], $code);
   }
 
