@@ -15,14 +15,14 @@ use Carbon\Carbon;
 
 class ApiAudiophonceBalanceController extends Controller
 {
-    
+
     use ApiResponserTrait;
 
     /**
-     * show ApiAudiophoneBalance Instance 
+     * show ApiAudiophoneBalance Instance
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response 
+     * @return \Illuminate\Http\Response
     */
     public function showApiaudiophoneBalance(Request $request, $id_apiaudiophoneusers = null){
 
@@ -32,7 +32,7 @@ class ApiAudiophonceBalanceController extends Controller
 
             'id_apiaudiophoneclients' => 'numeric|required',
             'stringsearch' => 'string|min:0|max:60',
-            'start' => 'numeric' 
+            'start' => 'numeric'
         ]);
 
        // :::: Obtenemos los valores del request :::: //
@@ -57,7 +57,7 @@ class ApiAudiophonceBalanceController extends Controller
 
         // :::: Obtenemos la cantidad de registros contables por cliente:::: //
 
-        $count_balance_client = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $id_client_request)->count();        
+        $count_balance_client = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $id_client_request)->count();
 
         // :::: Obtenemos el rol del usuario :::: //
 
@@ -108,10 +108,10 @@ class ApiAudiophonceBalanceController extends Controller
                         ->orderBy('apiaudiophonebalances_id', 'desc')
                         ->get();
 
-                        $balance_results_count = count($balance_results); 
-                        
-                        return $this->successResponseApiaudiophoneBalanceCount(true, 200, $bdbalancetotal, $balance_results_count, $balance_results);                        
-                    // :::: Cuando no hay cadena:::: // 
+                        $balance_results_count = count($balance_results);
+
+                        return $this->successResponseApiaudiophoneBalanceCount(true, 200, $bdbalancetotal, $balance_results_count, $balance_results);
+                    // :::: Cuando no hay cadena:::: //
                     }else{
 
                         $balance_results = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $id_client_request)
@@ -121,7 +121,7 @@ class ApiAudiophonceBalanceController extends Controller
 
                         return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $balance_results);
                     }
-                // :::: Cuando se hace búsqueda por paginación :::: // 
+                // :::: Cuando se hace búsqueda por paginación :::: //
                 }elseif(($parameters_total == 2) && ($keys_balance_data_show[0] == 'id_apiaudiophoneclients') && ($keys_balance_data_show[1] == 'start')){
 
                     // :::: Obtenemos valor del start :::: //
@@ -136,7 +136,7 @@ class ApiAudiophonceBalanceController extends Controller
                         ->get();
 
                         return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $balance_results);
-                    // :::: Cuando hay parámetro start :::: // 
+                    // :::: Cuando hay parámetro start :::: //
                     }else{
 
                         $balance_results = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $id_client_request)
@@ -165,10 +165,10 @@ class ApiAudiophonceBalanceController extends Controller
                         ->get();
 
                         $balance_results_count = count($balance_results);
-                        
+
                         return $this->successResponseApiaudiophoneBalanceCount(true, 200, $bdbalancetotal, $balance_results_count, $balance_results);
 
-                    // :::: Cuando hay cadena con o sin espacio con parámetro start de inicio :::: //       
+                    // :::: Cuando hay cadena con o sin espacio con parámetro start de inicio :::: //
                     }elseif(((ctype_space($chain) == true) && ($start)) || ((ctype_space($chain) == false) && ($start))){
 
 
@@ -179,7 +179,7 @@ class ApiAudiophonceBalanceController extends Controller
                         ->get();
 
                         $balance_results_count = count($balance_results);
-                        
+
                         return $this->successResponseApiaudiophoneBalanceCount(true, 200, $bdbalancetotal, $balance_results_count, $balance_results);
 
                     // :::: Cuando hay el stringsearch y el start están vacíos :::: //
@@ -192,7 +192,7 @@ class ApiAudiophonceBalanceController extends Controller
 
                         return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $count_balance_client, $balance_results);
                     }
-                // :::: si no vienen parámetros de consulta adicionales al ID del cliente :::: //  
+                // :::: si no vienen parámetros de consulta adicionales al ID del cliente :::: //
                 }else{
 
                     $balance_results = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $id_client_request)
@@ -210,10 +210,10 @@ class ApiAudiophonceBalanceController extends Controller
     }
 
     /**
-     * create ApiAudiophoneBalance Instance 
+     * create ApiAudiophoneBalance Instance
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response 
+     * @return \Illuminate\Http\Response
     */
     public function createApiaudiophoneBalance(Request $request, $id_apiaudiophoneusers = null){
 
@@ -227,7 +227,7 @@ class ApiAudiophonceBalanceController extends Controller
         // :::: Obtenemos el ID del cliente :::: //
 
         $id_client_request = $request['id_apiaudiophoneclients'];
-        
+
         // :::: Obtenemos la cantidad de registros contables general :::: //
 
         $bdbalancetotal = ApiAudiophoneBalance::count();
@@ -257,7 +257,7 @@ class ApiAudiophonceBalanceController extends Controller
 
                     return $this->errorResponse('No existen registros contables para el cliente', 404);
                 break;
-                
+
                 default:
 
                 // :::: Consultamos registros creados para ese cliente :::: //
@@ -278,10 +278,10 @@ class ApiAudiophonceBalanceController extends Controller
 
 
     /**
-     * store ApiAudiophoneBalance Instance 
+     * store ApiAudiophoneBalance Instance
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response 
+     * @return \Illuminate\Http\Response
     */
     public function storeApiaudiophoneBalance(Request $request, $id_apiaudiophoneusers = null){
 
@@ -311,7 +311,7 @@ class ApiAudiophonceBalanceController extends Controller
 
         // :::: Procedemos a actualizar el cliente :::: //
 
-        switch($user_rol){
+        switch($user_role){
 
 
             case('USER_ROLE'):
@@ -346,10 +346,10 @@ class ApiAudiophonceBalanceController extends Controller
 
 
     /**
-     * update ApiAudiophoneBalance Instance 
+     * update ApiAudiophoneBalance Instance
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response 
+     * @return \Illuminate\Http\Response
     */
     public function updateApiaudiophoneBalance(Request $request, $id_apiaudiophoneusers = null){
 
@@ -419,13 +419,13 @@ class ApiAudiophonceBalanceController extends Controller
 
 
     /**
-     * destroy ApiAudiophoneBalance Instance 
+     * destroy ApiAudiophoneBalance Instance
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response 
+     * @return \Illuminate\Http\Response
     */
     public function destroyApiaudiophoneBalance(Request $request, $id_apiaudiophoneusers = null){
-        
+
         // :::: Validación del Request :::: //
 
         $this->validate($request, [
@@ -486,7 +486,7 @@ class ApiAudiophonceBalanceController extends Controller
             'id_apiaudiophoneclients' => 'numeric|required'
         ]);
 
-            
+
         // :::: Establecemos el separador de carpetas por defecto :::: //
 
         define('DS', DIRECTORY_SEPARATOR);
@@ -498,7 +498,7 @@ class ApiAudiophonceBalanceController extends Controller
         // :::: Obtenemos el ID del balance a eliminar de las consultas :::: //
 
         $balance_pdf_id_client = $balance_pdf_generate['id_apiaudiophoneclients'];
-        
+
         // :::: Obtenemos la fecha del día :::: //
 
         $today = Carbon::today('America/Caracas')->format('Y-m-d');
@@ -567,17 +567,17 @@ class ApiAudiophonceBalanceController extends Controller
 
                 // :::: Cargamos la vista y mandamos los datos del balance :::: //
 
-                $pdf = PDF::loadView('balanceview.balance', 
-                    [    
-                    'today' => $today, 
+                $pdf = PDF::loadView('balanceview.balance',
+                    [
+                    'today' => $today,
                     'client_name' => $client_name,
                     'client_ident' => $client_ident,
                     'client_phone' => $client_phone,
-                    'apiaudiophonebalancepdf' => $apiaudiophonebalancepdf                     
+                    'apiaudiophonebalancepdf' => $apiaudiophonebalancepdf
                     ]
                 )->save($url);
 
-                dd('stop'); 
+                dd('stop');
 
                 return $this->pdfBalanceGenerate(true, 200, 'Balance Generado, Verificar en el Botón PDF del menú', $url);
             break;
@@ -585,7 +585,7 @@ class ApiAudiophonceBalanceController extends Controller
             default:
 
             return $this->errorResponse('Método no Permitido', 405);
-        }   
+        }
     }
 
 
