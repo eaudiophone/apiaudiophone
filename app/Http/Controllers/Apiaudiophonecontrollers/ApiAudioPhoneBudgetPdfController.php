@@ -606,19 +606,16 @@ class ApiAudioPhoneBudgetPdfController extends Controller
 
 		$nombre_pdf = 'psp_'.$pdf_id.'_'.$request_array_store['apiaudiophonebudgets_client_name'].'_'.$today.'.pdf';
 
-
 		// ::: Definimos el nombre de la carpeta si no existe en el server :::: //
 
 		$carpeta = str_replace('\\', DS, strstr($_SERVER['DOCUMENT_ROOT'], 'apiaudiophone\public', true).'appdocs\\');
-		
-		
+				
 		// :::: Verificamos carpeta, si no existe,  creamos con permisos 777 :::: //
 
 		if(!file_exists($carpeta)){
 
 			mkdir($carpeta, 0777, true);
 		}
-
 		
 		// :::: Generamos la ruta del presupuesto donde será almacenado el documento :::: //
 

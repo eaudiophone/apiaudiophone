@@ -50,10 +50,10 @@
 					
 					<div class="col-12 col-sm-6">
 						
-						<p>Caracas</p><!-- Variable Fecha del día debe venir del controller--><br/>
-						<p>Nombre:</p><!-- Variable Nombre--><br/>
-						<p>C.I:</p><!-- Variable Identificación--><br/>
-						<p>Teléfono:</p><!-- Variable Teléfono--><br/>
+						<p>Caracas, {{ $today }}</p><!-- Variable Fecha del día debe venir del controller--><br/>
+						<p>Nombre: {{ $client_name }}</p><!-- Variable Nombre--><br/>
+						<p>C.I: {{ $client_ident }}</p><!-- Variable Identificación--><br/>
+						<p>Teléfono: {{ $client_phone }} </p><!-- Variable Teléfono--><br/>
 					</div>
 				</div>
 			</div>
@@ -74,6 +74,7 @@
 							<th>Fecha</th>
 							<th>Descripción</th>
 							<th>Horas Laboradas</th>
+							<th>Tarifa</th>
 							<th>Debe</th>
 							<th>Haber</th>
 							<th>Total</th>
@@ -82,15 +83,16 @@
 					<tbody>
 						
 
-						@foreach() <!-- variables para ingresarlas en el reporte -->
+						@foreach($apiaudiophonebalancepdf as $apiaudiophonebalancepdf_data) <!-- variables para ingresarlas en el reporte -->
 
 							<tr>
-								<td>hola<!-- variable del backend fecha --></td>
-								<td>hola<!-- variable del backend descripcion --></td>
-								<td>hola<!-- variable del backend Horas Laboradas --></td>
-								<td>hola<!-- variable del backend Debe --></td>
-								<td>hola<!-- variable del backend Haber --></td>
-								<td>hola<!-- variable del backend Total --></td>
+								<td>{{ $apiaudiophonebalancepdf_data['apiaudiophonebalances_date'] }}</td>
+								<td>{{ $apiaudiophonebalancepdf_data['apiaudiophonebalances_desc'] }}</td>
+								<td>{{ $apiaudiophonebalancepdf_data['apiaudiophonebalances_horlab'] }}</td>
+								<td>{{ $apiaudiophonebalancepdf_data['apiaudiophonebalances_tarif'] }}</td>
+								<td>{{ $apiaudiophonebalancepdf_data['apiaudiophonebalances_debe'] }}</td>
+								<td>{{ $apiaudiophonebalancepdf_data['apiaudiophonebalances_haber'] }}</td>
+								<td>{{ $apiaudiophonebalancepdf_data['apiaudiophonebalances_total'] }}</td>
 							</tr>
 						@endforeach
 					</tbody>

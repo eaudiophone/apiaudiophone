@@ -7,8 +7,10 @@ use App\Apiaudiophonemodels\ApiAudiophoneClient;
 use App\Apiaudiophonemodels\ApiAudiophoneBalance;
 use App\Traits\ApiResponserTrait;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\View;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 
 class ApiAudiophonceBalanceController extends Controller
@@ -254,7 +256,7 @@ class ApiAudiophonceBalanceController extends Controller
                 case 0:
 
                     return $this->errorResponse('No existen registros contables para el cliente', 404);
-                break
+                break;
                 
                 default:
 
@@ -325,6 +327,7 @@ class ApiAudiophonceBalanceController extends Controller
                 $apiaudiophonebalancenew->id_apiaudiophoneclients = $balance_data_store['id_apiaudiophoneclients'];
                 $apiaudiophonebalancenew->apiaudiophonebalances_date = $balance_data_store['apiaudiophonebalances_date'];
                 $apiaudiophonebalancenew->apiaudiophonebalances_desc = $balance_data_store['apiaudiophonebalances_desc'];
+                $apiaudiophonebalancenew->apiaudiophonebalances_horlab = $balance_data_store['apiaudiophonebalances_horlab'];
                 $apiaudiophonebalancenew->apiaudiophonebalances_tarif = $balance_data_store['apiaudiophonebalances_tarif'];
                 $apiaudiophonebalancenew->apiaudiophonebalances_debe = $balance_data_store['apiaudiophonebalances_debe'];
                 $apiaudiophonebalancenew->apiaudiophonebalances_haber = $balance_data_store['apiaudiophonebalances_haber'];
@@ -397,6 +400,7 @@ class ApiAudiophonceBalanceController extends Controller
                 $apiaudiophonebalanceupdate->id_apiaudiophoneclients = $balance_data_update['id_apiaudiophoneclients'];
                 $apiaudiophonebalanceupdate->apiaudiophonebalances_date = $balance_data_update['apiaudiophonebalances_date'];
                 $apiaudiophonebalanceupdate->apiaudiophonebalances_desc = $balance_data_update['apiaudiophonebalances_desc'];
+                $apiaudiophonebalanceupdate->apiaudiophonebalances_horlab = $balance_data_update['apiaudiophonebalances_horlab'];
                 $apiaudiophonebalanceupdate->apiaudiophonebalances_tarif = $balance_data_update['apiaudiophonebalances_tarif'];
                 $apiaudiophonebalanceupdate->apiaudiophonebalances_debe = $balance_data_update['apiaudiophonebalances_debe'];
                 $apiaudiophonebalanceupdate->apiaudiophonebalances_haber = $balance_data_update['apiaudiophonebalances_haber'];
@@ -412,7 +416,6 @@ class ApiAudiophonceBalanceController extends Controller
             return $this->errorResponse('Metodo no Permitido', 405);
         }
     }
-
 
 
     /**
@@ -470,6 +473,121 @@ class ApiAudiophonceBalanceController extends Controller
             return $this->errorResponse('Método no Permitido', 405);
         }
     }
+
+
+    // :::: Generación de PDF registro contable :::: //
+
+    public function pdfBalanceGenerate(Request $request, $id_apiaudiophoneusers = null){
+
+        // :::: Validación del Request :::: //
+
+        $this->validate($request, [
+
+            'id_apiaudiophoneclients' => 'numeric|required'
+        ]);
+
+            
+        // :::: Establecemos el separador de carpetas por defecto :::: //
+
+        define('DS', DIRECTORY_SEPARATOR);
+
+        // :::: Obtenemos los datos provenientes del request y el id del cliente a eliminar :::: //
+
+        $balance_pdf_generate = $request->all();
+
+        // :::: Obtenemos el ID del balance a eliminar de las consultas :::: //
+
+        $balance_pdf_id_client = $balance_pdf_generate['id_apiaudiophoneclients'];
+        
+        // :::: Obtenemos la fecha del día :::: //
+
+        $today = Carbon::today('America/Caracas')->format('Y-m-d');
+
+        // :::: Generamos el nombre del balance :::: //
+
+        $nombre_pdf_balance = 'bal_'.$today.'.pdf';
+
+        //dd($nombre_pdf_balance);
+        // ::::  Generamos el nombre de la carpeta para guardar el balance :::: //
+
+        $folder = str_replace('\\', DS, strstr($_SERVER['DOCUMENT_ROOT'], 'apiaudiophone\public', true).'appbal\\');
+
+        // :::: Verificamos carpeta, si no existe,  creamos con permisos 777 :::: //
+
+        if(!file_exists($folder)){
+
+            mkdir($folder, 0777, true);
+        }
+
+        //dd($nombre_pdf_balance);
+        // :::: Generamos la ruta del balance donde será almacenado el documento :::: //
+
+        $url = $folder.$nombre_pdf_balance;
+
+       //dd($url);
+        // :::: Obtenemos el rol de usuario :::: //
+
+        $user = ApiAudiophoneUser::userclient($id_apiaudiophoneusers)->first();
+
+        $user_rol = $user->apiaudiophoneusers_role;
+
+        // :::: Procedemos a eliminar el cliente :::: //
+
+        switch($user_rol){
+
+            case('USER_ROLE'):
+
+                return $this->errorResponse('Usuario no autorizado para imprimir Balances', 401);
+            break;
+
+            case('ADMIN_ROLE'):
+
+                // :::: Obtenemos los datos del cliente a reportar :::: //
+
+                $apiaudiophoneclientpdf = ApiAudiophoneClient::findOrFail($balance_pdf_id_client);
+
+                //dd($apiaudiophoneclientpdf);
+                // :::: Obtenemos los balances del cliente a reportar :::: //
+
+                $apiaudiophonebalancepdf = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $balance_pdf_id_client)
+                ->orderBy('apiaudiophonebalances_id', 'desc')
+                ->get();
+
+                //dd($apiaudiophonebalancepdf);
+                //return $apiaudiophonebalancepdf;
+
+                // :::: Armamos las variables de salida para tormarlas en el reporte :::: //
+
+                $client_name = $apiaudiophoneclientpdf->apiaudiophoneclients_name;
+
+                //dd($client_name);
+                $client_ident = $apiaudiophoneclientpdf->apiaudiophoneclients_ident;
+
+                $client_phone = $apiaudiophoneclientpdf->apiaudiophoneclients_phone;
+
+                // :::: Cargamos la vista y mandamos los datos del balance :::: //
+
+                $pdf = PDF::loadView('balanceview.balance', 
+                    [    
+                    'today' => $today, 
+                    'client_name' => $client_name,
+                    'client_ident' => $client_ident,
+                    'client_phone' => $client_phone,
+                    'apiaudiophonebalancepdf' => $apiaudiophonebalancepdf                     
+                    ]
+                )->save($url);
+
+                dd('stop'); 
+
+                return $this->pdfBalanceGenerate(true, 200, 'Balance Generado, Verificar en el Botón PDF del menú', $url);
+            break;
+
+            default:
+
+            return $this->errorResponse('Método no Permitido', 405);
+        }   
+    }
+
 
 
     // :::: Función que devuelve las llaves de un arreglo :::: //

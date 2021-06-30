@@ -396,3 +396,12 @@ $router->delete('api/apiaudiophonebalance/destroy/{id_apiaudiophoneusers:[0-9]+}
 	'as' => 'client.destroy',
 	'uses' => 'Apiaudiophonecontrollers\ApiAudiophonceBalanceController@destroyApiaudiophoneBalance'
 ]);
+
+
+$router->post('api/apiaudiophonebalance/balancepdf/{id_apiaudiophoneusers:[0-9]+}', [
+
+
+	'middleware' => ['cors', 'client.credentials', 'auth:api'],
+	'as' => 'client.destroy',
+	'uses' => 'Apiaudiophonecontrollers\ApiAudiophonceBalanceController@pdfBalanceGenerate'
+]);

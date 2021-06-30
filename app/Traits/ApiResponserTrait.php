@@ -76,6 +76,22 @@ trait ApiResponserTrait
   }
 
 
+/*
+ * Responser de afirmacciones estándar para pdfBalanceGenerate pdf
+ *
+ */
+  public function pdfBalanceGenerate($ok = null, $code, $apiaudiophonebalancemessage, $url)
+  {
+  
+    return response()->json([
+
+        'ok' => $ok,
+        'status' => $code,
+        'apiaudiophonebalancemessage' => $apiaudiophonebalancemessage,
+        'url' => $url
+      ], $code);
+  }
+
  /*
  * Responser de afirmacciones estándar para ApiaudiophoneTerm
  *
@@ -418,7 +434,7 @@ trait ApiResponserTrait
       'apiaudiophonebalanceupdate' => $apiaudiophonebalanceupdate
     ], $code);
   }
-
+  
  /*
  * Responser de afirmacciones estándar para ApiaudiophoneClient store
  *
