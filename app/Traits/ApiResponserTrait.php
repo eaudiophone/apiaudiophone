@@ -374,7 +374,7 @@ trait ApiResponserTrait
  * Responser de afirmacciones estándar para ApiaudiophoneBalance show
  *
  */
-  public function successResponseApiaudiophoneBalanceShow($ok = null, $code, $bdbalancetotal, $apiaudiophonebalanceshow)
+  public function successResponseApiaudiophoneBalanceShow($ok = null, $code, $bdbalancetotal, $count_balance_client, $apiaudiophonebalanceshow)
   {
   
     return response()->json([
@@ -382,6 +382,7 @@ trait ApiResponserTrait
       'ok' => $ok,
       'status' => $code,
       'bdbalancetotal' => $bdbalancetotal,
+      '$count_balance_client' => $count_balance_client,
       'apiaudiophonebalanceshow' => $apiaudiophonebalanceshow
     ], $code);
   }

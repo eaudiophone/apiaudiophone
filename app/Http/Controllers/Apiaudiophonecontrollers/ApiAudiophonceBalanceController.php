@@ -90,8 +90,9 @@ class ApiAudiophonceBalanceController extends Controller
                     ->orderBy('apiaudiophonebalances_id', 'desc')
                     ->get();
 
-                    return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $count_balance_client, $balance_results);
 
+                    return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $count_balance_client, $balance_results);
+                    
                 // :::: Cuando se hace búsqueda por stringsearch, id cliente requerido :::: //
                 }elseif(($parameters_total == 2) && ($keys_balance_data_show[0] == 'id_apiaudiophoneclients') && ($keys_balance_data_show[1] == 'stringsearch')){
 
