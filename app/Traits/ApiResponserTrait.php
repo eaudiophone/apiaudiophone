@@ -15,7 +15,7 @@ trait ApiResponserTrait
  */
   public function successResponse($data, $code)
   {
-  
+
     return response()->json([
 
       'data' => $data,
@@ -30,7 +30,7 @@ trait ApiResponserTrait
  */
   public function successResponseApiaudiophoneUser($ok = true, $code, $bduserstotal, $apiaudiophoneuserdata)
   {
-  
+
     return response()->json([
 
       'ok' => $ok,
@@ -49,7 +49,7 @@ trait ApiResponserTrait
   {
 
     return response()->json([
-  
+
     'ok' => $ok,
     'status' => $code,
     'bduserstotal' => $bduserstotal,
@@ -65,7 +65,7 @@ trait ApiResponserTrait
  */
   public function successResponseApiaudiophoneUserStore($ok = null, $code, $apiaudiophoneusermessage, $apiaudiophoneusernew)
   {
-  
+
     return response()->json([
 
         'ok' => $ok,
@@ -82,7 +82,7 @@ trait ApiResponserTrait
  */
   public function pdfBalanceGenerate($ok = null, $code, $apiaudiophonebalancemessage, $url)
   {
-  
+
     return response()->json([
 
         'ok' => $ok,
@@ -98,15 +98,15 @@ trait ApiResponserTrait
  */
   public function successResponseApiaudiophoneTerm($ok = null, $code, $apiaudiophoneterm_mesaage, $apiaudiophoneservices_name, $days_events_array, $apiaudiophonetermshowdata)
   {
-  
+
     return response()->json([
 
-      'ok' => $ok, 
+      'ok' => $ok,
       'status' => $code,
       'apiaudiophoneterm_message' => $apiaudiophoneterm_mesaage,
       'apiaudiophoneservices_name' => $apiaudiophoneservices_name,
-      'days_events_array' => $days_events_array, 
-      'apiaudiophonetermshowdata' => $apiaudiophonetermshowdata                
+      'days_events_array' => $days_events_array,
+      'apiaudiophonetermshowdata' => $apiaudiophonetermshowdata
     ], $code);
   }
 
@@ -117,7 +117,7 @@ trait ApiResponserTrait
  */
   public function successResponseApiaudiophoneTermDestroy($ok = null, $code, $apiaudiophoneterm_mesaage, $termconfiguration_last)
   {
-  
+
     return response()->json([
 
       'ok' => $ok,
@@ -134,7 +134,7 @@ trait ApiResponserTrait
  */
   public function successResponseApiaudiophonEventShow($ok = true, $code,  $apiaudiophoneventdata)
   {
-  
+
     return response()->json([
 
       'ok' => $ok,
@@ -150,7 +150,7 @@ trait ApiResponserTrait
  */
   public function successResponseApiaudiophonEventStore($ok = null, $code, $apiaudiophoneventmessage, $apiaudiophoneservicename, $apiaudiophoneventnew)
   {
-  
+
     return response()->json([
 
         'ok' => $ok,
@@ -168,7 +168,7 @@ trait ApiResponserTrait
  */
   public function successResponseApiaudiophonEventUpdate($ok = null, $code, $apiaudiophoneventmessage, $apiaudiophoneservicename, $apiaudiophoneventupdate)
   {
-  
+
     return response()->json([
 
         'ok' => $ok,
@@ -186,7 +186,7 @@ trait ApiResponserTrait
  */
   public function successResponseApiaudiophonEventCreateOnly($ok = null, $code, $apiaudiophoneventmessage, $apiaudiophonetermid, $id_service, $nombre_servicio)
   {
-  
+
     return response()->json([
 
         'ok' => $ok,
@@ -205,7 +205,7 @@ trait ApiResponserTrait
  */
   public function successResponseApiaudiophonEventCreate($ok = null, $code, $apiaudiophoneventmessage, $apiaudiophonetermiduno, $nombre_servicio_uno, $apiaudiophonetermid_dos, $nombre_servicio_dos)
   {
-  
+
     return response()->json([
 
         'ok' => $ok,
@@ -225,7 +225,7 @@ trait ApiResponserTrait
  */
   public function successResponseApiaudiophoneItem($ok = true, $code, $itemstotal, $apiaudiophoneitemdata)
   {
-  
+
     return response()->json([
 
       'ok' => $ok,
@@ -242,7 +242,7 @@ trait ApiResponserTrait
  */
   public function successResponseApiaudiophoneBudget($ok = true, $code, $budgetstotal, $apiaudiophonebudgetdata)
   {
-  
+
     return response()->json([
 
       'ok' => $ok,
@@ -259,7 +259,7 @@ trait ApiResponserTrait
  */
   public function successResponseApiaudiophoneItemStore($ok = null, $code, $apiaudiophoneitemessage, $apiaudiophoneitemnew)
   {
-  
+
     return response()->json([
 
         'ok' => $ok,
@@ -276,7 +276,7 @@ trait ApiResponserTrait
  */
   public function successResponseApiaudiophoneItemUpdate($ok = null, $code, $apiaudiophoneitemessage, $apiaudiophoneitemupdate)
   {
-  
+
     return response()->json([
 
         'ok' => $ok,
@@ -292,7 +292,7 @@ trait ApiResponserTrait
  */
   public function successResponseApiaudiophoneBudgetUpdate($ok = null, $code, $apiaudiophonebudgetmessage, $apiaudiophonebudgetupdate)
   {
-  
+
     return response()->json([
 
         'ok' => $ok,
@@ -309,7 +309,7 @@ trait ApiResponserTrait
  */
   public function successResponseApiaudiophoneBudgetStore($ok = null, $code, $apiaudiophonebudgetmessage, $apiaudiophonebudgetnew)
   {
-  
+
     return response()->json([
 
         'ok' => $ok,
@@ -326,7 +326,7 @@ trait ApiResponserTrait
  */
   public function successResponseApiaudiophoneClientShow($ok = null, $code, $bdclientstotal, $apiaudiophoneclientshow)
   {
-  
+
     return response()->json([
 
       'ok' => $ok,
@@ -344,7 +344,7 @@ trait ApiResponserTrait
   {
 
     return response()->json([
-  
+
     'ok' => $ok,
     'status' => $code,
     'bdclientstotal' => $bdclientstotal,
@@ -359,7 +359,7 @@ trait ApiResponserTrait
  */
   public function successResponseApiaudiophoneBalanceCount($ok = null, $code, $bdbalancetotal, $bdbalance_client, $apiaudiophonebalanceshow)
   {
-  
+
     return response()->json([
 
       'ok' => $ok,
@@ -376,13 +376,13 @@ trait ApiResponserTrait
  */
   public function successResponseApiaudiophoneBalanceShow($ok = null, $code, $bdbalancetotal, $count_balance_client, $apiaudiophonebalanceshow)
   {
-  
+
     return response()->json([
 
       'ok' => $ok,
       'status' => $code,
       'bdbalancetotal' => $bdbalancetotal,
-      '$count_balance_client' => $count_balance_client,
+      'count_balance_client' => $count_balance_client,
       'apiaudiophonebalanceshow' => $apiaudiophonebalanceshow
     ], $code);
   }
@@ -393,7 +393,7 @@ trait ApiResponserTrait
  */
   public function successResponseApiaudiophoneBalanceCreate($ok = null, $code, $bdbalancetotal, $bdbalance_client, $apiaudiophonebalancecreate)
   {
-  
+
     return response()->json([
 
       'ok' => $ok,
@@ -410,7 +410,7 @@ trait ApiResponserTrait
  */
   public function successResponseApiaudiophoneBalanceStore($ok = null, $code, $message, $apiaudiophonebalancestore)
   {
-  
+
     return response()->json([
 
       'ok' => $ok,
@@ -426,7 +426,7 @@ trait ApiResponserTrait
  */
   public function successResponseApiaudiophoneBalanceUpdate($ok = null, $code, $message, $apiaudiophonebalanceupdate)
   {
-  
+
     return response()->json([
 
       'ok' => $ok,
@@ -435,14 +435,14 @@ trait ApiResponserTrait
       'apiaudiophonebalanceupdate' => $apiaudiophonebalanceupdate
     ], $code);
   }
-  
+
  /*
  * Responser de afirmacciones estándar para ApiaudiophoneClient store
  *
  */
   public function successResponseApiaudiophoneClientStore($ok = null, $code, $apiaudiophoneclientmessage, $apiaudiophoneclientstore)
   {
-  
+
     return response()->json([
 
       'ok' => $ok,
@@ -459,7 +459,7 @@ trait ApiResponserTrait
  */
   public function successResponseApiaudiophoneClientUpdate($ok = null, $code, $apiaudiophoneclientmessage, $apiaudiophoneclientsupdate)
   {
-  
+
     return response()->json([
 
       'ok' => $ok,
@@ -476,7 +476,7 @@ trait ApiResponserTrait
  */
   public function errorResponse($message, $code){
 
-  
+
     return response()->json([
 
       'errorMessage' => $message,
@@ -491,7 +491,7 @@ trait ApiResponserTrait
  */
   public function errorResponseApiaudiophoneUser($ok = true, $code, $bduserstotal, $apiaudiophoneusermessage)
   {
-  
+
     return response()->json([
 
       'ok' => $ok,
@@ -508,7 +508,7 @@ trait ApiResponserTrait
  */
   public function errorResponseApiaudiophoneUserUpdate($ok = null, $code, $apiaudiophoneusermessage, $apiaudiophoneuserinactive)
   {
-  
+
     return response()->json([
 
       'ok' => $ok,
@@ -525,10 +525,10 @@ trait ApiResponserTrait
  */
   public function errorResponseApiaudiophoneTerm($ok = null, $code, $apiaudiophoneterm_mesaage)
   {
-  
+
     return response()->json([
 
-        'ok' => $ok, 
+        'ok' => $ok,
         'status' => $code,
         'apiaudiophoneterm_mesaage' => $apiaudiophoneterm_mesaage
       ], $code);
@@ -541,13 +541,13 @@ trait ApiResponserTrait
  */
   public function errorResponseApiaudiophoneTermShow($ok = null, $code, $apiaudiophoneterm_mesaage, $apiaudiophoneuser_status, $apiaudiophoneusers_fullname)
   {
-  
+
     return response()->json([
 
       'ok' => $ok,
       'status' => $code,
       'apiaudiophoneusermessage' => $apiaudiophoneterm_mesaage,
-      'apiaudiophoneuser_status' => $apiaudiophoneuser_status, 
+      'apiaudiophoneuser_status' => $apiaudiophoneuser_status,
       'apiaudiophoneusers_fullname' => $apiaudiophoneusers_fullname
     ], $code);
   }
@@ -559,7 +559,7 @@ trait ApiResponserTrait
  */
   public function errorResponseQuantityEvents($ok = null, $code, $apiaudiophoneterm_message)
   {
-  
+
     return response()->json([
 
       'ok' => $ok,
@@ -575,42 +575,42 @@ trait ApiResponserTrait
  */
   public function errorResponseApiaudiophoneUserDestroy($ok = null, $code, $apiaudiophoneterm_mesaage)
   {
-  
+
     return response()->json([
 
-      'ok' => $ok, 
+      'ok' => $ok,
       'status' => $code,
       'apiaudiophoneterm_mesaage' => $apiaudiophoneterm_mesaage
     ], $code);
   }
 
- 
+
  /*
  * Responser de error estándar para ApiaudiophoneTermDestroy
  *
  */
   public function errorResponseApiaudiophoneTermDestroy($ok = null, $code, $apiaudiophoneterm_mesaage)
   {
-  
+
     return response()->json([
 
-      'ok' => $ok, 
+      'ok' => $ok,
       'status' => $code,
       'apiaudiophoneterm_mesaage' => $apiaudiophoneterm_mesaage
     ], $code);
   }
 
- 
+
   /*
  * Responser de error estándar para ApiaudiophoneTermDestroy
  *
  */
   public function errorResponseApiaudiophonEventDestroy($ok = null, $code, $apiaudiophonevent_mesaage)
   {
-  
+
     return response()->json([
 
-      'ok' => $ok, 
+      'ok' => $ok,
       'status' => $code,
       'apiaudiophonevent_mesaage' => $apiaudiophonevent_mesaage
     ], $code);
@@ -623,10 +623,10 @@ trait ApiResponserTrait
  */
   public function errorResponseApiaudiophoneItemDelete($ok = null, $code, $apiaudiophoneitem_mesaage)
   {
-  
+
     return response()->json([
 
-      'ok' => $ok, 
+      'ok' => $ok,
       'status' => $code,
       'apiaudiophoneterm_mesaage' => $apiaudiophoneitem_mesaage
     ], $code);
@@ -638,10 +638,10 @@ trait ApiResponserTrait
  */
   public function errorResponseApiaudiophoneBudgetDelete($ok = null, $code, $apiaudiophonebudget_mesaage)
   {
-  
+
     return response()->json([
 
-      'ok' => $ok, 
+      'ok' => $ok,
       'status' => $code,
       'apiaudiophonebudget_mesaage' => $apiaudiophonebudget_mesaage
     ], $code);
@@ -654,10 +654,10 @@ trait ApiResponserTrait
  */
   public function errorResponseApiaudiophonClientDestroy($ok = null, $code, $apiaudiophonevent_message)
   {
-  
+
     return response()->json([
 
-      'ok' => $ok, 
+      'ok' => $ok,
       'status' => $code,
       'apiaudiophonevent_message' => $apiaudiophonevent_message
     ], $code);
@@ -670,10 +670,10 @@ trait ApiResponserTrait
  */
   public function errorResponseApiaudiophonBalanceDestroy($ok = null, $code, $apiaudiophonebalance_message)
   {
-  
+
     return response()->json([
 
-      'ok' => $ok, 
+      'ok' => $ok,
       'status' => $code,
       'apiaudiophonebalance_message' => $apiaudiophonebalance_message
     ], $code);
@@ -686,13 +686,13 @@ trait ApiResponserTrait
  */
   public function errorResponseBudgetCreateUno($ok = null, $code, $apiaudiophonebudget_message, $nombre_serv_uno, $id_serv_uno, $nombre_serv_dos, $id_serv_dos, $bditems)
   {
-  
+
     return response()->json([
 
       'ok' => $ok,
       'status' => $code,
       'apiaudiophonebudget_message' => $apiaudiophonebudget_message,
-      'nombre_serv_uno' => $nombre_serv_uno, 
+      'nombre_serv_uno' => $nombre_serv_uno,
       'id_serv_uno' => $id_serv_uno,
       'nombre_serv_dos' => $nombre_serv_dos,
       'id_serv_dos' => $id_serv_dos,
