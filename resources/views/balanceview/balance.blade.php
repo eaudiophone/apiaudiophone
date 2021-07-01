@@ -18,6 +18,7 @@
 			{
 				width: auto;
 				border: solid;
+				font-size: 15px;
 			}
 
 			thead tr th
@@ -30,6 +31,11 @@
 			tbody tr td
 			{
 				text-align: center;
+			}
+
+			.tamafec
+			{
+				font-size: 12px;
 			}
 		</style>
 		
@@ -50,10 +56,10 @@
 					
 					<div class="col-12 col-sm-6">
 						
-						<p>Caracas, {{ $today }}</p><!-- Variable Fecha del día debe venir del controller--><br/>
-						<p>Nombre: {{ $client_name }}</p><!-- Variable Nombre--><br/>
-						<p>C.I: {{ $client_ident }}</p><!-- Variable Identificación--><br/>
-						<p>Teléfono: {{ $client_phone }} </p><!-- Variable Teléfono--><br/>
+						<p>Caracas, {{ $today }}<!-- Variable Fecha del día debe venir del controller--><br/>
+						Nombre: {{ $client_name }}<!-- Variable Nombre--><br/>
+						C.I: {{ $client_ident }}<!-- Variable Identificación--><br/>
+						Teléfono: {{ $client_phone }}</p><!-- Variable Teléfono--><br/>
 					</div>
 				</div>
 			</div>
@@ -86,7 +92,7 @@
 						@foreach($apiaudiophonebalancepdf as $apiaudiophonebalancepdf_data) <!-- variables para ingresarlas en el reporte -->
 
 							<tr>
-								<td>{{ $apiaudiophonebalancepdf_data['apiaudiophonebalances_date'] }}</td>
+								<td class = "tamafec">{{ $apiaudiophonebalancepdf_data['apiaudiophonebalances_date'] }}</td>
 								<td>{{ $apiaudiophonebalancepdf_data['apiaudiophonebalances_desc'] }}</td>
 								<td>{{ $apiaudiophonebalancepdf_data['apiaudiophonebalances_horlab'] }}</td>
 								<td>{{ $apiaudiophonebalancepdf_data['apiaudiophonebalances_tarif'] }}</td>

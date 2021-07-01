@@ -502,7 +502,7 @@ class ApiAudiophonceBalanceController extends Controller
 
         // :::: Obtenemos la fecha del día :::: //
 
-        $today = Carbon::today('America/Caracas')->format('Y-m-d');
+        $today = Carbon::today('America/Caracas')->format('d-m-Y');
 
         // :::: Generamos el nombre del balance :::: //
 
