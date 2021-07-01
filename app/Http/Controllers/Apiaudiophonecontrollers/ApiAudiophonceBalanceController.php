@@ -92,7 +92,7 @@ class ApiAudiophonceBalanceController extends Controller
 
 
                     return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $count_balance_client, $balance_results);
-                    
+
                 // :::: Cuando se hace búsqueda por stringsearch, id cliente requerido :::: //
                 }elseif(($parameters_total == 2) && ($keys_balance_data_show[0] == 'id_apiaudiophoneclients') && ($keys_balance_data_show[1] == 'stringsearch')){
 
@@ -136,7 +136,7 @@ class ApiAudiophonceBalanceController extends Controller
                         ->orderBy('apiaudiophonebalances_id', 'desc')
                         ->get();
 
-                        return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $balance_results);
+                        return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $count_balance_client, $balance_results);
                     // :::: Cuando hay parámetro start :::: //
                     }else{
 
@@ -145,7 +145,7 @@ class ApiAudiophonceBalanceController extends Controller
                         ->orderBy('apiaudiophonebalances_id', 'desc')
                         ->get();
 
-                        return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $balance_results);
+                        return $this->successResponseApiaudiophoneBalanceShow(true, 200, $bdbalancetotal, $count_balance_client, $balance_results);
                     }
                 // :::: Cuando se hace búsqueda por stringsarch y por parámetro de búsqueda :::: //
                 }elseif(($parameters_total == 3) && ($keys_balance_data_show[0] == 'id_apiaudiophoneclients') && ($keys_balance_data_show[1] == 'stringsearch') && ($keys_balance_data_show[1] == 'start')){
