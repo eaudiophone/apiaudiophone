@@ -296,19 +296,26 @@ class ApiAudiophonceBalanceController extends Controller
             'apiaudiophonebalances_horlab' => 'required|numeric',
             'apiaudiophonebalances_tarif' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
             'apiaudiophonebalances_debe' => 'numeric|regex:/^\d+(\.\d{1,2})?$/',
-            'apiaudiophonebalances_haber' => 'numeric|regex:/^\d+(\.\d{1,2})?$/',
-            'apiaudiophonebalances_total' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/'
+            'apiaudiophonebalances_haber' => 'numeric|regex:/^\d+(\.\d{1,2})?$/'
         ]);
 
         // :::: Obtenemos los datos provenientes del request :::: //
 
         $balance_data_store = $request->all();
 
+        // :::: Obtenemos el id del cliente :::: //
+
+        $id_client_request = $balance_data_store['id_apiaudiophoneclients'];
+
         // :::: Obtenemos el rol de usuario :::: //
 
         $user = ApiAudiophoneUser::userbalance($id_apiaudiophoneusers)->first();
 
         $user_role = $user->apiaudiophoneusers_role;
+
+        // :::: Obtenemos la cantidad de registros contables por cliente:::: //
+
+        $count_balance_client = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $id_client_request)->count();        
 
         // :::: Procedemos a actualizar el cliente :::: //
 
@@ -322,18 +329,65 @@ class ApiAudiophonceBalanceController extends Controller
 
             case('ADMIN_ROLE'):
 
+
                 $apiaudiophonebalancenew = new ApiAudiophoneBalance;
 
                 $apiaudiophonebalancenew->id_apiaudiophoneusers = $id_apiaudiophoneusers;
-                $apiaudiophonebalancenew->id_apiaudiophoneclients = $balance_data_store['id_apiaudiophoneclients'];
+                $apiaudiophonebalancenew->id_apiaudiophoneclients = $id_client_request;
                 $apiaudiophonebalancenew->apiaudiophonebalances_date = $balance_data_store['apiaudiophonebalances_date'];
                 $apiaudiophonebalancenew->apiaudiophonebalances_desc = $balance_data_store['apiaudiophonebalances_desc'];
                 $apiaudiophonebalancenew->apiaudiophonebalances_horlab = $balance_data_store['apiaudiophonebalances_horlab'];
                 $apiaudiophonebalancenew->apiaudiophonebalances_tarif = $balance_data_store['apiaudiophonebalances_tarif'];
                 $apiaudiophonebalancenew->apiaudiophonebalances_debe = $balance_data_store['apiaudiophonebalances_debe'];
                 $apiaudiophonebalancenew->apiaudiophonebalances_haber = $balance_data_store['apiaudiophonebalances_haber'];
-                $apiaudiophonebalancenew->apiaudiophonebalances_total = $balance_data_store['apiaudiophonebalances_total'];
 
+
+                if($count_balance_client == 0){
+
+
+                    if($apiaudiophonebalancenew->apiaudiophonebalances_haber == 0){
+
+                    
+                        $apiaudiophonebalancenew->apiaudiophonebalances_total = 0 + (($apiaudiophonebalancenew->apiaudiophonebalances_horlab*$apiaudiophonebalancenew->apiaudiophonebalances_tarif) + $apiaudiophonebalancenew->apiaudiophonebalances_debe);
+
+                        //dd('hola1', $apiaudiophonebalancenew->apiaudiophonebalances_total);
+                    }elseif($apiaudiophonebalancenew->apiaudiophonebalances_debe == 0){
+                       
+                       $apiaudiophonebalancenew->apiaudiophonebalances_total = 0 - (($apiaudiophonebalancenew->apiaudiophonebalances_horlab*$apiaudiophonebalancenew->apiaudiophonebalances_tarif) + $apiaudiophonebalancenew->apiaudiophonebalances_haber);
+
+                        //dd('hola2', $apiaudiophonebalancenew->apiaudiophonebalances_total);
+                    }else{
+
+                        return $this->errorResponse('Metodo no Permitido', 405);
+                    }
+                }else{
+
+                    // :::: obtenemos el ultimo registro de balance de ese cliente :::: //
+                    
+                    $last_balance_client = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $id_client_request)->get()->last();
+
+                    $total = $last_balance_client['apiaudiophonebalances_total'];
+                    
+
+                    if($apiaudiophonebalancenew->apiaudiophonebalances_haber == 0){
+
+                    
+                        $apiaudiophonebalancenew->apiaudiophonebalances_total = $total + (($apiaudiophonebalancenew->apiaudiophonebalances_horlab*$apiaudiophonebalancenew->apiaudiophonebalances_tarif) + $apiaudiophonebalancenew->apiaudiophonebalances_debe);
+                        
+
+                        //dd('hola3', $total, $apiaudiophonebalancenew->apiaudiophonebalances_total);
+                    }elseif($apiaudiophonebalancenew->apiaudiophonebalances_debe == 0){
+                       
+                       $apiaudiophonebalancenew->apiaudiophonebalances_total = $total - (($apiaudiophonebalancenew->apiaudiophonebalances_horlab*$apiaudiophonebalancenew->apiaudiophonebalances_tarif) + $apiaudiophonebalancenew->apiaudiophonebalances_haber);
+
+                       // dd('hola4', $total, $apiaudiophonebalancenew->apiaudiophonebalances_total);
+                    }else{
+
+                        return $this->errorResponse('Metodo no Permitido', 405);
+                    }
+                }
+
+                //dd('ho');
                 $apiaudiophonebalancenew->save();
 
                 return $this->successResponseApiaudiophoneBalanceStore(true, 201, 'Balance creado Satisfactoriamente', $apiaudiophonebalancenew);
@@ -384,6 +438,13 @@ class ApiAudiophonceBalanceController extends Controller
         $user_role = $user->apiaudiophoneusers_role;
 
         // :::: Procedemos a actualizar el cliente :::: //
+
+        /*
+            tomar el ultimo registro del balance de ese cliente, y si es igual al que se actualiza bien, sin no
+            se deben actualizar todos los registros posteriores al ultimo.
+            calcular el total desde el backend
+
+        */
 
         switch($user_rol){
 
