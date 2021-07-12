@@ -25,7 +25,7 @@ class ApiaudiophonebalanceCreateTable extends Migration
             $table->unsignedDecimal('apiaudiophonebalances_tarif', 12, 2)->required();
             $table->unsignedDecimal('apiaudiophonebalances_debe', 12, 2)->nullable(true);
             $table->unsignedDecimal('apiaudiophonebalances_haber', 12, 2)->nullable(true);
-            $table->unsignedDecimal('apiaudiophonebalances_total', 12, 2)->required();
+            $table->decimal('apiaudiophonebalances_total', 12, 2)->required();
             $table->timestamps();
             $table->softDeletes();
         });
