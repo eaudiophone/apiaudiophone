@@ -348,12 +348,12 @@ class ApiAudiophonceBalanceController extends Controller
                     if($apiaudiophonebalancenew->apiaudiophonebalances_haber == 0){
 
                     
-                        $apiaudiophonebalancenew->apiaudiophonebalances_total = 0 + (($apiaudiophonebalancenew->apiaudiophonebalances_horlab*$apiaudiophonebalancenew->apiaudiophonebalances_tarif) + $apiaudiophonebalancenew->apiaudiophonebalances_debe);
+                        $apiaudiophonebalancenew->apiaudiophonebalances_total = 0 + $apiaudiophonebalancenew->apiaudiophonebalances_debe;
 
                         //dd('hola1', $apiaudiophonebalancenew->apiaudiophonebalances_total);
                     }elseif($apiaudiophonebalancenew->apiaudiophonebalances_debe == 0){
                        
-                       $apiaudiophonebalancenew->apiaudiophonebalances_total = 0 - (($apiaudiophonebalancenew->apiaudiophonebalances_horlab*$apiaudiophonebalancenew->apiaudiophonebalances_tarif) + $apiaudiophonebalancenew->apiaudiophonebalances_haber);
+                       $apiaudiophonebalancenew->apiaudiophonebalances_total = 0 - $apiaudiophonebalancenew->apiaudiophonebalances_haber;
 
                         //dd('hola2', $apiaudiophonebalancenew->apiaudiophonebalances_total);
                     }else{
@@ -372,13 +372,13 @@ class ApiAudiophonceBalanceController extends Controller
                     if($apiaudiophonebalancenew->apiaudiophonebalances_haber == 0){
 
                     
-                        $apiaudiophonebalancenew->apiaudiophonebalances_total = $total + (($apiaudiophonebalancenew->apiaudiophonebalances_horlab*$apiaudiophonebalancenew->apiaudiophonebalances_tarif) + $apiaudiophonebalancenew->apiaudiophonebalances_debe);
+                        $apiaudiophonebalancenew->apiaudiophonebalances_total = $total + $apiaudiophonebalancenew->apiaudiophonebalances_debe;
                         
 
                         //dd('hola3', $total, $apiaudiophonebalancenew->apiaudiophonebalances_total);
                     }elseif($apiaudiophonebalancenew->apiaudiophonebalances_debe == 0){
                        
-                       $apiaudiophonebalancenew->apiaudiophonebalances_total = $total - (($apiaudiophonebalancenew->apiaudiophonebalances_horlab*$apiaudiophonebalancenew->apiaudiophonebalances_tarif) + $apiaudiophonebalancenew->apiaudiophonebalances_haber);
+                       $apiaudiophonebalancenew->apiaudiophonebalances_total = $total - $apiaudiophonebalancenew->apiaudiophonebalances_haber;
 
                        // dd('hola4', $total, $apiaudiophonebalancenew->apiaudiophonebalances_total);
                     }else{
