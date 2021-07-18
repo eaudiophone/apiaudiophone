@@ -349,13 +349,9 @@ class ApiAudiophonceBalanceController extends Controller
 
                     
                         $apiaudiophonebalancenew->apiaudiophonebalances_total = 0 + $apiaudiophonebalancenew->apiaudiophonebalances_debe;
-
-                        //dd('hola1', $apiaudiophonebalancenew->apiaudiophonebalances_total);
                     }elseif($apiaudiophonebalancenew->apiaudiophonebalances_debe == 0){
                        
                        $apiaudiophonebalancenew->apiaudiophonebalances_total = 0 - $apiaudiophonebalancenew->apiaudiophonebalances_haber;
-
-                        //dd('hola2', $apiaudiophonebalancenew->apiaudiophonebalances_total);
                     }else{
 
                         return $this->errorResponse('Metodo no Permitido', 405);
@@ -372,22 +368,16 @@ class ApiAudiophonceBalanceController extends Controller
                     if($apiaudiophonebalancenew->apiaudiophonebalances_haber == 0){
 
                     
-                        $apiaudiophonebalancenew->apiaudiophonebalances_total = $total + $apiaudiophonebalancenew->apiaudiophonebalances_debe;
-                        
-
-                        //dd('hola3', $total, $apiaudiophonebalancenew->apiaudiophonebalances_total);
+                        $apiaudiophonebalancenew->apiaudiophonebalances_total = $total + $apiaudiophonebalancenew->apiaudiophonebalances_debe; 
                     }elseif($apiaudiophonebalancenew->apiaudiophonebalances_debe == 0){
                        
                        $apiaudiophonebalancenew->apiaudiophonebalances_total = $total - $apiaudiophonebalancenew->apiaudiophonebalances_haber;
-
-                       // dd('hola4', $total, $apiaudiophonebalancenew->apiaudiophonebalances_total);
                     }else{
 
                         return $this->errorResponse('Metodo no Permitido', 405);
                     }
                 }
 
-                //dd('ho');
                 $apiaudiophonebalancenew->save();
 
                 return $this->successResponseApiaudiophoneBalanceStore(true, 201, 'Balance creado Satisfactoriamente', $apiaudiophonebalancenew);
@@ -419,8 +409,7 @@ class ApiAudiophonceBalanceController extends Controller
             'apiaudiophonebalances_horlab' => 'required|numeric',
             'apiaudiophonebalances_tarif' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
             'apiaudiophonebalances_debe' => 'numeric|regex:/^\d+(\.\d{1,2})?$/',
-            'apiaudiophonebalances_haber' => 'numeric|regex:/^\d+(\.\d{1,2})?$/',
-            'apiaudiophonebalances_total' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/'
+            'apiaudiophonebalances_haber' => 'numeric|regex:/^\d+(\.\d{1,2})?$/'
         ]);
 
         // :::: Obtenemos los datos provenientes del request :::: //
@@ -431,22 +420,34 @@ class ApiAudiophonceBalanceController extends Controller
 
         $balance_id_update = $request['apiaudiophonebalances_id'];
 
+        // :::: Obtenemos el id del cliente a actualizar :::: //
+
+        $balance_id_client_update = $request['id_apiaudiophoneclients'];
+
         // :::: Obtenemos el rol de usuario :::: //
 
         $user = ApiAudiophoneUser::userbalance($id_apiaudiophoneusers)->first();
 
         $user_role = $user->apiaudiophoneusers_role;
 
-        // :::: Procedemos a actualizar el cliente :::: //
+        // :::: Obtenemos datos necesarios del ultimo registro de ese cliente :::: //
 
-        /*
-            tomar el ultimo registro del balance de ese cliente, y si es igual al que se actualiza bien, sin no
-            se deben actualizar todos los registros posteriores al ultimo.
-            calcular el total desde el backend
+        $last_balance_client = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $balance_id_client_update)->get()->last();
 
-        */
+        $id_balance_last = $last_balance_client['apiaudiophonebalances_id'];
+        
+        // :::: Obtenemos los datos necesarios del primer balance para ese cliente :::: //
 
-        switch($user_rol){
+        $first_balance_client = ApiAudiophoneBalance::where([
+            ['id_apiaudiophoneclients', $balance_id_client_update], 
+            ['apiaudiophonebalances_id', '>=', $balance_id_update]
+        ])->take(1)->orderBy('apiaudiophonebalances_id', 'asc')->get();
+
+        $id_balance_first = $first_balance_client[0]['apiaudiophonebalances_id'];
+
+        // :::: Procedemos a actualizar el balance :::: //
+
+        switch($user_role){
 
 
             case('USER_ROLE'):
@@ -456,21 +457,317 @@ class ApiAudiophonceBalanceController extends Controller
 
             case('ADMIN_ROLE'):
 
-                $apiaudiophonebalanceupdate = ApiAudiophoneBalance::findOrFail($balance_id_update);
+                // :::: Cuando es el primer registro a actualizar :::: //
+                if( $balance_id_update == $id_balance_first ){
 
-                $apiaudiophonebalanceupdate->id_apiaudiophoneusers = $id_apiaudiophoneusers;
-                $apiaudiophonebalanceupdate->id_apiaudiophoneclients = $balance_data_update['id_apiaudiophoneclients'];
-                $apiaudiophonebalanceupdate->apiaudiophonebalances_date = $balance_data_update['apiaudiophonebalances_date'];
-                $apiaudiophonebalanceupdate->apiaudiophonebalances_desc = $balance_data_update['apiaudiophonebalances_desc'];
-                $apiaudiophonebalanceupdate->apiaudiophonebalances_horlab = $balance_data_update['apiaudiophonebalances_horlab'];
-                $apiaudiophonebalanceupdate->apiaudiophonebalances_tarif = $balance_data_update['apiaudiophonebalances_tarif'];
-                $apiaudiophonebalanceupdate->apiaudiophonebalances_debe = $balance_data_update['apiaudiophonebalances_debe'];
-                $apiaudiophonebalanceupdate->apiaudiophonebalances_haber = $balance_data_update['apiaudiophonebalances_haber'];
-                $apiaudiophonebalanceupdate->apiaudiophonebalances_total = $balance_data_update['apiaudiophonebalances_total'];
+                    // :::: Obtenemos el conteo de registros a partir del actualizado :::: //
 
-                $apiaudiophonebalancenew->update();
+                    $update_balance_count = ApiAudiophoneBalance::where([
+                        ['id_apiaudiophoneclients', $balance_id_client_update], 
+                        ['apiaudiophonebalances_id', '>=', $balance_id_update]
+                    ])->count();
 
-                return $this->successResponseApiaudiophoneBalanceStore(true, 201, 'Balance actualizado Satisfactoriamente', $apiaudiophonebalanceupdate);
+                   // dd($update_balance_count);
+
+                    // ::: Obtenemos los registros involucrados en el update :::: //
+
+                    $update_balance_data = ApiAudiophoneBalance::where([
+                        ['id_apiaudiophoneclients', $balance_id_client_update], 
+                        ['apiaudiophonebalances_id', '>=', $balance_id_update]
+                    ])->get();
+
+                    
+                    // :::: Ciclo de actualización :::: //
+
+                    for($i = 0; $i < $update_balance_count; $i++){
+
+                        if($i == 0){
+
+                            // :::: Obtenemos el registro a actualizar en la base de datos, los mismos se llenan del request :::: //
+
+                            $apiaudiophonebalanceupdate = ApiAudiophoneBalance::findOrFail($balance_id_update);
+
+                            $apiaudiophonebalanceupdate->id_apiaudiophoneusers = $id_apiaudiophoneusers; 
+                            $apiaudiophonebalanceupdate->id_apiaudiophoneclients = $balance_data_update['id_apiaudiophoneclients'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_date = $balance_data_update['apiaudiophonebalances_date'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_desc = $balance_data_update['apiaudiophonebalances_desc'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_horlab = $balance_data_update['apiaudiophonebalances_horlab'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_tarif = $balance_data_update['apiaudiophonebalances_tarif'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_debe = $balance_data_update['apiaudiophonebalances_debe'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_haber = $balance_data_update['apiaudiophonebalances_haber'];
+
+                            // :::: Lógica para el llenado del total :::: //
+
+                            if($apiaudiophonebalanceupdate->apiaudiophonebalances_haber == 0){
+
+                            
+                                $apiaudiophonebalanceupdate->apiaudiophonebalances_total = 0 + $apiaudiophonebalanceupdate->apiaudiophonebalances_debe;
+                            }elseif($apiaudiophonebalanceupdate->apiaudiophonebalances_debe == 0){
+                               
+                                $apiaudiophonebalanceupdate->apiaudiophonebalances_total = 0 - $apiaudiophonebalanceupdate->apiaudiophonebalances_haber;                               
+                            }else{
+
+                                return $this->errorResponse('Metodo no Permitido', 405);
+                            }
+                            
+                            // :::: Actualizamos Registro :::: //
+
+                            $apiaudiophonebalanceupdate->update();                              
+                        }else{
+
+                            // :::: Arreglo Anterior :::: //
+
+                            $arreglo_previo = $i - 1;                         
+
+                            // :::: Obtenemos el id del registro actualizado en la iteración anterior :::: //
+
+                            $id_balance_previo_actualizado = $update_balance_data[$arreglo_previo]['apiaudiophonebalances_id'];
+
+                            // :::: Obtenemos el registro actualizado en la iteración anterior:::: //
+
+                            $preaudiophonebalanceupdate = ApiAudiophoneBalance::findOrFail($id_balance_previo_actualizado);
+
+                            // :::: Obtenemos el total del registro actualizado en la iteración anterior :::: //
+
+                            $pretotal = $preaudiophonebalanceupdate->apiaudiophonebalances_total;
+
+                            // :::: Obtenemos el Id del registro a actualizar posteriores a la primera iteración :::: //
+
+                            $id_balance_actualiza = $update_balance_data[$i]['apiaudiophonebalances_id'];
+
+                            // :::: Obtenemos el registro a actualizar :::: //
+
+                            $apiaudiophonebalanceupdate = ApiAudiophoneBalance::findOrFail($id_balance_actualiza);
+
+                            // :::: Procedemos a actualizar el registro :::: //
+
+                            $apiaudiophonebalanceupdate->id_apiaudiophoneusers = $id_apiaudiophoneusers; 
+                            $apiaudiophonebalanceupdate->id_apiaudiophoneclients = $update_balance_data[$i]['id_apiaudiophoneclients'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_date = $update_balance_data[$i]['apiaudiophonebalances_date'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_desc = $update_balance_data[$i]['apiaudiophonebalances_desc'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_horlab = $update_balance_data[$i]['apiaudiophonebalances_horlab'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_tarif = $update_balance_data[$i]['apiaudiophonebalances_tarif'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_debe = $update_balance_data[$i]['apiaudiophonebalances_debe'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_haber = $update_balance_data[$i]['apiaudiophonebalances_haber'];
+
+
+                            // :::: Lógica para el llenado del total :::: //
+
+                            if($apiaudiophonebalanceupdate->apiaudiophonebalances_haber == 0){
+
+                            
+                                $apiaudiophonebalanceupdate->apiaudiophonebalances_total = $pretotal + $apiaudiophonebalanceupdate->apiaudiophonebalances_debe;      
+                            }elseif($apiaudiophonebalanceupdate->apiaudiophonebalances_debe == 0){
+                               
+                                $apiaudiophonebalanceupdate->apiaudiophonebalances_total = $pretotal - $apiaudiophonebalanceupdate->apiaudiophonebalances_haber;
+                            }else{
+
+                                return $this->errorResponse('Metodo no Permitido', 405);
+                            }
+
+                            // :::: Actualizamos Registro :::: //
+
+                            $apiaudiophonebalanceupdate->update();                          
+                        }
+                    }
+
+                    // :::: Obtenemos los registros actualizados para devolverlos a la vista :::: //
+
+                    /*$update_balance_data_actualizado = ApiAudiophoneBalance::where([
+                        ['id_apiaudiophoneclients', $balance_id_client_update], 
+                        ['apiaudiophonebalances_id', '>=', $balance_id_update]
+                    ])->get();*/
+
+
+                    //return $this->successResponseApiaudiophoneBalanceUpdate(true, 200, 'Balance actualizado Satisfactoriamente', $update_balance_data_actualizado);
+                    return $this->successResponseApiaudiophoneBalanceUpdateDos(true, 200, 'Balance actualizado Satisfactoriamente');
+
+
+                    // :::: Cuando es el ultimo registro que se va actualizar :::: //
+                }elseif( $balance_id_update == $id_balance_last ){
+
+                    
+                    // :::: Obtenemos el penultimo balance de ese cliente para obtener el total :::: //
+
+                    $prelast_balance_client = ApiAudiophoneBalance::where('id_apiaudiophoneclients',  $balance_id_client_update)->take(2)->orderBy('apiaudiophonebalances_id', 'desc')->get();
+
+                    $pretotal_last = $prelast_balance_client[1]['apiaudiophonebalances_total'];
+
+  
+                    // :::: Realizamos el proceso de actualización :::: //
+
+                    $apiaudiophonebalanceupdate = ApiAudiophoneBalance::findOrFail($balance_id_update);
+
+                    $apiaudiophonebalanceupdate->id_apiaudiophoneusers = $id_apiaudiophoneusers; 
+                    $apiaudiophonebalanceupdate->id_apiaudiophoneclients = $balance_data_update['id_apiaudiophoneclients'];
+                    $apiaudiophonebalanceupdate->apiaudiophonebalances_date = $balance_data_update['apiaudiophonebalances_date'];
+                    $apiaudiophonebalanceupdate->apiaudiophonebalances_desc = $balance_data_update['apiaudiophonebalances_desc'];
+                    $apiaudiophonebalanceupdate->apiaudiophonebalances_horlab = $balance_data_update['apiaudiophonebalances_horlab'];
+                    $apiaudiophonebalanceupdate->apiaudiophonebalances_tarif = $balance_data_update['apiaudiophonebalances_tarif'];
+                    $apiaudiophonebalanceupdate->apiaudiophonebalances_debe = $balance_data_update['apiaudiophonebalances_debe'];
+                    $apiaudiophonebalanceupdate->apiaudiophonebalances_haber = $balance_data_update['apiaudiophonebalances_haber'];
+                    
+
+                    // :::: Lógica para el llenado del total :::: //
+
+                    if($apiaudiophonebalanceupdate->apiaudiophonebalances_haber == 0){
+
+                    
+                        $apiaudiophonebalanceupdate->apiaudiophonebalances_total = $pretotal_last + $apiaudiophonebalanceupdate->apiaudiophonebalances_debe; 
+                    }elseif($apiaudiophonebalanceupdate->apiaudiophonebalances_debe == 0){
+                       
+                        $apiaudiophonebalanceupdate->apiaudiophonebalances_total = $pretotal_last - $apiaudiophonebalanceupdate->apiaudiophonebalances_haber;
+                    }else{
+
+                        return $this->errorResponse('Metodo no Permitido', 405);
+                    }
+
+                    
+                    // :::: Actualizamos Registro :::: //
+
+                    $apiaudiophonebalanceupdate->update();
+
+                    //return $this->successResponseApiaudiophoneBalanceUpdate(true, 200, 'Balance actualizado Satisfactoriamente', $apiaudiophonebalanceupdate);
+
+                    return $this->successResponseApiaudiophoneBalanceUpdateDos(true, 200, 'Balance actualizado Satisfactoriamente');
+                
+                    // :::: Cuando es un registro intermedio para actualizar :::: //
+                }else{
+
+                    
+                    // :::: Obtenemos el conteo de registros a partir del actualizado :::: //
+
+                    $update_balance_count = ApiAudiophoneBalance::where([
+                        ['id_apiaudiophoneclients', $balance_id_client_update], 
+                        ['apiaudiophonebalances_id', '>=', $balance_id_update]
+                    ])->count();
+
+                    // ::: Obtenemos los registros involucrados en el update :::: //
+
+                    $update_balance_data = ApiAudiophoneBalance::where([
+                        ['id_apiaudiophoneclients', $balance_id_client_update], 
+                        ['apiaudiophonebalances_id', '>=', $balance_id_update]
+                    ])->get();
+
+                    
+                    // :::: Ciclo de Actualización :::: //
+
+                    for($i = 0; $i < $update_balance_count; $i++){
+
+                        if($i == 0){
+
+                            // :::: Obtenemos el balance anterior para el calculo del total de este registro :::: //
+
+                            $prelast_balance_client = ApiAudiophoneBalance::where([
+                                ['id_apiaudiophoneclients', $balance_id_client_update], 
+                                ['apiaudiophonebalances_id', '<=', $balance_id_update]
+                            ])->take(2)->orderBy('apiaudiophonebalances_id', 'desc')->get();
+
+                            $pretotal_last = $prelast_balance_client[1]['apiaudiophonebalances_total'];
+
+
+                            // :::: Obtenemos el registro a actualizar en la base de datos, los mismos se llenan del request :::: //
+
+                            $apiaudiophonebalanceupdate = ApiAudiophoneBalance::findOrFail($balance_id_update);
+
+                            $apiaudiophonebalanceupdate->id_apiaudiophoneusers = $id_apiaudiophoneusers; 
+                            $apiaudiophonebalanceupdate->id_apiaudiophoneclients = $balance_data_update['id_apiaudiophoneclients'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_date = $balance_data_update['apiaudiophonebalances_date'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_desc = $balance_data_update['apiaudiophonebalances_desc'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_horlab = $balance_data_update['apiaudiophonebalances_horlab'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_tarif = $balance_data_update['apiaudiophonebalances_tarif'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_debe = $balance_data_update['apiaudiophonebalances_debe'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_haber = $balance_data_update['apiaudiophonebalances_haber'];
+
+                            // :::: Lógica para el llenado del total :::: //
+
+                            if($apiaudiophonebalanceupdate->apiaudiophonebalances_haber == 0){
+
+                            
+                                $apiaudiophonebalanceupdate->apiaudiophonebalances_total = $pretotal_last + $apiaudiophonebalanceupdate->apiaudiophonebalances_debe;
+                            }elseif($apiaudiophonebalanceupdate->apiaudiophonebalances_debe == 0){
+                               
+                                $apiaudiophonebalanceupdate->apiaudiophonebalances_total = $pretotal_last - $apiaudiophonebalanceupdate->apiaudiophonebalances_haber;                               
+                            }else{
+
+                                return $this->errorResponse('Metodo no Permitido', 405);
+                            }
+
+                            
+                            // :::: Actualizamos Registro :::: //
+
+                            $apiaudiophonebalanceupdate->update();                                
+                        }else{
+
+                            // :::: Arreglo Anterior :::: //
+
+                            $arreglo_previo = $i - 1;                         
+
+                            // :::: Obtenemos el id del registro actualizado en la iteración anterior :::: //
+
+                            $id_balance_previo_actualizado = $update_balance_data[$arreglo_previo]['apiaudiophonebalances_id'];
+
+                            // :::: Obtenemos el registro actualizado en la iteración anterior:::: //
+
+                            $preaudiophonebalanceupdate = ApiAudiophoneBalance::findOrFail($id_balance_previo_actualizado);
+
+                            // :::: Obtenemos el total del registro actualizado en la iteración anterior :::: //
+
+                            $pretotal = $preaudiophonebalanceupdate->apiaudiophonebalances_total;
+
+                            // :::: Obtenemos el Id del registro a actualizar posteriores a la primera iteración :::: //
+
+                            $id_balance_actualiza = $update_balance_data[$i]['apiaudiophonebalances_id'];
+
+                            // :::: Obtenemos el registro a actualizar :::: //
+
+                            $apiaudiophonebalanceupdate = ApiAudiophoneBalance::findOrFail($id_balance_actualiza);
+
+                            // :::: Procedemos a actualizar el registro :::: //
+
+                            $apiaudiophonebalanceupdate->id_apiaudiophoneusers = $id_apiaudiophoneusers; 
+                            $apiaudiophonebalanceupdate->id_apiaudiophoneclients = $update_balance_data[$i]['id_apiaudiophoneclients'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_date = $update_balance_data[$i]['apiaudiophonebalances_date'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_desc = $update_balance_data[$i]['apiaudiophonebalances_desc'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_horlab = $update_balance_data[$i]['apiaudiophonebalances_horlab'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_tarif = $update_balance_data[$i]['apiaudiophonebalances_tarif'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_debe = $update_balance_data[$i]['apiaudiophonebalances_debe'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_haber = $update_balance_data[$i]['apiaudiophonebalances_haber'];
+
+
+                            // :::: Lógica para el llenado del total :::: //
+
+                            if($apiaudiophonebalanceupdate->apiaudiophonebalances_haber == 0){
+
+                            
+                                $apiaudiophonebalanceupdate->apiaudiophonebalances_total = $pretotal + $apiaudiophonebalanceupdate->apiaudiophonebalances_debe;      
+                            }elseif($apiaudiophonebalanceupdate->apiaudiophonebalances_debe == 0){
+                               
+                                $apiaudiophonebalanceupdate->apiaudiophonebalances_total = $pretotal - $apiaudiophonebalanceupdate->apiaudiophonebalances_haber;
+                            }else{
+
+                                return $this->errorResponse('Metodo no Permitido', 405);
+                            }
+
+                            // :::: Actualizamos Registro :::: //
+
+                            $apiaudiophonebalanceupdate->update();                          
+                        }
+                    }
+
+
+                    // :::: Obtenemos los registros actualizados para devolverlos a la vista :::: //
+
+                   /* $update_balance_data_actualizado = ApiAudiophoneBalance::where([
+                        ['id_apiaudiophoneclients', $balance_id_client_update], 
+                        ['apiaudiophonebalances_id', '>=', $balance_id_update]
+                    ])->get();
+
+
+                    return $this->successResponseApiaudiophoneBalanceUpdate(true, 200, 'Balance actualizado Satisfactoriamente', $update_balance_data_actualizado);*/
+
+                    return $this->successResponseApiaudiophoneBalanceUpdateDos(true, 200, 'Balance actualizado Satisfactoriamente');
+                }
             break;
 
             default:
@@ -492,6 +789,7 @@ class ApiAudiophonceBalanceController extends Controller
 
         $this->validate($request, [
 
+            'id_apiaudiophoneclients' => 'required|numeric',
             'apiaudiophonebalances_id' => 'required|numeric'
         ]);
 
@@ -504,11 +802,31 @@ class ApiAudiophonceBalanceController extends Controller
 
         $balance_delete_id = $balance_data_delete['apiaudiophonebalances_id'];
 
+        // :::: Obtenemos los datos del cliente dueño de ese registro :::: //
+
+        $client_delete_id = $balance_data_delete['id_apiaudiophoneclients'];
+
         // :::: Obtenemos el rol de usuario :::: //
 
         $user = ApiAudiophoneUser::userclient($id_apiaudiophoneusers)->first();
 
         $user_rol = $user->apiaudiophoneusers_role;
+
+        // :::: Obtenemos datos necesarios del ultimo registro de ese cliente :::: //
+
+        $last_balance_client = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $client_delete_id)->get()->last();
+
+        $id_balance_last = $last_balance_client['apiaudiophonebalances_id'];
+                
+        // :::: Obtenemos los datos necesarios del primer balance para ese cliente, antes de eliminar :::: //
+
+        $first_balance_client = ApiAudiophoneBalance::where([
+            ['id_apiaudiophoneclients', $client_delete_id], 
+            ['apiaudiophonebalances_id', '>=', $balance_delete_id]
+        ])->take(1)->orderBy('apiaudiophonebalances_id', 'asc')->get();
+
+        $id_balance_first_delete = $first_balance_client[0]['apiaudiophonebalances_id'];   
+
 
         // :::: Procedemos a eliminar el cliente :::: //
 
@@ -521,13 +839,275 @@ class ApiAudiophonceBalanceController extends Controller
 
             case('ADMIN_ROLE'):
 
-                // :::: Obtenemos el cliente a eliminar :::: //
+                
+                // :::: Eliminación del primer registro de ese cliente :::: //
+                if( $balance_delete_id == $id_balance_first_delete ){
 
-                $apiaudiophonebalancetdelete = ApiAudiophoneBalance::findOrFail($balance_delete_id);
+                    dd('prueba eliminando el primer registro');
 
-                $apiaudiophonebalancedelete->delete();
+                    // :::: Obtenemos el conteo de registros a partir del actualizado :::: //
 
-                return $this->errorResponseApiaudiophonBalanceDestroy(true, 200, 'Balance eliminado Satisfactoriamente');
+                    $update_balance_count = ApiAudiophoneBalance::where([
+                        ['id_apiaudiophoneclients', $client_delete_id], 
+                        ['apiaudiophonebalances_id', '>=', $balance_delete_id]
+                    ])->count();
+
+                    // dd($update_balance_count);
+
+                    // ::: Obtenemos los registros involucrados en el update previo a la eliminación :::: //
+
+                    $update_balance_data = ApiAudiophoneBalance::where([
+                        ['id_apiaudiophoneclients', $client_delete_id], 
+                        ['apiaudiophonebalances_id', '>=', $balance_delete_id]
+                    ])->get();
+
+                    // :::: Obtenemos el id del balance del siguiente registro que no será elminado y que será actualizado :::: //
+
+                    $balance_id_update = $update_balance_data[1]['apiaudiophonebalances_id'];
+
+                    
+                    // :::: Ciclo de actualización excepto el primer registro que será eliminado mas abajo :::: //
+
+                    for($i = 1; $i < $update_balance_count; $i++){
+
+                        dd($i);
+
+                        if($i == 1){
+
+                            // :::: Obtenemos el registro a actualizar en la base de datos, los mismos se llenan del request :::: //
+
+                            $apiaudiophonebalanceupdate = ApiAudiophoneBalance::findOrFail($balance_id_update);
+
+                            $apiaudiophonebalanceupdate->id_apiaudiophoneusers = $id_apiaudiophoneusers; 
+                            $apiaudiophonebalanceupdate->id_apiaudiophoneclients = $update_balance_data[$i]['id_apiaudiophoneclients'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_date = $update_balance_data[$i]['apiaudiophonebalances_date'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_desc = $update_balance_data[$i]['apiaudiophonebalances_desc'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_horlab = $update_balance_data[$i]['apiaudiophonebalances_horlab'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_tarif = $update_balance_data[$i]['apiaudiophonebalances_tarif'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_debe = $update_balance_data[$i]['apiaudiophonebalances_debe'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_haber = $update_balance_data[$i]['apiaudiophonebalances_haber'];
+
+                            // :::: Lógica para el llenado del total :::: //
+
+                            if($apiaudiophonebalanceupdate->apiaudiophonebalances_haber == 0){
+
+                            
+                                $apiaudiophonebalanceupdate->apiaudiophonebalances_total = 0 + $apiaudiophonebalanceupdate->apiaudiophonebalances_debe;
+                            }elseif($apiaudiophonebalanceupdate->apiaudiophonebalances_debe == 0){
+                               
+                                $apiaudiophonebalanceupdate->apiaudiophonebalances_total = 0 - $apiaudiophonebalanceupdate->apiaudiophonebalances_haber;                               
+                            }else{
+
+                                return $this->errorResponse('Metodo no Permitido', 405);
+                            }
+                            
+                            // :::: Actualizamos Registro :::: //
+
+                            $apiaudiophonebalanceupdate->update();                              
+                        }else{
+
+                            // :::: Arreglo Anterior :::: //
+
+                            $arreglo_previo = $i - 1;                         
+
+                            // :::: Obtenemos el id del registro actualizado en la iteración anterior :::: //
+
+                            $id_balance_previo_actualizado = $update_balance_data[$arreglo_previo]['apiaudiophonebalances_id'];
+
+                            // :::: Obtenemos el registro actualizado en la iteración anterior:::: //
+
+                            $preaudiophonebalanceupdate = ApiAudiophoneBalance::findOrFail($id_balance_previo_actualizado);
+
+                            // :::: Obtenemos el total del registro actualizado en la iteración anterior :::: //
+
+                            $pretotal = $preaudiophonebalanceupdate->apiaudiophonebalances_total;
+
+                            // :::: Obtenemos el Id del registro a actualizar posteriores a la primera iteración :::: //
+
+                            $id_balance_actualiza = $update_balance_data[$i]['apiaudiophonebalances_id'];
+
+                            // :::: Obtenemos el registro a actualizar :::: //
+
+                            $apiaudiophonebalanceupdate = ApiAudiophoneBalance::findOrFail($id_balance_actualiza);
+
+                            // :::: Procedemos a actualizar el registro :::: //
+
+                            $apiaudiophonebalanceupdate->id_apiaudiophoneusers = $id_apiaudiophoneusers; 
+                            $apiaudiophonebalanceupdate->id_apiaudiophoneclients = $update_balance_data[$i]['id_apiaudiophoneclients'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_date = $update_balance_data[$i]['apiaudiophonebalances_date'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_desc = $update_balance_data[$i]['apiaudiophonebalances_desc'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_horlab = $update_balance_data[$i]['apiaudiophonebalances_horlab'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_tarif = $update_balance_data[$i]['apiaudiophonebalances_tarif'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_debe = $update_balance_data[$i]['apiaudiophonebalances_debe'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_haber = $update_balance_data[$i]['apiaudiophonebalances_haber'];
+
+
+                            // :::: Lógica para el llenado del total :::: //
+
+                            if($apiaudiophonebalanceupdate->apiaudiophonebalances_haber == 0){
+
+                            
+                                $apiaudiophonebalanceupdate->apiaudiophonebalances_total = $pretotal + $apiaudiophonebalanceupdate->apiaudiophonebalances_debe;      
+                            }elseif($apiaudiophonebalanceupdate->apiaudiophonebalances_debe == 0){
+                               
+                                $apiaudiophonebalanceupdate->apiaudiophonebalances_total = $pretotal - $apiaudiophonebalanceupdate->apiaudiophonebalances_haber;
+                            }else{
+
+                                return $this->errorResponse('Metodo no Permitido', 405);
+                            }
+
+                            // :::: Actualizamos Registro :::: //
+
+                            $apiaudiophonebalanceupdate->update();                          
+                        }
+                    }
+
+                    // :::: Obtenemos el registro a eliminar y eliminamos para poder recalcular :::: //
+
+                    $apiaudiophonebalancedelete = ApiAudiophoneBalance::findOrFail($balance_delete_id);
+
+                    $apiaudiophonebalancedelete->delete();                    
+
+
+                   
+                    return $this->errorResponseApiaudiophonBalanceDestroy(true, 200, 'Balance elminado Satisfactoriamente');
+
+
+                    // :::: Cuando es el ultimo registro que se va a eliminar :::: //
+                }if( $balance_delete_id == $id_balance_last ){
+
+
+                    dd('prueba eliminando el ultimo registro');
+
+                    $apiaudiophonebalancedelete = ApiAudiophoneBalance::findOrFail($balance_delete_id);
+
+                    $apiaudiophonebalancedelete->delete();                    
+
+
+                    return $this->errorResponseApiaudiophonBalanceDestroy(true, 200, 'Balance eliminado Satisfactoriamente');
+
+                    // :::: Cuando es un registro intermedio :::: //
+                }else{
+
+                    // :::: Obtenemos el registro a eliminar y eliminamos :::: //
+
+                    $apiaudiophonebalancedelete = ApiAudiophoneBalance::findOrFail($balance_delete_id);
+
+                    $apiaudiophonebalancedelete->delete();
+
+                    dd('registro eliminado');
+
+                    // :::: Obtenemos los registros involucrados en el update posterior a la eliminación :::: //
+
+                    $post_update_balance_data_count = ApiAudiophoneBalance::where([
+                        ['id_apiaudiophoneclients', $client_delete_id]
+                    ])->count();
+
+                    // :::: Obtenemos los registros involucrados en el update previo a la eliminación :::: //
+
+                    $post_update_balance_data = ApiAudiophoneBalance::where([
+                        ['id_apiaudiophoneclients', $client_delete_id]
+                    ])->get();
+
+                  //  return $post_update_balance_data;
+
+                    // :::: Ciclo de actualización posterior a la eliminación del registro (se actualiza todo) :::: //
+
+                    for($i = 0; $i < $post_update_balance_data_count; $i++){
+
+                        if($i == 0){
+
+                            dd('paso uno', $i);
+                            // :::: Obtenemos el registro a actualizar en la base de datos, los mismos se llenan del request :::: //
+
+                            $apiaudiophonebalanceupdate = ApiAudiophoneBalance::findOrFail($balance_id_update);
+
+                            $apiaudiophonebalanceupdate->id_apiaudiophoneusers = $id_apiaudiophoneusers; 
+                            $apiaudiophonebalanceupdate->id_apiaudiophoneclients = $post_update_balance_data[$i]['id_apiaudiophoneclients'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_date = $post_update_balance_data[$i]['apiaudiophonebalances_date'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_desc = $post_update_balance_data[$i]['apiaudiophonebalances_desc'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_horlab = $post_update_balance_data[$i]['apiaudiophonebalances_horlab'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_tarif = $post_update_balance_data[$i]['apiaudiophonebalances_tarif'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_debe = $post_update_balance_data[$i]['apiaudiophonebalances_debe'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_haber = $post_update_balance_data[$i]['apiaudiophonebalances_haber'];
+
+                            // :::: Lógica para el llenado del total :::: //
+
+                            if($apiaudiophonebalanceupdate->apiaudiophonebalances_haber == 0){
+
+                            
+                                $apiaudiophonebalanceupdate->apiaudiophonebalances_total = 0 + $apiaudiophonebalanceupdate->apiaudiophonebalances_debe;
+                            }elseif($apiaudiophonebalanceupdate->apiaudiophonebalances_debe == 0){
+                               
+                                $apiaudiophonebalanceupdate->apiaudiophonebalances_total = 0 - $apiaudiophonebalanceupdate->apiaudiophonebalances_haber;                               
+                            }else{
+
+                                return $this->errorResponse('Metodo no Permitido', 405);
+                            }
+                            
+                            // :::: Actualizamos Registro :::: //
+
+                            $apiaudiophonebalanceupdate->update();                              
+                        }else{
+
+                            // :::: Arreglo Anterior :::: //
+
+                            $arreglo_previo = $i - 1;                         
+
+                            // :::: Obtenemos el id del registro actualizado en la iteración anterior :::: //
+
+                            $id_balance_previo_actualizado = $post_update_balance_data[$arreglo_previo]['apiaudiophonebalances_id'];
+
+                            // :::: Obtenemos el registro actualizado en la iteración anterior:::: //
+
+                            $preaudiophonebalanceupdate = ApiAudiophoneBalance::findOrFail($id_balance_previo_actualizado);
+
+                            // :::: Obtenemos el total del registro actualizado en la iteración anterior :::: //
+
+                            $pretotal = $preaudiophonebalanceupdate->apiaudiophonebalances_total;
+
+                            // :::: Obtenemos el Id del registro a actualizar posteriores a la primera iteración :::: //
+
+                            $id_balance_actualiza = $post_update_balance_data[$i]['apiaudiophonebalances_id'];
+
+                            // :::: Obtenemos el registro a actualizar :::: //
+
+                            $apiaudiophonebalanceupdate = ApiAudiophoneBalance::findOrFail($id_balance_actualiza);
+
+                            // :::: Procedemos a actualizar el registro :::: //
+
+                            $apiaudiophonebalanceupdate->id_apiaudiophoneusers = $id_apiaudiophoneusers; 
+                            $apiaudiophonebalanceupdate->id_apiaudiophoneclients = $post_update_balance_data[$i]['id_apiaudiophoneclients'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_date = $post_update_balance_data[$i]['apiaudiophonebalances_date'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_desc = $post_update_balance_data[$i]['apiaudiophonebalances_desc'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_horlab = $post_update_balance_data[$i]['apiaudiophonebalances_horlab'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_tarif = $post_update_balance_data[$i]['apiaudiophonebalances_tarif'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_debe = $post_update_balance_data[$i]['apiaudiophonebalances_debe'];
+                            $apiaudiophonebalanceupdate->apiaudiophonebalances_haber = $post_update_balance_data[$i]['apiaudiophonebalances_haber'];
+
+
+                            // :::: Lógica para el llenado del total :::: //
+
+                            if($apiaudiophonebalanceupdate->apiaudiophonebalances_haber == 0){
+
+                            
+                                $apiaudiophonebalanceupdate->apiaudiophonebalances_total = $pretotal + $apiaudiophonebalanceupdate->apiaudiophonebalances_debe;      
+                            }elseif($apiaudiophonebalanceupdate->apiaudiophonebalances_debe == 0){
+                               
+                                $apiaudiophonebalanceupdate->apiaudiophonebalances_total = $pretotal - $apiaudiophonebalanceupdate->apiaudiophonebalances_haber;
+                            }else{
+
+                                return $this->errorResponse('Metodo no Permitido', 405);
+                            }
+
+                            // :::: Actualizamos Registro :::: //
+
+                            $apiaudiophonebalanceupdate->update();                          
+                        }
+                    }
+
+                    return $this->errorResponseApiaudiophonBalanceDestroy(true, 200, 'Balance eliminado Satisfactoriamente');
+                }
             break;
 
             default:
@@ -639,8 +1219,6 @@ class ApiAudiophonceBalanceController extends Controller
                     ]
                 )->save($url);
 
-                dd('stop');
-
                 return $this->pdfBalanceGenerate(true, 200, 'Balance Generado, Verificar en el Botón PDF del menú', $url);
             break;
 
@@ -660,5 +1238,14 @@ class ApiAudiophonceBalanceController extends Controller
         $array_keys = array_keys($request_array);
 
         return $array_keys;
+    }
+
+
+    // :::: Funcion para actualizar arreglos :::: //
+
+    private function updateArray( array $balance){
+
+
+
     }
 }

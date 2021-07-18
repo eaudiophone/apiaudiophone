@@ -436,6 +436,24 @@ trait ApiResponserTrait
     ], $code);
   }
 
+
+/*
+ * Responser de afirmacciones estándar para ApiaudiophoneBalance update version 2
+ *
+ */
+  public function successResponseApiaudiophoneBalanceUpdateDos($ok = null, $code, $message)
+  {
+
+    return response()->json([
+
+      'ok' => $ok,
+      'status' => $code,
+      'message' => $message
+    ], $code);
+  }
+
+
+
  /*
  * Responser de afirmacciones estándar para ApiaudiophoneClient store
  *
