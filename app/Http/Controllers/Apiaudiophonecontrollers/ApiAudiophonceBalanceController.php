@@ -571,15 +571,6 @@ class ApiAudiophonceBalanceController extends Controller
                         }
                     }
 
-                    // :::: Obtenemos los registros actualizados para devolverlos a la vista :::: //
-
-                    /*$update_balance_data_actualizado = ApiAudiophoneBalance::where([
-                        ['id_apiaudiophoneclients', $balance_id_client_update], 
-                        ['apiaudiophonebalances_id', '>=', $balance_id_update]
-                    ])->get();*/
-
-
-                    //return $this->successResponseApiaudiophoneBalanceUpdate(true, 200, 'Balance actualizado Satisfactoriamente', $update_balance_data_actualizado);
                     return $this->successResponseApiaudiophoneBalanceUpdateDos(true, 200, 'Balance actualizado Satisfactoriamente');
 
 
@@ -755,17 +746,6 @@ class ApiAudiophonceBalanceController extends Controller
                         }
                     }
 
-
-                    // :::: Obtenemos los registros actualizados para devolverlos a la vista :::: //
-
-                   /* $update_balance_data_actualizado = ApiAudiophoneBalance::where([
-                        ['id_apiaudiophoneclients', $balance_id_client_update], 
-                        ['apiaudiophonebalances_id', '>=', $balance_id_update]
-                    ])->get();
-
-
-                    return $this->successResponseApiaudiophoneBalanceUpdate(true, 200, 'Balance actualizado Satisfactoriamente', $update_balance_data_actualizado);*/
-
                     return $this->successResponseApiaudiophoneBalanceUpdateDos(true, 200, 'Balance actualizado Satisfactoriamente');
                 }
             break;
@@ -817,16 +797,28 @@ class ApiAudiophonceBalanceController extends Controller
         $last_balance_client = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $client_delete_id)->get()->last();
 
         $id_balance_last = $last_balance_client['apiaudiophonebalances_id'];
-                
+
+        // :::: Total de balances por cliente :::: //
+
+        $count_balance_clients = $last_balance_client->count();
+       
         // :::: Obtenemos los datos necesarios del primer balance para ese cliente, antes de eliminar :::: //
 
         $first_balance_client = ApiAudiophoneBalance::where([
             ['id_apiaudiophoneclients', $client_delete_id], 
             ['apiaudiophonebalances_id', '>=', $balance_delete_id]
-        ])->take(1)->orderBy('apiaudiophonebalances_id', 'asc')->get();
+        ])->take(1)->orderBy('apiaudiophonebalances_id', 'asc')->get();        
+        
+        // :::: Obtenemos el id del primer balance antes de elminar :::: //
 
-        $id_balance_first_delete = $first_balance_client[0]['apiaudiophonebalances_id'];   
+        $id_balance_first_delete = $first_balance_client[0]['apiaudiophonebalances_id'];  
+        
+        // :::: Obtenemos el conteo de registros a partir del actualizado :::: //
 
+        $count_balance_delete = ApiAudiophoneBalance::where([
+            ['id_apiaudiophoneclients', $client_delete_id], 
+            ['apiaudiophonebalances_id', '>=', $balance_delete_id]
+        ])->count();        
 
         // :::: Procedemos a eliminar el cliente :::: //
 
@@ -841,18 +833,8 @@ class ApiAudiophonceBalanceController extends Controller
 
                 
                 // :::: Eliminación del primer registro de ese cliente :::: //
-                if( $balance_delete_id == $id_balance_first_delete ){
+                if( ($balance_delete_id == $id_balance_first_delete) && ( $count_balance_clients == $count_balance_delete ) ){
 
-                    dd('prueba eliminando el primer registro');
-
-                    // :::: Obtenemos el conteo de registros a partir del actualizado :::: //
-
-                    $update_balance_count = ApiAudiophoneBalance::where([
-                        ['id_apiaudiophoneclients', $client_delete_id], 
-                        ['apiaudiophonebalances_id', '>=', $balance_delete_id]
-                    ])->count();
-
-                    // dd($update_balance_count);
 
                     // ::: Obtenemos los registros involucrados en el update previo a la eliminación :::: //
 
@@ -864,13 +846,10 @@ class ApiAudiophonceBalanceController extends Controller
                     // :::: Obtenemos el id del balance del siguiente registro que no será elminado y que será actualizado :::: //
 
                     $balance_id_update = $update_balance_data[1]['apiaudiophonebalances_id'];
-
                     
                     // :::: Ciclo de actualización excepto el primer registro que será eliminado mas abajo :::: //
 
-                    for($i = 1; $i < $update_balance_count; $i++){
-
-                        dd($i);
+                    for($i = 1; $i < $count_balance_delete; $i++){
 
                         if($i == 1){
 
@@ -947,10 +926,10 @@ class ApiAudiophonceBalanceController extends Controller
                             if($apiaudiophonebalanceupdate->apiaudiophonebalances_haber == 0){
 
                             
-                                $apiaudiophonebalanceupdate->apiaudiophonebalances_total = $pretotal + $apiaudiophonebalanceupdate->apiaudiophonebalances_debe;      
+                                $apiaudiophonebalanceupdate->apiaudiophonebalances_total = $pretotal + $apiaudiophonebalanceupdate->apiaudiophonebalances_debe;                                 
                             }elseif($apiaudiophonebalanceupdate->apiaudiophonebalances_debe == 0){
                                
-                                $apiaudiophonebalanceupdate->apiaudiophonebalances_total = $pretotal - $apiaudiophonebalanceupdate->apiaudiophonebalances_haber;
+                                $apiaudiophonebalanceupdate->apiaudiophonebalances_total = $pretotal - $apiaudiophonebalanceupdate->apiaudiophonebalances_haber;                               
                             }else{
 
                                 return $this->errorResponse('Metodo no Permitido', 405);
@@ -960,15 +939,13 @@ class ApiAudiophonceBalanceController extends Controller
 
                             $apiaudiophonebalanceupdate->update();                          
                         }
-                    }
-
+                    }                                        
+                    
                     // :::: Obtenemos el registro a eliminar y eliminamos para poder recalcular :::: //
 
                     $apiaudiophonebalancedelete = ApiAudiophoneBalance::findOrFail($balance_delete_id);
 
-                    $apiaudiophonebalancedelete->delete();                    
-
-
+                    $apiaudiophonebalancedelete->delete();       
                    
                     return $this->errorResponseApiaudiophonBalanceDestroy(true, 200, 'Balance elminado Satisfactoriamente');
 
@@ -989,13 +966,24 @@ class ApiAudiophonceBalanceController extends Controller
                     // :::: Cuando es un registro intermedio :::: //
                 }else{
 
+                    
+                    // :::: Copnsultamos los doatos del registro anterior a ser eliminado para poder recalcular los totales :::: //
+
+                    $prev_balance_delete = ApiAudiophoneBalance::where([
+                        ['id_apiaudiophoneclients', $client_delete_id], 
+                        ['apiaudiophonebalances_id', '<=', $balance_delete_id]
+                    ])->take(2)->orderBy('apiaudiophonebalances_id', 'asc')->get();
+
+
+                    // :::: Obtenemos el id del registro previo a ser eliminado :::: //
+
+                    $id_prev_balance_delete = $prev_balance_delete[0]['apiaudiophonebalances_id'];   
+
                     // :::: Obtenemos el registro a eliminar y eliminamos :::: //
 
                     $apiaudiophonebalancedelete = ApiAudiophoneBalance::findOrFail($balance_delete_id);
 
                     $apiaudiophonebalancedelete->delete();
-
-                    dd('registro eliminado');
 
                     // :::: Obtenemos los registros involucrados en el update posterior a la eliminación :::: //
 
@@ -1006,10 +994,9 @@ class ApiAudiophonceBalanceController extends Controller
                     // :::: Obtenemos los registros involucrados en el update previo a la eliminación :::: //
 
                     $post_update_balance_data = ApiAudiophoneBalance::where([
-                        ['id_apiaudiophoneclients', $client_delete_id]
+                        ['id_apiaudiophoneclients', $client_delete_id],
+                        ['apiaudiophonebalances_id', '>=', $id_prev_balance_delete]
                     ])->get();
-
-                  //  return $post_update_balance_data;
 
                     // :::: Ciclo de actualización posterior a la eliminación del registro (se actualiza todo) :::: //
 
@@ -1017,10 +1004,13 @@ class ApiAudiophonceBalanceController extends Controller
 
                         if($i == 0){
 
-                            dd('paso uno', $i);
+                            // :::: Obtenemos el ID ddel registro a actualizar :::: //
+
+                            $id_post_balance_delete = $post_update_balance_data[$i]['apiaudiophonebalances_id'];
+
                             // :::: Obtenemos el registro a actualizar en la base de datos, los mismos se llenan del request :::: //
 
-                            $apiaudiophonebalanceupdate = ApiAudiophoneBalance::findOrFail($balance_id_update);
+                            $apiaudiophonebalanceupdate = ApiAudiophoneBalance::findOrFail($id_post_balance_delete);
 
                             $apiaudiophonebalanceupdate->id_apiaudiophoneusers = $id_apiaudiophoneusers; 
                             $apiaudiophonebalanceupdate->id_apiaudiophoneclients = $post_update_balance_data[$i]['id_apiaudiophoneclients'];
@@ -1084,7 +1074,6 @@ class ApiAudiophonceBalanceController extends Controller
                             $apiaudiophonebalanceupdate->apiaudiophonebalances_tarif = $post_update_balance_data[$i]['apiaudiophonebalances_tarif'];
                             $apiaudiophonebalanceupdate->apiaudiophonebalances_debe = $post_update_balance_data[$i]['apiaudiophonebalances_debe'];
                             $apiaudiophonebalanceupdate->apiaudiophonebalances_haber = $post_update_balance_data[$i]['apiaudiophonebalances_haber'];
-
 
                             // :::: Lógica para el llenado del total :::: //
 
@@ -1238,14 +1227,5 @@ class ApiAudiophonceBalanceController extends Controller
         $array_keys = array_keys($request_array);
 
         return $array_keys;
-    }
-
-
-    // :::: Funcion para actualizar arreglos :::: //
-
-    private function updateArray( array $balance){
-
-
-
     }
 }
