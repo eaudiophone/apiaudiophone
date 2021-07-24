@@ -436,6 +436,19 @@ class ApiAudiophonceBalanceController extends Controller
 
         $id_balance_last = $last_balance_client['apiaudiophonebalances_id'];
         
+        // :::: Obtenemos el numero total de registros contables para ese cliente :::: //    
+
+        $count_balance_client = $last_balance_client->count();
+        
+
+        // :::: Obtenemos el conteo de registros a partir del actualizado :::: //
+
+        $count_balance_update = ApiAudiophoneBalance::where([
+            ['id_apiaudiophoneclients', $balance_id_client_update], 
+            ['apiaudiophonebalances_id', '>=', $balance_id_update]
+        ])->count(); 
+
+
         // :::: Obtenemos los datos necesarios del primer balance para ese cliente :::: //
 
         $first_balance_client = ApiAudiophoneBalance::where([
@@ -458,7 +471,9 @@ class ApiAudiophonceBalanceController extends Controller
             case('ADMIN_ROLE'):
 
                 // :::: Cuando es el primer registro a actualizar :::: //
-                if( $balance_id_update == $id_balance_first ){
+                if( ($balance_id_update == $id_balance_first) && ( $count_balance_client == $count_balance_update) ){
+
+                   // dd('Cuando es el primer registro a actualizar');
 
                     // :::: Obtenemos el conteo de registros a partir del actualizado :::: //
 
@@ -577,6 +592,7 @@ class ApiAudiophonceBalanceController extends Controller
                     // :::: Cuando es el ultimo registro que se va actualizar :::: //
                 }elseif( $balance_id_update == $id_balance_last ){
 
+                   // dd('Cuando es el ultimo registro que se va actualizar');
                     
                     // :::: Obtenemos el penultimo balance de ese cliente para obtener el total :::: //
 
@@ -625,6 +641,7 @@ class ApiAudiophonceBalanceController extends Controller
                     // :::: Cuando es un registro intermedio para actualizar :::: //
                 }else{
 
+                   // dd('Cuando es un registro intermedio para actualizar');
                     
                     // :::: Obtenemos el conteo de registros a partir del actualizado :::: //
 
@@ -951,7 +968,7 @@ class ApiAudiophonceBalanceController extends Controller
 
 
                     // :::: Cuando es el ultimo registro que se va a eliminar :::: //
-                }if( $balance_delete_id == $id_balance_last ){
+                }elseif( $balance_delete_id == $id_balance_last ){
 
 
                     dd('prueba eliminando el ultimo registro');
@@ -967,7 +984,7 @@ class ApiAudiophonceBalanceController extends Controller
                 }else{
 
                     
-                    // :::: Copnsultamos los doatos del registro anterior a ser eliminado para poder recalcular los totales :::: //
+                    // :::: Consultamos los doatos del registro anterior a ser eliminado para poder recalcular los totales :::: //
 
                     $prev_balance_delete = ApiAudiophoneBalance::where([
                         ['id_apiaudiophoneclients', $client_delete_id], 
