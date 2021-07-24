@@ -969,7 +969,7 @@ class ApiAudiophonceBalanceController extends Controller
                 }elseif( $balance_delete_id == $id_balance_last ){
 
 
-                    dd('prueba eliminando el ultimo registro');
+                    //dd('prueba eliminando el ultimo registro');
 
                     $apiaudiophonebalancedelete = ApiAudiophoneBalance::findOrFail($balance_delete_id);
 
