@@ -438,16 +438,14 @@ class ApiAudiophonceBalanceController extends Controller
         
         // :::: Obtenemos el numero total de registros contables para ese cliente :::: //    
 
-        $count_balance_client = $last_balance_client->count();
+        $count_balance_client = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $balance_id_client_update)->count();
         
-
         // :::: Obtenemos el conteo de registros a partir del actualizado :::: //
 
         $count_balance_update = ApiAudiophoneBalance::where([
             ['id_apiaudiophoneclients', $balance_id_client_update], 
             ['apiaudiophonebalances_id', '>=', $balance_id_update]
         ])->count(); 
-
 
         // :::: Obtenemos los datos necesarios del primer balance para ese cliente :::: //
 
@@ -817,7 +815,7 @@ class ApiAudiophonceBalanceController extends Controller
 
         // :::: Total de balances por cliente :::: //
 
-        $count_balance_clients = $last_balance_client->count();
+        $count_balance_clients = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $balance_id_client_update)->count();
        
         // :::: Obtenemos los datos necesarios del primer balance para ese cliente, antes de eliminar :::: //
 
