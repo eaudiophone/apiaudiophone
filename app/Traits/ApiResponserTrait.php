@@ -80,7 +80,7 @@ trait ApiResponserTrait
  * Responser de afirmacciones estándar para pdfBalanceGenerate pdf
  *
  */
-  public function pdfBalanceGenerate($ok = null, $code, $apiaudiophonebalancemessage, $url)
+  public function pdfBalanceGenerateReport($ok = null, $code, $apiaudiophonebalancemessage, $suburl, $linkbase)
   {
 
     return response()->json([
@@ -88,7 +88,8 @@ trait ApiResponserTrait
         'ok' => $ok,
         'status' => $code,
         'apiaudiophonebalancemessage' => $apiaudiophonebalancemessage,
-        'url' => $url
+        'suburl' => $suburl,
+        'linkbase' => $linkbase
       ], $code);
   }
 

@@ -1132,6 +1132,9 @@ class ApiAudiophonceBalanceController extends Controller
             'id_apiaudiophoneclients' => 'numeric|required'
         ]);
 
+        // :::: Seteamos la zona horaria a Caracas Venezuela :::: //
+
+        date_default_timezone_set('America/Caracas');
 
         // :::: Establecemos el separador de carpetas por defecto :::: //
 
@@ -1145,16 +1148,23 @@ class ApiAudiophonceBalanceController extends Controller
 
         $balance_pdf_id_client = $balance_pdf_generate['id_apiaudiophoneclients'];
 
-        // :::: Obtenemos la fecha del día :::: //
+        // :::: Obtenemos la fecha y hora del día :::: //
 
-        $today = Carbon::today('America/Caracas')->format('d-m-Y');
+        $today = date('d-m-Y-H-i-s');
 
+        // :::: Obtenemos los datos del cliente a reportar :::: //
+
+        $apiaudiophoneclientpdf = ApiAudiophoneClient::findOrFail($balance_pdf_id_client);
+
+        $nombre_cliente = $apiaudiophoneclientpdf->apiaudiophoneclients_name;
+        
         // :::: Generamos el nombre del balance :::: //
 
-        $nombre_pdf_balance = 'bal_'.$today.'.pdf';
+        $nombre_pdf_balance = 'Bal_'.$nombre_cliente.'_'.$today.'.pdf';
 
         //dd($nombre_pdf_balance);
-        // ::::  Generamos el nombre de la carpeta para guardar el balance :::: //
+
+        // ::::  Generamos el nombre de la carpeta para guardar la subcarpeta :::: //
 
         $folder = str_replace('\\', DS, strstr($_SERVER['DOCUMENT_ROOT'], 'apiaudiophone\public', true).'appbal\\');
 
@@ -1165,10 +1175,22 @@ class ApiAudiophonceBalanceController extends Controller
             mkdir($folder, 0777, true);
         }
 
+        // :::: Generamos el nombre de la sub carpeta para guardar el balance :::: //
+
+        $sub_folder = $folder.$nombre_cliente.'\\';
+
+        //dd($sub_folder);
+        // :::: Verificamos carpeta, si no existe,  creamos con permisos 777 :::: //
+
+        if(!file_exists($sub_folder)){
+
+            mkdir($sub_folder, 0777, true);
+        }
+
         //dd($nombre_pdf_balance);
         // :::: Generamos la ruta del balance donde será almacenado el documento :::: //
 
-        $url = $folder.$nombre_pdf_balance;
+        $url = $sub_folder.$nombre_pdf_balance;
 
        //dd($url);
         // :::: Obtenemos el rol de usuario :::: //
@@ -1187,29 +1209,26 @@ class ApiAudiophonceBalanceController extends Controller
             break;
 
             case('ADMIN_ROLE'):
-
-                // :::: Obtenemos los datos del cliente a reportar :::: //
-
-                $apiaudiophoneclientpdf = ApiAudiophoneClient::findOrFail($balance_pdf_id_client);
-
-                //dd($apiaudiophoneclientpdf);
+                
                 // :::: Obtenemos los balances del cliente a reportar :::: //
 
                 $apiaudiophonebalancepdf = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $balance_pdf_id_client)
                 ->orderBy('apiaudiophonebalances_id', 'desc')
                 ->get();
 
-                //dd($apiaudiophonebalancepdf);
-                //return $apiaudiophonebalancepdf;
-
                 // :::: Armamos las variables de salida para tormarlas en el reporte :::: //
 
                 $client_name = $apiaudiophoneclientpdf->apiaudiophoneclients_name;
 
-                //dd($client_name);
                 $client_ident = $apiaudiophoneclientpdf->apiaudiophoneclients_ident;
 
                 $client_phone = $apiaudiophoneclientpdf->apiaudiophoneclients_phone;
+               
+                // :::: Actualizamos la url en el modelo para devolverla a la vista :::: //
+                
+                $apiaudiophoneclientpdf->apiaudiophoneclients_url = $url;
+
+                $apiaudiophoneclientpdf->update();
 
                 // :::: Cargamos la vista y mandamos los datos del balance :::: //
 
@@ -1223,7 +1242,7 @@ class ApiAudiophonceBalanceController extends Controller
                     ]
                 )->save($url);
 
-                return $this->pdfBalanceGenerate(true, 200, 'Balance Generado, Verificar en el Botón PDF del menú', $url);
+                return $this->pdfBalanceGenerateReport(true, 200, 'Balance Generado, Verificar en el Botón PDF del menú', $url, $folder);
             break;
 
             default:
@@ -1231,8 +1250,6 @@ class ApiAudiophonceBalanceController extends Controller
             return $this->errorResponse('Método no Permitido', 405);
         }
     }
-
-
 
     // :::: Función que devuelve las llaves de un arreglo :::: //
 
