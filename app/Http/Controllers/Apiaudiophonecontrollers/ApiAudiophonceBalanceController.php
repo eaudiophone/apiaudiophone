@@ -1177,7 +1177,7 @@ class ApiAudiophonceBalanceController extends Controller
 
         // :::: Generamos el nombre de la sub carpeta para guardar el balance :::: //
 
-        $sub_folder = $folder.$nombre_cliente.'\\';
+        $sub_folder = $folder.$nombre_cliente.DS;
 
         //dd($sub_folder);
         // :::: Verificamos carpeta, si no existe,  creamos con permisos 777 :::: //
