@@ -1166,7 +1166,7 @@ class ApiAudiophonceBalanceController extends Controller
 
         // ::::  Generamos el nombre de la carpeta para guardar la subcarpeta :::: //
 
-        $folder = str_replace('\\', DS, strstr($_SERVER['DOCUMENT_ROOT'], 'apiaudiophone\public', true).'appbal\\');
+        $folder = str_replace('\\', DS, strstr($_SERVER['DOCUMENT_ROOT'], 'apiaudiophone\public', true).'appbal'.DS);
 
         // :::: Verificamos carpeta, si no existe,  creamos con permisos 777 :::: //
 
@@ -1177,7 +1177,7 @@ class ApiAudiophonceBalanceController extends Controller
 
         // :::: Generamos el nombre de la sub carpeta para guardar el balance :::: //
 
-        $sub_folder = $folder.$nombre_cliente.'\\';
+        $sub_folder = $folder.$nombre_cliente.DS;
 
         //dd($sub_folder);
         // :::: Verificamos carpeta, si no existe,  creamos con permisos 777 :::: //
