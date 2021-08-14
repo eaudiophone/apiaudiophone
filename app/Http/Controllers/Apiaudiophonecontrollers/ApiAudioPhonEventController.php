@@ -23,7 +23,7 @@ class ApiAudioPhonEventController extends Controller
      * @param  \App\Apiaudiophonemodels\ApiAudiophonEvent  $apiAudiophonEvent
      * @return \Illuminate\Http\Response
      */
-    public function showApiAudiophonEvent($id_apiaudiophoneusers)
+    public function showApiAudiophonEvent($id_apiaudiophoneusers = null)
     {
 
     	//::::: IDENTIFICAMOS SI EXISTEN O NO EVENTOS CREADOS EN LA TABLA :::::://
