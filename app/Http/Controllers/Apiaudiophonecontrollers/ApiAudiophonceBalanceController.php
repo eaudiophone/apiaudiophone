@@ -67,7 +67,7 @@ class ApiAudiophonceBalanceController extends Controller
 
         // :::: asignamos la cantidad de registros por pagina :::: //
 
-        $num_pag = 5;
+        $num_pag = 15;
 
 
         if($user_role == 'ADMIN_ROLE'){

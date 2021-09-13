@@ -60,7 +60,12 @@
 			{
 				padding-left: 55px;
 				background-color: lightgray;
-			}				
+			}	
+			.imagen
+			{
+				width: 100px;
+				height: 100px;
+			}			
 		</style>
 
 
@@ -77,8 +82,7 @@
 					
 					<div class="col-12 col-sm-6">						
 
-						<h1 class="h1">Estudios Audiophone S.A.</h1>
-
+						<img class = "imagen" src= "http://localhost/apiaudiophone/resources/views/balanceview/Estudio.jpg" alt="logo"/>
 
 						<div class="factura">
 							

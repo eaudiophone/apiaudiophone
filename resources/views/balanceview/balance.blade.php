@@ -16,7 +16,7 @@
 
 			table
 			{
-				width: auto;
+				width: 100%;
 				border: solid;
 				font-size: 15px;
 			}
@@ -37,9 +37,15 @@
 			{
 				font-size: 12px;
 			}
+			.imagen
+			{
+				width: 100px;
+				height: 100px;
+			}
 		</style>
 		
-		<title>Balance CLiente</title>
+	<title>Balance CLiente</title>
+	
 	</head>
 	
 	<body>
@@ -50,7 +56,7 @@
 			
 			<div class="container">
 				
-				<h1>Estudio Audiophone S.A.</h1>
+				<img class = "imagen" src= "http://localhost/apiaudiophone/resources/views/balanceview/Estudio.jpg" alt="logo"/>
 
 				<div class="row">
 					

@@ -59,7 +59,7 @@ class ApiAudioPhoneClientController extends Controller
 
         // :::: Numero de registros por página :::: //
 
-        $num_pag = 5;
+        $num_pag = 15;
 
         if($user_rol == 'ADMIN_ROLE'){
 
@@ -80,7 +80,6 @@ class ApiAudioPhoneClientController extends Controller
                     $chain = $client_data_show['stringsearch'];
                     $start = $client_data_show['start'] - 1;
 
-                    //dd('hola', $start);
 
                     // :::: Búsqueda de cadena con o sin espacio y sin inicio :::: //
                     if(((ctype_space($chain) == true) && !($start)) || ((ctype_space($chain) == false) && !($start))){

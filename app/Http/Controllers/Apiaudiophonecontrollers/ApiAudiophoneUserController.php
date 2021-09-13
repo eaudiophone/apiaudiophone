@@ -48,7 +48,7 @@ class ApiAudiophoneUserController extends Controller
             if(empty($stringsearch)){
 
                 $apiaudiophoneuserdata = ApiAudiophoneUser::select('apiaudiophoneusers_id','apiaudiophoneusers_fullname', 'apiaudiophoneusers_email', 'apiaudiophoneusers_role', 'apiaudiophoneusers_status', 'created_at')
-                ->whereBetween('apiaudiophoneusers_id', [1, 5])
+                ->whereBetween('apiaudiophoneusers_id', [1, 15])
                 ->orderBy('apiaudiophoneusers_id', 'desc')
                 ->get();
 
@@ -84,7 +84,7 @@ class ApiAudiophoneUserController extends Controller
 
 	    		//Consultamos en la base de datos cuando el request no manda parametros (primera consulta)
 	    		$apiaudiophoneuserdata = ApiAudiophoneUser::select('apiaudiophoneusers_id','apiaudiophoneusers_fullname', 'apiaudiophoneusers_email', 'apiaudiophoneusers_role', 'apiaudiophoneusers_status', 'created_at')
-	    		->whereBetween('apiaudiophoneusers_id', [1, 5])
+	    		->whereBetween('apiaudiophoneusers_id', [1, 15])
 	    		->orderBy('apiaudiophoneusers_id', 'desc')
 	    		->get();
     		}else{
@@ -105,7 +105,7 @@ class ApiAudiophoneUserController extends Controller
 
     		//Consultamos en la base de datos cuando el request no manda parametros (primera consulta)
     		$apiaudiophoneuserdata = ApiAudiophoneUser::select('apiaudiophoneusers_id', 'apiaudiophoneusers_fullname', 'apiaudiophoneusers_email', 'apiaudiophoneusers_role', 'apiaudiophoneusers_status', 'created_at')
-    		->whereBetween('apiaudiophoneusers_id', [1, 5])
+    		->whereBetween('apiaudiophoneusers_id', [1, 15])
     		->orderBy('apiaudiophoneusers_id', 'desc')
     		->get();
 
