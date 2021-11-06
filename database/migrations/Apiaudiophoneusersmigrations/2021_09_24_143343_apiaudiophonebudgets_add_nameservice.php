@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-class ApiaudiophoneservicesAddNameservice extends Migration
+class ApiaudiophonebudgetsAddNameservice extends Migration
 {
     /**
      * Run the migrations.
@@ -26,10 +26,9 @@ class ApiaudiophoneservicesAddNameservice extends Migration
      */
     public function down()
     {
-       
         Schema::table('apiaudiophonebudgets', function(Blueprint $table){
 
             $table->dropColumn('apiaudiophonebudgets_nameservice');
-        });        
+        });
     }
 }

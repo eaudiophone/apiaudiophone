@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class ApiaudiophoneventsAddForeignServices extends Migration
 {
@@ -13,7 +13,6 @@ class ApiaudiophoneventsAddForeignServices extends Migration
      */
     public function up()
     {
-
         Schema::table('apiaudiophonevents', function(Blueprint $table){
 
             $table->unsignedBigInteger('id_apiaudiophoneservices')->nullable(true)->after('id_apiaudiophoneusers');

@@ -18,6 +18,10 @@
 
 */
 
+$router->get('api/test', function() {
+	return "Hola mundo";
+});
+
 $router->post('api/login', [
 
 	'middleware' => ['cors'],

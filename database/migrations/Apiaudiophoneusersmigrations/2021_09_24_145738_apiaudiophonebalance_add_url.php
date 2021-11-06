@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-class ApiaudiophoneclientsAddUrl extends Migration
+class ApiaudiophonebalanceAddUrl extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,6 @@ class ApiaudiophoneclientsAddUrl extends Migration
      */
     public function up()
     {
-        
         Schema::table('apiaudiophoneclients', function(Blueprint $table){
 
             $table->string('apiaudiophoneclients_url', 250)->after('apiaudiophoneclients_phone')->nullable(true);
@@ -27,7 +26,6 @@ class ApiaudiophoneclientsAddUrl extends Migration
      */
     public function down()
     {
-        
         Schema::table('apiaudiophoneclients', function(Blueprint $table){
 
             $table->dropColumn('apiaudiophoneclients_url');

@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-class ApiaudiophonbalancesAddForeignUsers extends Migration
+class ApiaudiophoneclientsAddForeignUsers extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class ApiaudiophonbalancesAddForeignUsers extends Migration
      */
     public function up()
     {
-        Schema::table('apiaudiophonebalances', function(Blueprint $table){
+        Schema::table('apiaudiophoneclients', function(Blueprint $table){
 
 
-            $table->unsignedBigInteger('id_apiaudiophoneusers')->nullable(true)->after('id_apiaudiophoneclients');
+            $table->unsignedBigInteger('id_apiaudiophoneusers')->nullable(true)->after('apiaudiophoneclients_id');
 
             $table->foreign('id_apiaudiophoneusers')->references('apiaudiophoneusers_id')->on('apiaudiophoneusers');
         });
@@ -31,10 +31,10 @@ class ApiaudiophonbalancesAddForeignUsers extends Migration
      */
     public function down()
     {
-        Schema::table('apiaudiophonebalances', function(Blueprint $table){
+        Schema::table('apiaudiophoneclients', function(Blueprint $table){
 
 
-            $table->dropForeign('apiaudiophonebalances_id_apiaudiophoneusers_foreign');
+            $table->dropForeign('apiaudiophoneclients_id_apiaudiophoneusers_foreign');
 
             $table->dropColumn('id_apiaudiophoneusers');
         });

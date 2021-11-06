@@ -5,3 +5,5 @@ Homestead.json
 Homestead.yaml
 .env
 .phpunit.result.cache
+/public/appdocs
+/public/appbal

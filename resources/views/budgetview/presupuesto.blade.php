@@ -63,8 +63,8 @@
 			}	
 			.imagen
 			{
-				width: 100px;
-				height: 100px;
+				width: 75px;
+				height: 75px;
 			}			
 		</style>
 
@@ -82,7 +82,11 @@
 					
 					<div class="col-12 col-sm-6">						
 
-						<img class = "imagen" src= "http://localhost/apiaudiophone/resources/views/balanceview/Estudio.jpg" alt="logo"/>
+						<img 
+							class="imagen" 
+							src="http://localhost/apiaudiophone/resources/views/balanceview/Estudio.jpg" 
+							alt="logo"
+							/>
 
 						<div class="factura">
 							

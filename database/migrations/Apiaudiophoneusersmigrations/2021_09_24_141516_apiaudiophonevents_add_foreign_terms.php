@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class ApiaudiophoneventsAddForeignTerms extends Migration
 {
@@ -13,7 +13,6 @@ class ApiaudiophoneventsAddForeignTerms extends Migration
      */
     public function up()
     {
-       
         Schema::table('apiaudiophonevents', function(Blueprint $table){
 
             $table->unsignedBigInteger('id_apiaudiophoneterms')->nullable(true)->after('id_apiaudiophoneusers');
@@ -29,7 +28,6 @@ class ApiaudiophoneventsAddForeignTerms extends Migration
      */
     public function down()
     {
-        
         Schema::table('apiaudiophonevents', function(Blueprint $table){
 
              $table->dropForeign('apiaudiophonevents_id_apiaudiophoneterms_foreign');
