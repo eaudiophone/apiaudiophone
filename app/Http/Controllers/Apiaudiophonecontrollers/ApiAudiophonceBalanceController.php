@@ -1215,7 +1215,7 @@ class ApiAudiophonceBalanceController extends Controller
                 // :::: Obtenemos los balances del cliente a reportar :::: //
 
                 $apiaudiophonebalancepdf = ApiAudiophoneBalance::where('id_apiaudiophoneclients', $balance_pdf_id_client)
-                ->orderBy('apiaudiophonebalances_id', 'desc')
+                ->orderBy('apiaudiophonebalances_id', 'asc')
                 ->get();
 
                 // :::: Contamos los elementos del arreglo para usar el valor en el for :::: //
@@ -1235,8 +1235,10 @@ class ApiAudiophonceBalanceController extends Controller
 
                 // :::: Obtenemos el saldo total del balance, primer registro en el front :::: //
 
-                $saldo_final = $apiaudiophonebalancepdf[0]['apiaudiophonebalances_total'];     
+                $indice_saldo_final = $apiaudiophonebalancepdf_count - 1; 
 
+                $saldo_final = $apiaudiophonebalancepdf[$indice_saldo_final]['apiaudiophonebalances_total'];     
+                     
                 // :::: Armamos las variables de salida para tormarlas en el reporte :::: //
 
                 $client_name = $apiaudiophoneclientpdf->apiaudiophoneclients_name;
