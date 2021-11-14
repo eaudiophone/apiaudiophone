@@ -130,8 +130,8 @@
 
 			<div class="container">
 				<h5 style="float: right;">
-					Total de horas laboradas: 25 <br> <!-- cambiar las horas laboradas -->
-					Saldo: 0$ <br><br><br> <!-- saldo el ultimo valor del total -->
+					Total de horas laboradas: {{ $acum_hours }} <br> <!-- cambiar las horas laboradas -->
+					Saldo: {{ $saldo_final }} <br><br><br> <!-- saldo el ultimo valor del total -->
 				</h5>
 				<h5>Gracias por confiar en Estudios Audiophone S.A.</h5>
 			</div>		
